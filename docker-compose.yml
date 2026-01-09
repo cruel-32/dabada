@@ -27,6 +27,8 @@ services:
     working_dir: /app
     ports:
       - "3030:3030"
+    env_file:
+      - .env
     environment:
       - NODE_ENV=development
       - DB_HOST=postgres

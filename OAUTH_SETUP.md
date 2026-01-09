@@ -30,40 +30,57 @@ Google과 Apple 로그인을 위한 OAuth 설정 방법을 단계별로 안내�
 
 1. 왼쪽 메뉴에서 **"API 및 서비스"** > **"OAuth 동의 화면"** 선택
 2. **"외부"** 선택 후 **"만들기"** 클릭
-3. 앱 정보 입력:
+   - ⚠️ **참고**: "외부"는 일반 사용자에게 공개되는 앱용, "내부"는 Google Workspace 조직 내부용입니다
+3. **"앱 정보"** 단계에서 다음 정보 입력:
    - **앱 이름**: `DABADA` (또는 원하는 이름)
-   - **사용자 지원 이메일**: 본인 이메일 선택
-   - **앱 로고**: (선택사항) 업로드
+   - **사용자 지원 이메일**: 드롭다운에서 본인 이메일 선택
+   - **앱 로고**: (선택사항) 120x120px 이상의 정사각형 이미지 업로드
    - **앱 도메인**: (선택사항) 나중에 설정 가능
-   - **개발자 연락처 정보**: 본인 이메일 입력
+   - **앱 홈페이지 링크**: (선택사항) 앱 웹사이트 URL
+   - **개발자 연락처 정보**: 본인 이메일 입력 (여러 개 가능)
 4. **"저장 후 계속"** 클릭
-5. **"범위"** 단계에서 **"저장 후 계속"** 클릭 (기본 범위만 사용)
-6. **"테스트 사용자"** 단계에서 (선택사항) 테스트용 이메일 추가
-7. **"저장 후 계속"** 클릭
-8. **"요약"** 단계에서 **"대시보드로 돌아가기"** 클릭
+5. **"범위"** 단계에서:
+   - 기본적으로 `email`, `profile`, `openid` 범위가 자동으로 추가됨
+   - 추가 범위가 필요한 경우에만 추가
+   - **"저장 후 계속"** 클릭
+6. **"테스트 사용자"** 단계에서:
+   - (선택사항) 테스트용 Google 계정 이메일 추가
+   - 테스트 사용자로 추가된 계정만 앱을 사용할 수 있음 (프로덕션 전환 전까지)
+   - **"저장 후 계속"** 클릭
+7. **"요약"** 단계에서 설정 내용 확인 후 **"대시보드로 돌아가기"** 클릭
 
 ### 4단계: OAuth 2.0 클라이언트 ID 생성
 
 1. 왼쪽 메뉴에서 **"API 및 서비스"** > **"사용자 인증 정보"** 선택
 2. 상단의 **"+ 사용자 인증 정보 만들기"** 클릭
-3. **"OAuth 클라이언트 ID"** 선택
+3. 드롭다운 메뉴에서 **"OAuth 클라이언트 ID"** 선택
 4. **"애플리케이션 유형"**: **"웹 애플리케이션"** 선택
-5. **"이름"**: `DABADA Web Client` (또는 원하는 이름)
-6. **"승인된 JavaScript 원본"**:
-   - 개발 환경: `http://localhost:3030`
+5. **"이름"**: `DABADA Web Client` (또는 원하는 이름) 입력
+6. **"승인된 JavaScript 원본"** (선택사항):
+   - 개발 환경: `http://localhost:3030` 추가
    - 프로덕션 환경: 실제 도메인 추가 (예: `https://yourdomain.com`)
-7. **"승인된 리디렉션 URI"**:
+   - ⚠️ **참고**: 최신 Google Cloud Console에서는 이 필드가 선택사항일 수 있습니다
+7. **"승인된 리디렉션 URI"** (필수):
+   - **"+ URI 추가"** 클릭하여 다음 URL 추가:
    - 개발 환경: `http://localhost:3030/api/auth/callback/google`
    - 프로덕션 환경: `https://yourdomain.com/api/auth/callback/google`
+   - ⚠️ **중요**: 정확한 프로토콜(`http`/`https`), 포트 번호, 경로를 입력해야 합니다
 8. **"만들기"** 클릭
 9. 팝업 창에서 **클라이언트 ID**와 **클라이언트 보안 비밀번호** 확인
    - ⚠️ **중요**: 클라이언트 보안 비밀번호는 이 창을 닫으면 다시 볼 수 없습니다!
-   - 복사해서 안전한 곳에 보관하세요
+   - **"확인"** 버튼을 클릭하기 전에 반드시 복사해서 안전한 곳에 보관하세요
+   - 필요시 **"JSON 다운로드"** 버튼으로 전체 정보를 다운로드할 수 있습니다
 
 ### 5단계: OAuth 클라이언트 ID 확인
 
+생성된 클라이언트 정보는 다음과 같은 형식입니다:
+
 - **클라이언트 ID**: `123456789-abcdefghijklmnop.apps.googleusercontent.com` 형식
 - **클라이언트 보안 비밀번호**: `GOCSPX-xxxxxxxxxxxxxxxxxxxx` 형식
+
+**추가 확인 방법**:
+- **"사용자 인증 정보"** 페이지에서 생성된 클라이언트 ID를 클릭하면 상세 정보를 확인할 수 있습니다
+- 클라이언트 보안 비밀번호는 보안상의 이유로 다시 확인할 수 없으므로, 분실 시 새로 생성해야 합니다
 
 ---
 
@@ -100,9 +117,17 @@ Google과 Apple 로그인을 위한 OAuth 설정 방법을 단계별로 안내�
 7. **"Sign In with Apple"** 옵션 체크 후 **"Configure"** 클릭
 8. **"Primary App ID"**: 위에서 생성한 App ID 선택
 9. **"Website URLs"** 섹션:
-   - **Domains and Subdomains**: `localhost` (개발), 실제 도메인 (프로덕션)
+   - ⚠️ **중요**: Apple Developer Portal에서는 `localhost`를 직접 등록할 수 없습니다!
+   - **개발 환경 옵션**:
+     - **옵션 1 (권장)**: ngrok 같은 터널링 서비스 사용 (아래 "개발 환경 테스트 방법" 참조)
+     - **옵션 2**: hosts 파일 수정하여 로컬 도메인 사용 (예: `127.0.0.1 myapp.local`)
+   - **Domains and Subdomains**: 
+     - 개발 (ngrok 사용 시): ngrok에서 제공하는 도메인 (예: `abc123.ngrok.io`)
+     - 개발 (로컬 도메인 사용 시): `myapp.local` (또는 설정한 도메인)
+     - 프로덕션: 실제 도메인 (예: `yourdomain.com`)
    - **Return URLs**: 
-     - 개발: `http://localhost:3030/api/auth/callback/apple`
+     - 개발 (ngrok 사용 시): `https://abc123.ngrok.io/api/auth/callback/apple`
+     - 개발 (로컬 도메인 사용 시): `http://myapp.local:3030/api/auth/callback/apple`
      - 프로덕션: `https://yourdomain.com/api/auth/callback/apple`
 10. **"Next"** 클릭 후 **"Done"** 클릭
 11. **"Save"** 클릭
@@ -263,11 +288,64 @@ pnpm dev
 
 ### 4. Apple 로그인 테스트
 
-1. Apple 로그인 버튼 클릭
-2. Apple ID 로그인 화면으로 리디렉션
-3. Apple ID 입력 및 인증
-4. 권한 승인
-5. 자동으로 앱으로 리디렉션되어 로그인 완료
+**⚠️ 중요**: Apple Developer Portal에서는 `localhost`를 직접 등록할 수 없으므로, 개발 환경에서는 다음 방법 중 하나를 사용해야 합니다:
+
+#### 방법 1: ngrok 사용 (권장)
+
+1. **ngrok 설치 및 실행**:
+   ```bash
+   # ngrok 설치 (macOS)
+   brew install ngrok
+   
+   # 또는 직접 다운로드: https://ngrok.com/download
+   
+   # ngrok 실행 (포트 3030 터널링)
+   ngrok http 3030
+   ```
+
+2. **ngrok에서 제공하는 URL 확인**:
+   - 예: `https://abc123.ngrok.io`
+   - 이 URL을 복사
+
+3. **Apple Developer Portal 설정**:
+   - Services ID → Sign In with Apple → Configure
+   - **Domains and Subdomains**: `abc123.ngrok.io` (ngrok 도메인, `.ngrok.io` 제외하고 도메인만)
+   - **Return URLs**: `https://abc123.ngrok.io/api/auth/callback/apple`
+   - 저장
+
+4. **환경 변수 업데이트**:
+   ```env
+   AUTH_URL=https://abc123.ngrok.io
+   NEXT_PUBLIC_AUTH_URL=https://abc123.ngrok.io
+   ```
+
+5. **테스트**:
+   - ngrok이 실행 중인 상태에서 앱 실행
+   - Apple 로그인 버튼 클릭
+   - Apple ID 로그인 화면으로 리디렉션
+   - 계정 선택 및 권한 승인
+   - 자동으로 앱으로 리디렉션되어 로그인 완료
+
+#### 방법 2: 로컬 도메인 사용
+
+1. **hosts 파일 수정**:
+   ```bash
+   # macOS/Linux
+   sudo nano /etc/hosts
+   
+   # 다음 줄 추가
+   127.0.0.1 myapp.local
+   ```
+
+2. **Apple Developer Portal 설정**:
+   - **Domains and Subdomains**: `myapp.local`
+   - **Return URLs**: `http://myapp.local:3030/api/auth/callback/apple`
+
+3. **브라우저에서 `http://myapp.local:3030` 접속하여 테스트**
+
+#### 방법 3: 프로덕션 도메인으로 테스트
+
+- 실제 도메인이 있다면 프로덕션 도메인으로 등록하여 테스트
 
 ---
 
@@ -289,6 +367,7 @@ pnpm dev
 **오류: "invalid_client"**
 - Services ID가 올바른지 확인
 - Return URL이 Services ID 설정과 일치하는지 확인
+- ⚠️ **localhost 사용 불가**: Apple Developer Portal에서는 `localhost`를 등록할 수 없습니다. ngrok 또는 로컬 도메인을 사용하세요
 
 **오류: "invalid_key"**
 - Key ID가 올바른지 확인

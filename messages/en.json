@@ -1,0 +1,46 @@
+{
+  "common": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "user": "User"
+  },
+  "home": {
+    "title": "DABADA",
+    "subtitle": "Download videos from YouTube and Instagram",
+    "platform": {
+      "select": "Select Platform",
+      "youtube": "YouTube",
+      "instagram": "Instagram"
+    },
+    "videoUrl": {
+      "label": "Video URL",
+      "placeholder": {
+        "youtube": "https://www.youtube.com/watch?v=...",
+        "instagram": "https://www.instagram.com/p/..."
+      }
+    },
+    "download": {
+      "button": "Download",
+      "downloading": "Downloading...",
+      "urlRequired": "Please enter a URL.",
+      "loginRequired": "Login is required."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "description": "Sign in with your Google or Apple account",
+      "google": "Sign in with Google",
+      "apple": "Sign in with Apple",
+      "googleError": "Failed to sign in with Google.",
+      "appleError": "Failed to sign in with Apple."
+    }
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  }
+}
+

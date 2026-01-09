@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -13,12 +14,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSelector } from "@/components/language-selector";
 import { authClient } from "@/lib/auth-client";
 import { Download, Youtube, Instagram, LogIn, LogOut, User } from "lucide-react";
 
 type Platform = "youtube" | "instagram";
 
 export default function Home() {
+  const t = useTranslations();
+  const locale = useLocale();
   const [platform, setPlatform] = useState<Platform>("youtube");
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -27,12 +31,11 @@ export default function Home() {
 
   const handleDownload = async () => {
     if (!url.trim()) {
-      alert("URL을 입력해주세요.");
+      alert(t("home.download.urlRequired"));
       return;
     }
 
     if (!session?.user) {
-      alert("로그인이 필요합니다.");
       setIsLoginOpen(true);
       return;
     }
@@ -45,28 +48,24 @@ export default function Home() {
     }, 1000);
   };
 
-  const handleGoogleLogin = async () => {
+  const handleOAuthLogin = async (provider: "google" | "apple") => {
     try {
       await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/",
+        provider: provider,
+        callbackURL: `/${locale}`,
       });
     } catch (error) {
-      console.error("Google login error:", error);
-      alert("Google 로그인에 실패했습니다.");
+      console.error(`${provider} login error:`, error);
+      alert(t(`auth.login.${provider}Error`));
     }
   };
 
-  const handleAppleLogin = async () => {
-    try {
-      await authClient.signIn.social({
-        provider: "apple",
-        callbackURL: "/",
-      });
-    } catch (error) {
-      console.error("Apple login error:", error);
-      alert("Apple 로그인에 실패했습니다.");
-    }
+  const handleGoogleLogin = () => {
+    handleOAuthLogin("google");
+  };
+
+  const handleAppleLogin = () => {
+    handleOAuthLogin("apple");
   };
 
   const handleSignOut = async () => {
@@ -79,7 +78,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      {/* Header */}
+      {/* Header - Top Right */}
       <div className="fixed top-4 right-4 flex items-center gap-3">
         {isPending ? (
           <div className="h-9 w-20 animate-pulse rounded-md bg-muted" />
@@ -89,7 +88,7 @@ export default function Home() {
               {session.user.image ? (
                 <Image
                   src={session.user.image}
-                  alt={session.user.name || "User"}
+                  alt={session.user.name || t("common.user")}
                   width={24}
                   height={24}
                   className="h-6 w-6 rounded-full"
@@ -107,7 +106,7 @@ export default function Home() {
               className="flex items-center gap-2"
             >
               <LogOut className="h-4 w-4" />
-              Sign Out
+              {t("common.signOut")}
             </Button>
           </div>
         ) : (
@@ -117,9 +116,10 @@ export default function Home() {
             className="flex items-center gap-2"
           >
             <LogIn className="h-4 w-4" />
-            Sign In
+            {t("common.signIn")}
           </Button>
         )}
+        <LanguageSelector />
         <ThemeToggle />
       </div>
 
@@ -127,9 +127,9 @@ export default function Home() {
       <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>로그인</DialogTitle>
+            <DialogTitle>{t("auth.login.title")}</DialogTitle>
             <DialogDescription>
-              Google 또는 Apple 계정으로 로그인하세요
+              {t("auth.login.description")}
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-3 mt-4">
@@ -149,7 +149,7 @@ export default function Home() {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
-              Google로 로그인
+              {t("auth.login.google")}
             </Button>
             <Button
               onClick={handleAppleLogin}
@@ -164,7 +164,7 @@ export default function Home() {
               >
                 <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.17 2.08-1.85 4.04-3.74 4.25z" />
               </svg>
-              Apple로 로그인
+              {t("auth.login.apple")}
             </Button>
           </div>
         </DialogContent>
@@ -174,10 +174,10 @@ export default function Home() {
         {/* Logo */}
         <div className="flex flex-col items-center space-y-4">
           <h1 className="text-5xl font-bold tracking-tight text-foreground">
-            DABADA
+            {t("home.title")}
           </h1>
           <p className="text-muted-foreground">
-            YouTube와 Instagram 동영상을 다운로드하세요
+            {t("home.subtitle")}
           </p>
         </div>
 
@@ -187,7 +187,7 @@ export default function Home() {
             {/* Platform Selection */}
             <div className="space-y-3">
               <label className="text-sm font-medium text-foreground">
-                플랫폼 선택
+                {t("home.platform.select")}
               </label>
               <RadioGroup
                 value={platform}
@@ -201,7 +201,7 @@ export default function Home() {
                     className="flex cursor-pointer items-center gap-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     <Youtube className="h-4 w-4" />
-                    YouTube
+                    {t("home.platform.youtube")}
                   </label>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -211,7 +211,7 @@ export default function Home() {
                     className="flex cursor-pointer items-center gap-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     <Instagram className="h-4 w-4" />
-                    Instagram
+                    {t("home.platform.instagram")}
                   </label>
                 </div>
               </RadioGroup>
@@ -223,15 +223,15 @@ export default function Home() {
                 htmlFor="url"
                 className="text-sm font-medium text-foreground"
               >
-                동영상 URL
+                {t("home.videoUrl.label")}
               </label>
               <Input
                 id="url"
                 type="url"
                 placeholder={
                   platform === "youtube"
-                    ? "https://www.youtube.com/watch?v=..."
-                    : "https://www.instagram.com/p/..."
+                    ? t("home.videoUrl.placeholder.youtube")
+                    : t("home.videoUrl.placeholder.instagram")
                 }
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
@@ -254,12 +254,12 @@ export default function Home() {
               {isLoading ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  다운로드 중...
+                  {t("home.download.downloading")}
                 </>
               ) : (
                 <>
                   <Download className="h-4 w-4" />
-                  다운로드
+                  {t("home.download.button")}
                 </>
               )}
             </Button>
@@ -269,3 +269,4 @@ export default function Home() {
     </div>
   );
 }
+

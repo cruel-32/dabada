@@ -1,0 +1,46 @@
+{
+  "common": {
+    "signIn": "로그인",
+    "signOut": "로그아웃",
+    "user": "사용자"
+  },
+  "home": {
+    "title": "DABADA",
+    "subtitle": "YouTube와 Instagram 동영상을 다운로드하세요",
+    "platform": {
+      "select": "플랫폼 선택",
+      "youtube": "YouTube",
+      "instagram": "Instagram"
+    },
+    "videoUrl": {
+      "label": "동영상 URL",
+      "placeholder": {
+        "youtube": "https://www.youtube.com/watch?v=...",
+        "instagram": "https://www.instagram.com/p/..."
+      }
+    },
+    "download": {
+      "button": "다운로드",
+      "downloading": "다운로드 중...",
+      "urlRequired": "URL을 입력해주세요.",
+      "loginRequired": "로그인이 필요합니다."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "로그인",
+      "description": "Google 또는 Apple 계정으로 로그인하세요",
+      "google": "Google로 로그인",
+      "apple": "Apple로 로그인",
+      "googleError": "Google 로그인에 실패했습니다.",
+      "appleError": "Apple 로그인에 실패했습니다."
+    }
+  },
+  "theme": {
+    "toggle": "테마 변경",
+    "light": "라이트",
+    "dark": "다크",
+    "system": "시스템"
+  }
+}
+

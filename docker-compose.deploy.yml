@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: dabada-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - dabada-network
+
+  app:
+    # GitHub Actions에서 이미지를 빌드하여 GHCR에 푸시한 후 사용
+    # 실제 배포 시에는 이미지 주소가 변경될 수 있으므로 환경변수로 처리하거나 고정
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER_LOWERCASE}/${GITHUB_REPOSITORY_NAME_LOWERCASE}:latest
+    container_name: dabada-app
+    restart: unless-stopped
+    ports:
+      - "3030:3030"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - PORT=3030
+    volumes:
+      - ./downloads:/app/downloads
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - dabada-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  dabada-network:
+    driver: bridge
