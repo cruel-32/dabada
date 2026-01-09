@@ -25,9 +25,6 @@ jobs:
             # Pull the latest changes
             git pull origin master
             
-            # Build the backend service image
-            docker compose build backend
-            
-            # Restart the backend service
-            docker compose up -d --no-deps dabada-app
+            # Restart the services using production config
+            docker compose -f docker-compose.prod.yml up -d --build
 
