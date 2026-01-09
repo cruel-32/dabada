@@ -29,5 +29,5 @@ jobs:
             docker compose build backend
             
             # Restart the backend service
-            docker compose up -d --no-deps backend
+            docker compose up -d --no-deps dabada-app
 
