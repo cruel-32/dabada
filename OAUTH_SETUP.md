@@ -177,12 +177,12 @@ MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg...
 
 ```env
 # Database
-DB_HOST=postgres
+DB_HOST=dabada-postgres
 DB_PORT=5432
 DB_USER=dabada
 DB_PASSWORD=dabada_password
 DB_NAME=dabada_db
-DATABASE_URL=postgresql://dabada:dabada_password@postgres:5432/dabada_db
+DATABASE_URL=postgresql://dabada:dabada_password@dabada-postgres:5432/dabada_db
 
 # Better Auth
 AUTH_SECRET=your-secret-key-here-generate-with-openssl-rand-base64-32

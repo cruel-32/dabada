@@ -24,7 +24,14 @@ export function LanguageSelector() {
   const pathname = usePathname();
 
   const handleLanguageChange = (newLocale: Locale) => {
-    router.push(`/${newLocale}${pathname}`);
+    const segments = pathname.split('/');
+    if (segments.length > 1 && locales.includes(segments[1] as Locale)) {
+        segments[1] = newLocale;
+        router.push(segments.join('/'));
+    } else {
+        // Fallback or handle cases where locale might not be in path (though middleware ensures it usually)
+         router.push(`/${newLocale}${pathname}`);
+    }
   };
 
   return (
