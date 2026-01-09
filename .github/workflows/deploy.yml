@@ -1,0 +1,33 @@
+name: Deploy to a personal server
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            # Navigate to the project directory
+            cd ~/dabada
+            
+            # Pull the latest changes
+            git pull origin master
+            
+            # Build the backend service image
+            docker compose build backend
+            
+            # Restart the backend service
+            docker compose up -d --no-deps backend
+
