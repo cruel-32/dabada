@@ -37,6 +37,7 @@ services:
       - DATABASE_URL=postgresql://${DB_USER:-dabada}:${DB_PASSWORD:-dabada_password}@postgres:5432/${DB_NAME:-dabada_db}
       - AUTH_SECRET=${AUTH_SECRET}
       - AUTH_URL=${AUTH_URL:-http://localhost:3030}
+      - NEXT_PUBLIC_AUTH_URL=${AUTH_URL:-http://localhost:3030}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - APPLE_ID=${APPLE_ID}
