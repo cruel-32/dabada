@@ -60,7 +60,7 @@ services:
         pnpm start
       "
     depends_on:
-      postgres:
+      dabada-postgres:
         condition: service_healthy
     networks:
       - dabada-network

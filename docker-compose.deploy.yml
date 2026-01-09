@@ -38,7 +38,7 @@ services:
       - ./downloads:/app/downloads
       - ./logs:/app/logs
     depends_on:
-      postgres:
+      dabada-postgres:
         condition: service_healthy
     networks:
       - dabada-network
