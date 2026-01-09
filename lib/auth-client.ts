@@ -6,7 +6,7 @@ export const authClient = createAuthClient({
   baseURL:
     typeof window === "undefined"
       ? process.env.NEXT_PUBLIC_AUTH_URL || "http://localhost:3030"
-      : "/api/auth",
+      : window.location.origin + "/api/auth",
 });
 
 export const { signIn, signOut, useSession } = authClient;
