@@ -62,7 +62,7 @@ services:
         pnpm dev
       "
     depends_on:
-      postgres:
+      dabada-postgres:
         condition: service_healthy
     networks:
       - dabada-network
