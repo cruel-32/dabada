@@ -1,5 +1,5 @@
 services:
-  postgres:
+  dabada-postgres:
     image: postgres:17-alpine
     container_name: dabada-db
     restart: unless-stopped
@@ -20,7 +20,7 @@ services:
     networks:
       - dabada-network
 
-  app:
+  dabada-app:
     image: node:24-alpine
     container_name: dabada-app
     restart: unless-stopped
@@ -67,7 +67,7 @@ services:
     networks:
       - dabada-network
 
-  drizzle-studio:
+  dabada-drizzle-studio:
     image: node:24-alpine
     container_name: dabada-drizzle-studio
     restart: unless-stopped
