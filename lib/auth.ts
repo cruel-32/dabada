@@ -24,10 +24,13 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
     apple: {
-      clientId: process.env.APPLE_ID!,
-      teamId: process.env.APPLE_TEAM_ID!,
-      keyId: process.env.APPLE_KEY_ID!,
-      privateKey: process.env.APPLE_PRIVATE_KEY!,
+      clientId: process.env.APPLE_ID as string, 
+      clientSecret: process.env.APPLE_CLIENT_SECRET as string, 
+
+      // clientId: process.env.APPLE_ID!,
+      // teamId: process.env.APPLE_TEAM_ID!,
+      // keyId: process.env.APPLE_KEY_ID!,
+      // privateKey: process.env.APPLE_PRIVATE_KEY?.replace(/\\n/g, '\n') || '',
     },
   },
   baseURL: process.env.AUTH_URL || "http://localhost:3030",
