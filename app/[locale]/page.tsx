@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -16,18 +16,48 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSelector } from "@/components/language-selector";
 import { authClient } from "@/lib/auth-client";
-import { Download, Youtube, Instagram, LogIn, LogOut, User } from "lucide-react";
+import { Download, Youtube, Instagram, LogIn, LogOut, User, Clock, AlertCircle } from "lucide-react";
+import { useDownload } from "@/hooks/use-download";
 
 type Platform = "youtube" | "instagram";
+
+/**
+ * 쿨다운 시간을 포맷팅 (예: "3분 24초")
+ */
+function formatCooldownTime(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  
+  if (minutes > 0) {
+    return `${minutes}분 ${remainingSeconds}초`;
+  }
+  return `${remainingSeconds}초`;
+}
 
 export default function Home() {
   const t = useTranslations();
   const locale = useLocale();
   const [platform, setPlatform] = useState<Platform>("youtube");
   const [url, setUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const { data: session, isPending } = authClient.useSession();
+  const {
+    status,
+    error,
+    remainingCooldownSeconds,
+    download,
+    reset,
+  } = useDownload();
+
+  // 에러가 발생하면 일정 시간 후 리셋
+  useEffect(() => {
+    if (status === "error") {
+      const timer = setTimeout(() => {
+        reset();
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [status, reset]);
 
   const handleDownload = async () => {
     if (!url.trim()) {
@@ -40,13 +70,12 @@ export default function Home() {
       return;
     }
 
-    setIsLoading(true);
-    // TODO: API 호출 구현
-    console.log("Download:", platform, url);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    await download(url, platform);
   };
+
+  const isLoading = status === "checking" || status === "downloading";
+  const isCooldown = status === "cooldown";
+  const isError = status === "error";
 
   const handleOAuthLogin = async (provider: "google" | "apple") => {
     try {
@@ -244,17 +273,48 @@ export default function Home() {
               />
             </div>
 
+            {/* Error Message */}
+            {isError && error && (
+              <div className="flex items-center gap-2 rounded-md border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
+                <AlertCircle className="h-4 w-4" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {/* Cooldown Message */}
+            {isCooldown && remainingCooldownSeconds > 0 && (
+              <div className="flex items-center gap-2 rounded-md border bg-muted p-3 text-sm text-muted-foreground">
+                <Clock className="h-4 w-4" />
+                <span>
+                  {t("home.download.cooldown", {
+                    time: formatCooldownTime(remainingCooldownSeconds),
+                  })}
+                </span>
+              </div>
+            )}
+
             {/* Download Button */}
             <Button
               onClick={handleDownload}
-              disabled={isLoading || !url.trim()}
+              disabled={
+                isLoading ||
+                !url.trim() ||
+                isCooldown
+              }
               className="w-full"
               size="lg"
             >
               {isLoading ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  {t("home.download.downloading")}
+                  {status === "checking"
+                    ? t("home.download.checking")
+                    : t("home.download.downloading")}
+                </>
+              ) : isCooldown ? (
+                <>
+                  <Clock className="h-4 w-4" />
+                  {t("home.download.cooldownButton")}
                 </>
               ) : (
                 <>

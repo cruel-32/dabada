@@ -22,8 +22,11 @@
     "download": {
       "button": "Download",
       "downloading": "Downloading...",
+      "checking": "Checking...",
       "urlRequired": "Please enter a URL.",
-      "loginRequired": "Login is required."
+      "loginRequired": "Login is required.",
+      "cooldown": "Next download available in: {time}",
+      "cooldownButton": "On cooldown..."
     }
   },
   "auth": {

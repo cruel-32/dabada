@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, bigint, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, integer, bigint, boolean, index, date } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Better Auth required tables
@@ -63,8 +63,11 @@ export const videos = pgTable('videos', {
   userId: text('userId')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
+  downloadDate: date('downloadDate').notNull().defaultNow(),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
-});
+}, (table) => ({
+  urlDateIdx: index('videos_url_date_idx').on(table.url, table.downloadDate),
+}));
 
 export const downloadLogs = pgTable('download_logs', {
   id: text('id').primaryKey(),
@@ -74,7 +77,9 @@ export const downloadLogs = pgTable('download_logs', {
   videoId: text('videoId')
     .references(() => videos.id, { onDelete: 'set null' }),
   downloadedAt: timestamp('downloadedAt').notNull().defaultNow(),
-});
+}, (table) => ({
+  userIdDownloadedAtIdx: index('download_logs_user_id_downloaded_at_idx').on(table.userId, table.downloadedAt),
+}));
 
 // Relations
 export const userRelations = relations(user, ({ many }) => ({

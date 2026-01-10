@@ -22,8 +22,11 @@
     "download": {
       "button": "다운로드",
       "downloading": "다운로드 중...",
+      "checking": "확인 중...",
       "urlRequired": "URL을 입력해주세요.",
-      "loginRequired": "로그인이 필요합니다."
+      "loginRequired": "로그인이 필요합니다.",
+      "cooldown": "다음 다운로드 가능 시간: {time}",
+      "cooldownButton": "쿨다운 중..."
     }
   },
   "auth": {
