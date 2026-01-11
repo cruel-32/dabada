@@ -73,7 +73,6 @@ export default function Home() {
     await download(url, platform);
   };
 
-  const isLoading = status === "checking" || status === "downloading";
   const isCooldown = status === "cooldown";
   const isError = status === "error";
 
@@ -299,14 +298,14 @@ export default function Home() {
             <Button
               onClick={handleDownload}
               disabled={
-                isLoading ||
+                status === "checking" || status === "downloading" ||
                 !url.trim() ||
                 isCooldown
               }
               className="w-full"
               size="lg"
             >
-              {isLoading ? (
+              {(status === "checking" || status === "downloading" ) ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                   {status === "checking"
