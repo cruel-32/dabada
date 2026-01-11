@@ -298,19 +298,17 @@ export default function Home() {
             <Button
               onClick={handleDownload}
               disabled={
-                status === "checking" || status === "downloading" ||
+                status === "checking" ||
                 !url.trim() ||
                 isCooldown
               }
               className="w-full"
               size="lg"
             >
-              {(status === "checking" || status === "downloading" ) ? (
+              {status === "checking" ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  {status === "checking"
-                    ? t("home.download.checking")
-                    : t("home.download.downloading")}
+                  {t("home.download.checking")}
                 </>
               ) : isCooldown ? (
                 <>

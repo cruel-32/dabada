@@ -22,7 +22,7 @@
     "download": {
       "button": "Download",
       "downloading": "Downloading...",
-      "checking": "Checking...",
+      "checking": "Checking and Downloading...",
       "urlRequired": "Please enter a URL.",
       "loginRequired": "Login is required.",
       "cooldownMessage": "Next download available in: {time}",

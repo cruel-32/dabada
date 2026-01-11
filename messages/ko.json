@@ -22,7 +22,7 @@
     "download": {
       "button": "다운로드",
       "downloading": "다운로드 중...",
-      "checking": "확인 중...",
+      "checking": "확인 및 다운로드 중...",
       "urlRequired": "URL을 입력해주세요.",
       "loginRequired": "로그인이 필요합니다.",
       "cooldownMessage": "다음 쿨타임까지: {time}",

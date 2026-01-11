@@ -110,26 +110,16 @@ export function useDownload(): UseDownloadReturn {
 
         // 다운로드 성공
         if (response.downloadUrl) {
-          setStatus("downloading");
-          
           // 파일 다운로드 트리거
           triggerFileDownload(response.downloadUrl);
 
-          // 다운로드 로그 기록을 위해 쿨다운 시작
-          // 실제로는 서버에서 이미 기록했지만, 클라이언트에서도 쿨다운 시작
+          // 쿨다운 시작
           const now = new Date();
           const newCooldownUntil = new Date(
             now.getTime() + DOWNLOAD_COOLDOWN_SECONDS * 1000
           );
           setCooldownUntil(newCooldownUntil);
           setStatus("cooldown");
-
-          // 다운로드 완료 후 ready 상태로 변경 (짧은 시간)
-          setTimeout(() => {
-            if (status !== "cooldown") {
-              setStatus("ready");
-            }
-          }, 1000);
         } else {
           setError("Download URL not provided");
           setStatus("error");
