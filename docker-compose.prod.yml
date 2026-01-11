@@ -51,6 +51,14 @@ services:
     volumes:
       - ./downloads:/app/downloads
       - ./logs:/app/logs
+    user: root
+    command: >
+      sh -c "
+        npm install -g pnpm &&
+        pnpm add -D drizzle-kit &&
+        npx drizzle-kit push --force &&
+        node server.js
+      "
     depends_on:
       dabada-postgres:
         condition: service_healthy
