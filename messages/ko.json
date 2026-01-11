@@ -8,7 +8,7 @@
     "title": "DABADA",
     "subtitle": "YouTube와 Instagram 동영상을 다운로드하세요",
     "platform": {
-      "select": "플랫폼",
+      "select": "플랫폼 선택",
       "youtube": "YouTube",
       "instagram": "Instagram"
     },
