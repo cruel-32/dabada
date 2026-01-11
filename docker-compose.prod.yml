@@ -21,10 +21,12 @@ services:
       - dabada-network
 
   dabada-app:
-    image: node:20-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dabada-app:prod
     container_name: dabada-app
     restart: unless-stopped
-    working_dir: /app
     ports:
       - "3030:3030"
     environment:
@@ -47,19 +49,8 @@ services:
       - DOWNLOAD_COOLDOWN_SECONDS=${DOWNLOAD_COOLDOWN_SECONDS:-300}
       - PORT=3030
     volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/.next
       - ./downloads:/app/downloads
       - ./logs:/app/logs
-    command: >
-      sh -c "
-        npm install -g pnpm &&
-        pnpm install &&
-        pnpm build &&
-        pnpm db:push &&
-        pnpm start
-      "
     depends_on:
       dabada-postgres:
         condition: service_healthy
@@ -79,4 +70,3 @@ volumes:
 networks:
   dabada-network:
     driver: bridge
-
