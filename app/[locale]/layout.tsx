@@ -18,8 +18,50 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DABADA - Video Downloader",
-  description: "Download videos from YouTube and Instagram",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://dabada.io"),
+  title: {
+    default: "DABADA - Video Downloader",
+    template: "%s | DABADA",
+  },
+  description: "Download videos from YouTube and Instagram easily and quickly. High quality video downloader.",
+  keywords: ["video downloader", "youtube downloader", "instagram downloader", "mp4", "download video", "dabada"],
+  authors: [{ name: "DABADA Team" }],
+  creator: "DABADA",
+  publisher: "DABADA",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    title: "DABADA - Video Downloader",
+    description: "Download videos from YouTube and Instagram easily and quickly.",
+    siteName: "DABADA",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "DABADA Video Downloader",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DABADA - Video Downloader",
+    description: "Download videos from YouTube and Instagram easily and quickly.",
+    images: ["/opengraph-image"],
+    creator: "@dabada",
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export function generateStaticParams() {
@@ -41,11 +83,30 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "DABADA",
+    "url": process.env.NEXT_PUBLIC_APP_URL || "https://dabada.io",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${process.env.NEXT_PUBLIC_APP_URL || "https://dabada.io"}/search?q={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
             attribute="class"

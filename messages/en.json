@@ -25,8 +25,8 @@
       "checking": "Checking...",
       "urlRequired": "Please enter a URL.",
       "loginRequired": "Login is required.",
-      "cooldown": "Next download available in: {time}",
-      "cooldownButton": "On cooldown..."
+      "cooldownMessage": "Next download available in: {time}",
+      "cooldownButtonText": "Cooldown: {time} left"
     }
   },
   "auth": {

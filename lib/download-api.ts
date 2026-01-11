@@ -1,3 +1,28 @@
+export interface CooldownStatus {
+  authenticated: boolean;
+  cooldownUntil: string | null;
+  error?: string;
+}
+
+/**
+ * 쿨다운 상태 확인
+ */
+export async function checkCooldown(): Promise<CooldownStatus> {
+  try {
+    const response = await fetch("/api/download/status");
+    if (!response.ok) {
+        if (response.status === 401) {
+            return { authenticated: false, cooldownUntil: null };
+        }
+        throw new Error("Failed to check cooldown status");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to check cooldown:", error);
+    return { authenticated: false, cooldownUntil: null, error: "Network error" };
+  }
+}
+
 export interface DownloadResponse {
   success: boolean;
   videoId?: string;

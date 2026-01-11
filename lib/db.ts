@@ -12,22 +12,13 @@ const client = postgres(connectionString);
 export const db = drizzle(client, { schema });
 
 /**
- * 오늘 날짜로 해당 URL의 비디오가 있는지 조회
+ * URL로 비디오 조회 (정규화된 URL 사용)
  */
-export async function findVideoByUrlToday(url: string) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD 형식
-
+export async function findVideoByUrl(url: string) {
   const result = await db
     .select()
     .from(videos)
-    .where(
-      and(
-        eq(videos.url, url),
-        eq(videos.downloadDate, todayStr)
-      )
-    )
+    .where(eq(videos.url, url))
     .limit(1);
 
   return result[0] || null;
@@ -52,7 +43,7 @@ export async function getLastDownloadTime(userId: string) {
  */
 export async function createVideoRecord(data: {
   id: string;
-  url: string;
+  url: string; // This will now store the normalized URL
   platform: "youtube" | "instagram";
   filePath: string;
   fileSize: number;
@@ -100,4 +91,22 @@ export async function findVideoById(id: string) {
     .limit(1);
 
   return result[0] || null;
+}
+
+/**
+ * 다운로드 권한 확인 (로그 존재 여부)
+ */
+export async function checkDownloadPermission(userId: string, videoId: string) {
+  const result = await db
+    .select()
+    .from(downloadLogs)
+    .where(
+      and(
+        eq(downloadLogs.userId, userId),
+        eq(downloadLogs.videoId, videoId)
+      )
+    )
+    .limit(1);
+
+  return result.length > 0;
 }

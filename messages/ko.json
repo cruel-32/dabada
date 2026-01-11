@@ -25,8 +25,8 @@
       "checking": "확인 중...",
       "urlRequired": "URL을 입력해주세요.",
       "loginRequired": "로그인이 필요합니다.",
-      "cooldown": "다음 다운로드 가능 시간: {time}",
-      "cooldownButton": "쿨다운 중..."
+      "cooldownMessage": "다음 쿨타임까지: {time}",
+      "cooldownButtonText": "쿨타임이 {time} 남았습니다"
     }
   },
   "auth": {

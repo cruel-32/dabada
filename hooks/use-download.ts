@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { requestDownload, triggerFileDownload, DownloadResponse } from "@/lib/download-api";
+import { requestDownload, triggerFileDownload, checkCooldown, DownloadResponse } from "@/lib/download-api";
+import { DOWNLOAD_COOLDOWN_SECONDS } from "@/lib/config";
 
 export type DownloadStatus =
   | "idle"
@@ -20,8 +21,6 @@ export interface UseDownloadReturn {
   reset: () => void;
 }
 
-const COOLDOWN_MINUTES = 5;
-
 /**
  * 다운로드 상태 및 쿨다운 타이머 관리 훅
  */
@@ -30,6 +29,18 @@ export function useDownload(): UseDownloadReturn {
   const [error, setError] = useState<string | null>(null);
   const [cooldownUntil, setCooldownUntil] = useState<Date | null>(null);
   const [remainingCooldownSeconds, setRemainingCooldownSeconds] = useState(0);
+
+  // 초기 로드 시 쿨다운 상태 확인
+  useEffect(() => {
+    const initCooldown = async () => {
+        const status = await checkCooldown();
+        if (status.authenticated && status.cooldownUntil) {
+            setCooldownUntil(new Date(status.cooldownUntil));
+            setStatus("cooldown");
+        }
+    };
+    initCooldown();
+  }, []);
 
   // 쿨다운 타이머 업데이트
   useEffect(() => {
@@ -108,7 +119,7 @@ export function useDownload(): UseDownloadReturn {
           // 실제로는 서버에서 이미 기록했지만, 클라이언트에서도 쿨다운 시작
           const now = new Date();
           const newCooldownUntil = new Date(
-            now.getTime() + COOLDOWN_MINUTES * 60 * 1000
+            now.getTime() + DOWNLOAD_COOLDOWN_SECONDS * 1000
           );
           setCooldownUntil(newCooldownUntil);
           setStatus("cooldown");

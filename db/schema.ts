@@ -56,7 +56,7 @@ export const verification = pgTable('verification', {
 // Video download tables
 export const videos = pgTable('videos', {
   id: text('id').primaryKey(),
-  url: text('url').notNull().unique(),
+  url: text('url').notNull().unique(), // Raw URL (no unique constraint)
   platform: text('platform').notNull(), // 'youtube' | 'instagram'
   filePath: text('filePath').notNull(),
   fileSize: bigint('fileSize', { mode: 'number' }).notNull().default(0),
@@ -66,7 +66,6 @@ export const videos = pgTable('videos', {
   downloadDate: date('downloadDate').notNull().defaultNow(),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
 }, (table) => ({
-  urlDateIdx: index('videos_url_date_idx').on(table.url, table.downloadDate),
 }));
 
 export const downloadLogs = pgTable('download_logs', {

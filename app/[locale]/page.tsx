@@ -105,6 +105,19 @@ export default function Home() {
     }
   };
 
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newUrl = e.target.value;
+    setUrl(newUrl); // Update the URL state
+
+    // Auto-select platform based on URL
+    if (newUrl.includes("youtube.com") || newUrl.includes("youtu.be")) {
+      setPlatform("youtube");
+    } else if (newUrl.includes("instagram.com")) {
+      setPlatform("instagram");
+    }
+    // If neither, keep current platform or reset (current approach keeps current)
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       {/* Header - Top Right */}
@@ -263,7 +276,8 @@ export default function Home() {
                     : t("home.videoUrl.placeholder.instagram")
                 }
                 value={url}
-                onChange={(e) => setUrl(e.target.value)}
+                onChange={handleUrlChange}
+                onClear={() => setUrl("")}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     handleDownload();
@@ -278,18 +292,6 @@ export default function Home() {
               <div className="flex items-center gap-2 rounded-md border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
                 <AlertCircle className="h-4 w-4" />
                 <span>{error}</span>
-              </div>
-            )}
-
-            {/* Cooldown Message */}
-            {isCooldown && remainingCooldownSeconds > 0 && (
-              <div className="flex items-center gap-2 rounded-md border bg-muted p-3 text-sm text-muted-foreground">
-                <Clock className="h-4 w-4" />
-                <span>
-                  {t("home.download.cooldown", {
-                    time: formatCooldownTime(remainingCooldownSeconds),
-                  })}
-                </span>
               </div>
             )}
 
@@ -314,7 +316,9 @@ export default function Home() {
               ) : isCooldown ? (
                 <>
                   <Clock className="h-4 w-4" />
-                  {t("home.download.cooldownButton")}
+                  {t("home.download.cooldownButtonText", {
+                    time: formatCooldownTime(remainingCooldownSeconds),
+                  })}
                 </>
               ) : (
                 <>

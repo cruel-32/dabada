@@ -2,20 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { nanoid } from "nanoid";
 import {
-  findVideoByUrlToday,
+  findVideoByUrl,
   getLastDownloadTime,
   createVideoRecord,
   createDownloadLog,
 } from "@/lib/db";
 import { downloadVideo, getRelativeFilePath } from "@/lib/download-service";
-
-const COOLDOWN_MINUTES = 5;
+import { normalizeUrl } from "@/lib/utils";
+import { DOWNLOAD_COOLDOWN_SECONDS } from "@/lib/config";
 
 /**
- * 분을 밀리초로 변환
+ * 시간을 밀리초로 변환하여 더함
  */
-function addMinutes(date: Date, minutes: number): Date {
-  return new Date(date.getTime() + minutes * 60 * 1000);
+function addSeconds(date: Date, seconds: number): Date {
+  return new Date(date.getTime() + seconds * 1000);
 }
 
 /**
@@ -75,14 +75,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // URL 정규화
+    const normalizedUrl = normalizeUrl(url, platform);
+    console.log("Normalized URL:", normalizedUrl);
+
     // 쿨다운 체크
     const lastDownload = await getLastDownloadTime(userId);
     const now = new Date();
 
     if (lastDownload) {
-      const cooldownUntil = addMinutes(
+      const cooldownUntil = addSeconds(
         lastDownload.downloadedAt,
-        COOLDOWN_MINUTES
+        DOWNLOAD_COOLDOWN_SECONDS
       );
 
       if (now < cooldownUntil) {
@@ -94,8 +98,9 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 오늘 날짜로 해당 URL의 비디오가 있는지 조회
-    let video = await findVideoByUrlToday(url);
+    // 정규화된 URL로 이미 다운로드된 비디오가 있는지 조회
+    let video = await findVideoByUrl(normalizedUrl);
+    console.log("Video found in DB:", video);
 
     if (!video) {
       // 비디오가 없으면 다운로드 진행
@@ -106,7 +111,7 @@ export async function POST(request: NextRequest) {
         // DB에 비디오 레코드 생성
         video = await createVideoRecord({
           id: nanoid(),
-          url,
+          url: normalizedUrl, // Use normalizedUrl for the unique 'url' field
           platform,
           filePath: relativePath,
           fileSize,

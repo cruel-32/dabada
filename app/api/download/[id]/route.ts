@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { findVideoById } from "@/lib/db";
+import { findVideoById, checkDownloadPermission } from "@/lib/db";
 import { getAbsoluteFilePath } from "@/lib/download-service";
 import * as fs from "fs-extra";
 import * as path from "path";
@@ -40,6 +40,15 @@ export async function GET(
       return NextResponse.json(
         { error: "Video not found" },
         { status: 404 }
+      );
+    }
+
+    // 다운로드 권한 확인 (본인이 다운로드한 기록이 있어야 함)
+    const hasPermission = await checkDownloadPermission(session.user.id, video.id);
+    if (!hasPermission) {
+      return NextResponse.json(
+        { error: "Forbidden: You do not have permission to download this file." },
+        { status: 403 }
       );
     }
 
@@ -88,22 +97,26 @@ export async function GET(
 
       return new NextResponse(fileStream as any, {
         status: 206,
-        headers,
+        headers: {
+          "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+          "Accept-Ranges": "bytes",
+          "Content-Length": chunkSize.toString(),
+          "Content-Type": "video/mp4",
+          "Content-Disposition": `attachment; filename="${path.basename(resolvedPath)}"`,
+        },
       });
     }
 
     // 전체 파일 스트리밍
     const fileStream = fs.createReadStream(resolvedPath);
-    const headers = {
-      "Content-Length": fileSize.toString(),
-      "Content-Type": "video/mp4",
-      "Content-Disposition": `attachment; filename="${path.basename(resolvedPath)}"`,
-      "Accept-Ranges": "bytes",
-    };
-
     return new NextResponse(fileStream as any, {
       status: 200,
-      headers,
+      headers: {
+        "Content-Length": fileSize.toString(),
+        "Content-Type": "video/mp4",
+        "Content-Disposition": `attachment; filename="${path.basename(resolvedPath)}"`,
+        "Accept-Ranges": "bytes",
+      },
     });
   } catch (error) {
     console.error("File serving error:", error);
