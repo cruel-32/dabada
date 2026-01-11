@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       instagram: /^(https?:\/\/)?(www\.)?instagram\.com\/.+/,
     };
 
-    if (!urlPatterns[platform].test(url)) {
+    if (!urlPatterns[platform as keyof typeof urlPatterns].test(url)) {
       return NextResponse.json(
         { success: false, error: `Invalid ${platform} URL` },
         { status: 400 }
