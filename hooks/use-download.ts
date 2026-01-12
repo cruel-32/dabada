@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { requestDownload, triggerFileDownload, checkCooldown, DownloadResponse } from "@/lib/download-api";
 import { DOWNLOAD_COOLDOWN_SECONDS } from "@/lib/config";
+import { authClient } from "@/lib/auth-client"; // Add this import
 
 export type DownloadStatus =
   | "idle"
@@ -29,6 +30,9 @@ export function useDownload(): UseDownloadReturn {
   const [error, setError] = useState<string | null>(null);
   const [cooldownUntil, setCooldownUntil] = useState<Date | null>(null);
   const [remainingCooldownSeconds, setRemainingCooldownSeconds] = useState(0);
+
+  // Get session data
+  const { data: session } = authClient.useSession();
 
   // 초기 로드 시 쿨다운 상태 확인
   useEffect(() => {
@@ -83,7 +87,7 @@ export function useDownload(): UseDownloadReturn {
    */
   const download = useCallback(
     async (url: string, platform: "youtube" | "instagram") => {
-      // 쿨다운 중이면 요청하지 않음
+      // 쿨다운 중이면 요청하지 않음 (이 로직은 admin도 동일하게 적용)
       if (cooldownUntil && new Date() < cooldownUntil) {
         return;
       }
@@ -113,13 +117,19 @@ export function useDownload(): UseDownloadReturn {
           // 파일 다운로드 트리거
           triggerFileDownload(response.downloadUrl);
 
-          // 쿨다운 시작
-          const now = new Date();
-          const newCooldownUntil = new Date(
-            now.getTime() + DOWNLOAD_COOLDOWN_SECONDS * 1000
-          );
-          setCooldownUntil(newCooldownUntil);
-          setStatus("cooldown");
+          // Admin이 아닌 경우에만 쿨다운 시작
+          if (session?.user?.role !== "admin") {
+            const now = new Date();
+            const newCooldownUntil = new Date(
+              now.getTime() + DOWNLOAD_COOLDOWN_SECONDS * 1000
+            );
+            setCooldownUntil(newCooldownUntil);
+            setStatus("cooldown");
+          } else {
+            // Admin인 경우, 쿨다운 타이머를 리셋하고 'idle' 상태로 유지
+            setCooldownUntil(null);
+            setStatus("idle");
+          }
         } else {
           setError("Download URL not provided");
           setStatus("error");
@@ -129,7 +139,7 @@ export function useDownload(): UseDownloadReturn {
         setStatus("error");
       }
     },
-    [cooldownUntil, status]
+    [cooldownUntil, status, session] // session 의존성 추가
   );
 
   /**
