@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { findVideoById, checkDownloadPermission } from "@/lib/db";
+import { findVideoById } from "@/lib/db";
 import { getAbsoluteFilePath } from "@/lib/download-service";
 import * as fs from "fs-extra";
 import * as path from "path";
@@ -43,16 +43,6 @@ export async function GET(
       );
     }
 
-    // 다운로드 권한 확인 (본인이 다운로드한 기록이 있어야 함)
-    const hasPermission = await checkDownloadPermission(session.user.id, video.id);
-    if (!hasPermission) {
-      return NextResponse.json(
-        { error: "Forbidden: You do not have permission to download this file." },
-        { status: 403 }
-      );
-    }
-
-    // 파일 경로 검증 (경로 트래버설 방지)
     const absolutePath = getAbsoluteFilePath(video.filePath);
     const projectRoot = process.cwd();
     const resolvedPath = path.resolve(projectRoot, absolutePath);

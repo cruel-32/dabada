@@ -105,21 +105,3 @@ export async function findVideoById(id: string) {
 
   return result[0] || null;
 }
-
-/**
- * 다운로드 권한 확인 (로그 존재 여부)
- */
-export async function checkDownloadPermission(userId: string, videoId: string) {
-  const result = await db
-    .select()
-    .from(downloadLogs)
-    .where(
-      and(
-        eq(downloadLogs.userId, userId),
-        eq(downloadLogs.videoId, videoId)
-      )
-    )
-    .limit(1);
-
-  return result.length > 0;
-}
