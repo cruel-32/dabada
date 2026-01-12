@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
-import { videos, downloadLogs } from "@/db/schema";
+import { videos, downloadLogs, user } from "@/db/schema";
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -10,6 +10,19 @@ const connectionString =
 
 const client = postgres(connectionString);
 export const db = drizzle(client, { schema });
+
+/**
+ * 사용자 역할 조회
+ */
+export async function getUserRole(userId: string) {
+  const result = await db
+    .select({ role: user.role })
+    .from(user)
+    .where(eq(user.id, userId))
+    .limit(1);
+
+  return result[0]?.role || 'user';
+}
 
 /**
  * URL로 비디오 조회 (정규화된 URL 사용)

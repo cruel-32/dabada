@@ -6,6 +6,7 @@ import {
   getLastDownloadTime,
   createVideoRecord,
   createDownloadLog,
+  getUserRole,
 } from "@/lib/db";
 import { downloadVideo, getRelativeFilePath } from "@/lib/download-service";
 import { normalizeUrl } from "@/lib/utils";
@@ -80,21 +81,24 @@ export async function POST(request: NextRequest) {
     console.log("Normalized URL:", normalizedUrl);
 
     // 쿨다운 체크
-    const lastDownload = await getLastDownloadTime(userId);
-    const now = new Date();
+    const role = await getUserRole(userId);
+    if (role !== "admin") {
+      const lastDownload = await getLastDownloadTime(userId);
+      const now = new Date();
 
-    if (lastDownload) {
-      const cooldownUntil = addSeconds(
-        lastDownload.downloadedAt,
-        DOWNLOAD_COOLDOWN_SECONDS
-      );
+      if (lastDownload) {
+        const cooldownUntil = addSeconds(
+          lastDownload.downloadedAt,
+          DOWNLOAD_COOLDOWN_SECONDS
+        );
 
-      if (now < cooldownUntil) {
-        return NextResponse.json({
-          success: false,
-          cooldownUntil: cooldownUntil.toISOString(),
-          error: "Cooldown period active",
-        });
+        if (now < cooldownUntil) {
+          return NextResponse.json({
+            success: false,
+            cooldownUntil: cooldownUntil.toISOString(),
+            error: "Cooldown period active",
+          });
+        }
       }
     }
 

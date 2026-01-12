@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { getLastDownloadTime } from "@/lib/db";
+import { getLastDownloadTime, getUserRole } from "@/lib/db";
 import { DOWNLOAD_COOLDOWN_SECONDS } from "@/lib/config";
 
 function addSeconds(date: Date, seconds: number): Date {
@@ -26,14 +26,18 @@ export async function GET(request: NextRequest) {
     }
 
     const userId = session.user.id;
-    const lastDownload = await getLastDownloadTime(userId);
-    const now = new Date();
+    const role = await getUserRole(userId);
     let cooldownUntil: string | null = null;
 
-    if (lastDownload) {
-      const cooldownEnd = addSeconds(lastDownload.downloadedAt, DOWNLOAD_COOLDOWN_SECONDS);
-      if (now < cooldownEnd) {
-        cooldownUntil = cooldownEnd.toISOString();
+    if (role !== "admin") {
+      const lastDownload = await getLastDownloadTime(userId);
+      const now = new Date();
+
+      if (lastDownload) {
+        const cooldownEnd = addSeconds(lastDownload.downloadedAt, DOWNLOAD_COOLDOWN_SECONDS);
+        if (now < cooldownEnd) {
+          cooldownUntil = cooldownEnd.toISOString();
+        }
       }
     }
 
