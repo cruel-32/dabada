@@ -3,7 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { requestDownload, triggerFileDownload, checkCooldown, DownloadResponse } from "@/lib/download-api";
 import { DOWNLOAD_COOLDOWN_SECONDS } from "@/lib/config";
-import { authClient } from "@/lib/auth-client"; // Add this import
+import { authClient } from "@/lib/auth-client";
+import { Capacitor } from "@capacitor/core";
+import { Filesystem, Directory } from "@capacitor/filesystem";
+import { Media } from "@capacitor-community/media";
 
 export type DownloadStatus =
   | "idle"
@@ -114,8 +117,57 @@ export function useDownload(): UseDownloadReturn {
 
         // 다운로드 성공
         if (response.downloadUrl) {
-          // 파일 다운로드 트리거
-          triggerFileDownload(response.downloadUrl);
+          if (Capacitor.isNativePlatform()) {
+            try {
+              setStatus("downloading");
+              
+              // 1. Fetch file content
+              const res = await fetch(response.downloadUrl);
+              const blob = await res.blob();
+              
+              // 2. Convert to base64
+              const base64Data = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  const base64 = reader.result as string;
+                  // Remove data URL prefix (e.g., "data:video/mp4;base64,")
+                  const base64Content = base64.split(',')[1] || base64;
+                  resolve(base64Content);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+              });
+
+              // 3. Write to temp file
+              const fileName = `download_${Date.now()}.mp4`;
+              const savedFile = await Filesystem.writeFile({
+                path: fileName,
+                data: base64Data,
+                directory: Directory.Cache,
+              });
+
+              // 4. Save to gallery
+              await Media.saveVideo({
+                path: savedFile.uri,
+              });
+
+              // 5. Cleanup temp file
+              await Filesystem.deleteFile({
+                path: fileName,
+                directory: Directory.Cache
+              });
+
+              alert("Video saved to gallery!");
+            } catch (nativeError) {
+              console.error("Native download failed:", nativeError);
+              setError("Failed to save video to gallery. Please check permissions.");
+              setStatus("error");
+              return;
+            }
+          } else {
+            // Web environment
+            triggerFileDownload(response.downloadUrl);
+          }
 
           // Admin이 아닌 경우에만 쿨다운 시작
           if (session?.user?.role !== "admin") {
@@ -139,7 +191,7 @@ export function useDownload(): UseDownloadReturn {
         setStatus("error");
       }
     },
-    [cooldownUntil, status, session] // session 의존성 추가
+    [cooldownUntil, status, session]
   );
 
   /**
