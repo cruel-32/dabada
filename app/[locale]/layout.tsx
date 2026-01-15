@@ -55,7 +55,7 @@ export async function generateMetadata({
   const current = metadata[locale as keyof typeof metadata] || metadata.en;
 
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://dabada.io"),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://dabada.cloudish.cloud"),
     title: {
       default: current.title,
       template: "%s | DABADA",
@@ -133,12 +133,12 @@ export default async function LocaleLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "DABADA",
-    "url": process.env.NEXT_PUBLIC_APP_URL || "https://dabada.io",
+    "url": process.env.NEXT_PUBLIC_APP_URL || "https://dabada.cloudish.cloud",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": `${process.env.NEXT_PUBLIC_APP_URL || "https://dabada.io"}/search?q={search_term_string}`
+        "urlTemplate": `${process.env.NEXT_PUBLIC_APP_URL || "https://dabada.cloudish.cloud"}/${locale}`
       },
       "query-input": "required name=search_term_string"
     }

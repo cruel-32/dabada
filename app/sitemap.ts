@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://dabada.io';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://dabada.cloudish.cloud';
   
   // Supported locales
   const locales = ['en', 'ko'];
