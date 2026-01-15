@@ -47,5 +47,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>We need access to your photo library to save downloaded videos.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photo library to save downloaded videos.</string>
 </dict>
 </plist>
