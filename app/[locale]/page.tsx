@@ -13,6 +13,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSelector } from "@/components/language-selector";
 import { authClient } from "@/lib/auth-client";
@@ -120,44 +126,53 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       {/* Header - Top Right */}
-      <div className="fixed top-4 right-4 flex items-center gap-3">
+      <div className="fixed top-4 right-4 flex items-center gap-2">
         {isPending ? (
-          <div className="h-9 w-20 animate-pulse rounded-md bg-muted" />
+          <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
         ) : session?.user ? (
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 rounded-md border bg-card px-3 py-2">
-              {session.user.image ? (
-                <Image
-                  src={session.user.image}
-                  alt={session.user.name || t("common.user")}
-                  width={24}
-                  height={24}
-                  className="h-6 w-6 rounded-full"
-                />
-              ) : (
-                <User className="h-4 w-4" />
-              )}
-              <span className="text-sm font-medium">
-                {session.user.name || session.user.email}
-              </span>
-            </div>
-            <Button
-              variant="outline"
-              onClick={handleSignOut}
-              className="flex items-center gap-2"
-            >
-              <LogOut className="h-4 w-4" />
-              {t("common.signOut")}
-            </Button>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full h-9 w-9">
+                {session.user.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt={session.user.name || t("common.user")}
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <User className="h-5 w-5" />
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <div className="flex items-center gap-2 p-2">
+                <div className="flex flex-col space-y-1">
+                  {session.user.name && (
+                    <p className="text-sm font-medium leading-none">{session.user.name}</p>
+                  )}
+                  {session.user.email && (
+                    <p className="text-xs text-muted-foreground">
+                      {session.user.email}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-600 cursor-pointer">
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>{t("common.signOut")}</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : (
           <Button
-            variant="outline"
+            variant="ghost"
+            size="icon"
             onClick={() => setIsLoginOpen(true)}
-            className="flex items-center gap-2"
+            className="h-9 w-9"
           >
-            <LogIn className="h-4 w-4" />
-            {t("common.signIn")}
+            <LogIn className="h-5 w-5" />
           </Button>
         )}
         <LanguageSelector />

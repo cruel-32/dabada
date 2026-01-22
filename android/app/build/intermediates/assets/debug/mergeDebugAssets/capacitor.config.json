@@ -1,0 +1,10 @@
+{
+	"appId": "io.dabada.app",
+	"appName": "dabada",
+	"webDir": "public",
+	"server": {
+		"url": "https://dabada.cloudish.cloud",
+		"cleartext": true,
+		"androidScheme": "https"
+	}
+}

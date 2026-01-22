@@ -1,0 +1,29 @@
+{
+	"appId": "io.dabada.app",
+	"appName": "dabada",
+	"webDir": "public",
+	"server": {
+		"url": "http://172.30.1.43:3030",
+		"cleartext": true,
+		"androidScheme": "https"
+	},
+	"plugins": {
+		"SocialLogin": {
+			"google": {
+				"webClientId": "709885664090-7ulu8ec7cpskkg3hv60cms8dg8qirh2t.apps.googleusercontent.com"
+			},
+			"apple": {
+				"clientId": "com.dabada.web",
+				"redirectUrl": "http://172.30.1.43:3030/api/auth/callback/apple"
+			}
+		}
+	},
+	"packageClassList": [
+		"AdMobPlugin",
+		"MediaPlugin",
+		"AppPlugin",
+		"CAPBrowserPlugin",
+		"FilesystemPlugin",
+		"SocialLoginPlugin"
+	]
+}
