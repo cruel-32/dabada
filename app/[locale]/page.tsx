@@ -126,10 +126,26 @@ export default function Home() {
     try {
       if (Capacitor.isNativePlatform()) {
         const callbackURL = "io.dabada.app://home";
-        await authClient.signIn.social({
+        // Capacitor에서는 redirect를 비활성화하고 URL을 직접 받아서 Browser로 열기
+        const response = await authClient.signIn.social({
           provider,
           callbackURL,
+          fetchOptions: {
+            onSuccess: (ctx: { data?: { url?: string; redirect?: boolean } }) => {
+              // redirect plugin이 동작하기 전에 URL을 가로채서 Browser로 열기
+              if (ctx.data?.url && ctx.data?.redirect) {
+                console.log("🔗 Opening OAuth URL in browser:", ctx.data.url);
+                Browser.open({
+                  url: ctx.data.url,
+                  windowName: "_self",
+                });
+                // redirect plugin이 window.location.href를 실행하지 않도록 redirect를 false로 변경
+                ctx.data.redirect = false;
+              }
+            },
+          },
         });
+        console.log("OAuth response:", response);
       } else {
         await authClient.signIn.social({
           provider: provider,
