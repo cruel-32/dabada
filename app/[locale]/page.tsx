@@ -113,7 +113,7 @@ export default function Home() {
       if (Capacitor.isNativePlatform()) {
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3030";
         const callbackURL = "io.dabada.app://home";
-        const authUrl = `${baseUrl}/api/auth/sign-in/social?provider=${provider}&callbackURL=${callbackURL}`;
+        const authUrl = `${baseUrl}/api/auth/social-sign-in?provider=${provider}&callbackURL=${callbackURL}`;
         
         await Browser.open({ 
           url: authUrl,
