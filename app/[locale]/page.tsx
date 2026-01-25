@@ -114,7 +114,7 @@ export default function Home() {
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3030";
         const callbackURL = "io.dabada.app://home";
         // API 엔드포인트를 직접 호출하는 대신, 클라이언트에서 처리를 위임할 브릿지 페이지를 엽니다.
-        const authUrl = `${baseUrl}/${locale}/mobile-login?provider=${provider}&callbackURL=${callbackURL}`;
+        const authUrl = `${baseUrl}/${locale}/mobile-login?provider=${provider}&callbackURL=${encodeURIComponent(callbackURL)}`;
         
         await Browser.open({ 
           url: authUrl,

@@ -50,7 +50,7 @@ export const auth = betterAuth({
     "http://172.19.0.2:3030",
     "capacitor://localhost",
     "http://localhost",
-    "io.dabada.app://",
+    "io.dabada.app://home",
   ],
 });
 
