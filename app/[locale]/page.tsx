@@ -65,6 +65,10 @@ export default function Home() {
       onSuccess: async (callbackURL) => {
         console.log("✅ Capacitor 인증 성공");
         await Browser.close(); // 브라우저 닫기
+        if (callbackURL?.startsWith("io.dabada.app://")) {
+          window.location.href = `/${locale}`;
+          return;
+        }
         if (callbackURL) {
           window.location.href = callbackURL;
         } else {
@@ -74,12 +78,12 @@ export default function Home() {
       onError: async (error) => {
         console.error("❌ Capacitor 인증 실패:", error);
         await Browser.close(); // 에러 시에도 브라우저 닫기
-        alert(`로그인 실패: ${error.message || '알 수 없는 오류'}`);
+        alert(`로그인 실패: ${error.message || "알 수 없는 오류"}`);
       },
     });
 
     return cleanup;
-  }, []);
+  }, [locale]);
 
   // 에러가 발생하면 일정 시간 후 리셋
   useEffect(() => {
@@ -111,14 +115,19 @@ export default function Home() {
   const handleOAuthLogin = async (provider: "google" | "apple") => {
     try {
       if (Capacitor.isNativePlatform()) {
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3030";
         const callbackURL = "io.dabada.app://home";
-        // API 엔드포인트를 직접 호출하는 대신, 클라이언트에서 처리를 위임할 브릿지 페이지를 엽니다.
-        const authUrl = `${baseUrl}/${locale}/mobile-login?provider=${provider}&callbackURL=${encodeURIComponent(callbackURL)}`;
-        
-        await Browser.open({ 
+        const result = (await authClient.signIn.social({
+          provider,
+          callbackURL,
+          redirect: false,
+        })) as { url?: string };
+        const authUrl = result?.url;
+        if (!authUrl) {
+          throw new Error("OAuth URL을 생성하지 못했습니다.");
+        }
+        await Browser.open({
           url: authUrl,
-          windowName: '_self' // iOS에서 세션 공유 등을 위해 필요할 수 있음
+          windowName: "_self", // iOS에서 세션 공유 등을 위해 필요할 수 있음
         });
       } else {
         await authClient.signIn.social({
@@ -285,7 +294,7 @@ export default function Home() {
               </label>
               <RadioGroup
                 value={platform}
-                onValueChange={(value) => setPlatform(value as Platform)}
+                onValueChange={(value: string) => setPlatform(value as Platform)}
                 className="grid grid-cols-2 gap-4"
               >
                 <div className="flex items-center space-x-2">
@@ -330,7 +339,7 @@ export default function Home() {
                 value={url}
                 onChange={handleUrlChange}
                 onClear={() => setUrl("")}
-                onKeyDown={(e) => {
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                   if (e.key === "Enter") {
                     handleDownload();
                   }
