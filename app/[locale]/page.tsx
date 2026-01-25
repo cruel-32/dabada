@@ -62,6 +62,16 @@ export default function Home() {
   useEffect(() => {
     const cleanup = setupBetterAuthCapacitor({
       authClient,
+      onRequest: async (href) => {
+        if (!href) {
+          return;
+        }
+        console.log("🔗 Capacitor OAuth request:", href);
+        await Browser.open({
+          url: href,
+          windowName: "_self", // iOS에서 세션 공유 등을 위해 필요할 수 있음
+        });
+      },
       onSuccess: async (callbackURL) => {
         console.log("✅ Capacitor 인증 성공");
         await Browser.close(); // 브라우저 닫기
@@ -116,18 +126,9 @@ export default function Home() {
     try {
       if (Capacitor.isNativePlatform()) {
         const callbackURL = "io.dabada.app://home";
-        const result = (await authClient.signIn.social({
+        await authClient.signIn.social({
           provider,
           callbackURL,
-          redirect: false,
-        })) as { url?: string };
-        const authUrl = result?.url;
-        if (!authUrl) {
-          throw new Error("OAuth URL을 생성하지 못했습니다.");
-        }
-        await Browser.open({
-          url: authUrl,
-          windowName: "_self", // iOS에서 세션 공유 등을 위해 필요할 수 있음
         });
       } else {
         await authClient.signIn.social({
