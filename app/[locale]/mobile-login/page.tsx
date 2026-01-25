@@ -32,9 +32,13 @@ export default function MobileLoginPage() {
           await authClient.signIn.social({
             provider: provider,
             callbackURL: callbackURL,
-            onError: (ctx) => {
-               console.error("📱 [MobileLogin] Sign-in error:", ctx.error);
-               alert(`로그인 오류: ${ctx.error.message}`);
+            onError: (error: unknown) => {
+               const message =
+                error instanceof Error
+                  ? error.message
+                  : "알 수 없는 오류가 발생했습니다.";
+               console.error("📱 [MobileLogin] Sign-in error:", error);
+               alert(`로그인 오류: ${message}`);
             },
             onSuccess: () => {
                console.log("📱 [MobileLogin] Sign-in success (redirect pending)");
