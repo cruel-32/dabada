@@ -1,4 +1,6 @@
-import { betterAuth } from "better-auth";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error - better-auth has type inference issues with TypeScript 5.9+
+import { betterAuth, type Auth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
@@ -11,7 +13,7 @@ const connectionString =
 const client = postgres(connectionString);
 const db = drizzle(client, { schema });
 
-export const auth = betterAuth({
+export const auth: Auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
