@@ -24,6 +24,9 @@ import { LanguageSelector } from "@/components/language-selector";
 import { authClient } from "@/lib/auth-client";
 import { Download, Youtube, Instagram, LogIn, LogOut, User, Clock, AlertCircle } from "lucide-react";
 import { useDownload } from "@/hooks/use-download";
+import { setupBetterAuthCapacitor } from "@daveyplate/better-auth-capacitor";
+import { Capacitor } from "@capacitor/core";
+import { Browser } from "@capacitor/browser";
 
 type Platform = "youtube" | "instagram";
 
@@ -55,6 +58,29 @@ export default function Home() {
     reset,
   } = useDownload();
 
+  // Better-Auth Capacitor 초기화
+  useEffect(() => {
+    const cleanup = setupBetterAuthCapacitor({
+      authClient,
+      onSuccess: async (callbackURL) => {
+        console.log("✅ Capacitor 인증 성공");
+        await Browser.close(); // 브라우저 닫기
+        if (callbackURL) {
+          window.location.href = callbackURL;
+        } else {
+          window.location.reload();
+        }
+      },
+      onError: async (error) => {
+        console.error("❌ Capacitor 인증 실패:", error);
+        await Browser.close(); // 에러 시에도 브라우저 닫기
+        alert(`로그인 실패: ${error.message || '알 수 없는 오류'}`);
+      },
+    });
+
+    return cleanup;
+  }, []);
+
   // 에러가 발생하면 일정 시간 후 리셋
   useEffect(() => {
     if (status === "error") {
@@ -84,10 +110,21 @@ export default function Home() {
 
   const handleOAuthLogin = async (provider: "google" | "apple") => {
     try {
-      await authClient.signIn.social({
-        provider: provider,
-        callbackURL: `/${locale}`,
-      });
+      if (Capacitor.isNativePlatform()) {
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3030";
+        const callbackURL = "io.dabada.app://home";
+        const authUrl = `${baseUrl}/api/auth/sign-in/social?provider=${provider}&callbackURL=${callbackURL}`;
+        
+        await Browser.open({ 
+          url: authUrl,
+          windowName: '_self' // iOS에서 세션 공유 등을 위해 필요할 수 있음
+        });
+      } else {
+        await authClient.signIn.social({
+          provider: provider,
+          callbackURL: `/${locale}`,
+        });
+      }
     } catch (error) {
       console.error(`${provider} login error:`, error);
       alert(t(`auth.login.${provider}Error`));
@@ -126,13 +163,13 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       {/* Header - Top Right */}
-      <div className="fixed top-4 right-4 flex items-center gap-3">
+      <div className="fixed top-4 right-4 flex items-center gap-2">
         {isPending ? (
-          <div className="h-9 w-20 animate-pulse rounded-md bg-muted" />
+          <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
         ) : session?.user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
+              <Button variant="ghost" size="icon" className="rounded-full h-9 w-9">
                 {session.user.image ? (
                   <Image
                     src={session.user.image}
@@ -146,20 +183,20 @@ export default function Home() {
                 )}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <div className="flex items-center justify-start gap-2 p-2">
-                <div className="flex flex-col space-y-1 leading-none">
+            <DropdownMenuContent align="end" className="w-56">
+              <div className="flex items-center gap-2 p-2">
+                <div className="flex flex-col space-y-1">
                   {session.user.name && (
-                    <p className="font-medium">{session.user.name}</p>
+                    <p className="text-sm font-medium leading-none">{session.user.name}</p>
                   )}
                   {session.user.email && (
-                    <p className="w-[200px] truncate text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       {session.user.email}
                     </p>
                   )}
                 </div>
               </div>
-              <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-600">
+              <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-600 cursor-pointer">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>{t("common.signOut")}</span>
               </DropdownMenuItem>
@@ -167,11 +204,11 @@ export default function Home() {
           </DropdownMenu>
         ) : (
           <Button
-            variant="outline"
+            variant="ghost"
             onClick={() => setIsLoginOpen(true)}
-            className="flex items-center gap-2"
+            className="h-9"
           >
-            <LogIn className="h-4 w-4" />
+            <LogIn className="h-5 w-5" />
             {t("common.signIn")}
           </Button>
         )}

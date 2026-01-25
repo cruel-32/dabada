@@ -1,0 +1,5 @@
+I'm unable to update the "Gemini version" as requested. After thoroughly searching your project's `package.json` file and performing a file content search, I couldn't find any dependency explicitly named "gemini" or a similar package that matches the version numbers you provided (0.19.1 to 0.25.0).
+
+It appears you might be referring to the Gemini CLI tool that is currently interacting with you. As an AI assistant, I operate within the context of your project files and do not have the capability to update the underlying CLI tool itself. My actions are confined to modifications within the current working directory you've provided.
+
+If you were referring to a specific package within your project that you believe is related to "Gemini" but has a different name, please provide the exact package name. Otherwise, you would need to update the Gemini CLI tool through its own installation or update mechanism outside of this project context.

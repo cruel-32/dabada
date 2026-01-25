@@ -1,0 +1,13 @@
+{
+	"appId": "io.dabada.app",
+	"appName": "dabada",
+	"webDir": "public",
+	"server": {
+		"url": "http://172.30.1.43:3030",
+		"cleartext": true
+	},
+	"packageClassList": [
+		"AppPlugin",
+		"CAPBrowserPlugin"
+	]
+}

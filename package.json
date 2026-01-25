@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:mobile": "next dev -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -20,12 +21,13 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.1",
-    "@capacitor-community/media": "^9.0.0",
     "@capacitor/android": "^8.0.1",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/browser": "^8.0.0",
     "@capacitor/cli": "^8.0.1",
     "@capacitor/core": "^8.0.1",
-    "@capacitor/filesystem": "^8.0.0",
     "@capacitor/ios": "^8.0.1",
+    "@daveyplate/better-auth-capacitor": "^0.0.1",
     "@distube/ytdl-core": "^4.16.12",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",

@@ -20,6 +20,15 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>io.dabada.app</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -45,11 +54,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<true/>
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>We need access to your photo library to save downloaded videos.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>We need access to your photo library to save downloaded videos.</string>
-</dict>
-</plist>
+	        <key>UIViewControllerBasedStatusBarAppearance</key>
+	        <true/>
+	        <key>NSAppTransportSecurity</key>
+	        <dict>
+	                <key>NSAllowsArbitraryLoads</key>
+	                <true/>
+	        </dict>
+	</dict></plist>

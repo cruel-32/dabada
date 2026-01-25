@@ -11,24 +11,27 @@ importers:
       '@auth/drizzle-adapter':
         specifier: ^1.11.1
         version: 1.11.1
-      '@capacitor-community/media':
-        specifier: ^9.0.0
-        version: 9.0.0(@capacitor/core@8.0.1)
       '@capacitor/android':
         specifier: ^8.0.1
         version: 8.0.1(@capacitor/core@8.0.1)
+      '@capacitor/app':
+        specifier: ^8.0.0
+        version: 8.0.0(@capacitor/core@8.0.1)
+      '@capacitor/browser':
+        specifier: ^8.0.0
+        version: 8.0.0(@capacitor/core@8.0.1)
       '@capacitor/cli':
         specifier: ^8.0.1
         version: 8.0.1
       '@capacitor/core':
         specifier: ^8.0.1
         version: 8.0.1
-      '@capacitor/filesystem':
-        specifier: ^8.0.0
-        version: 8.0.0(@capacitor/core@8.0.1)
       '@capacitor/ios':
         specifier: ^8.0.1
         version: 8.0.1(@capacitor/core@8.0.1)
+      '@daveyplate/better-auth-capacitor':
+        specifier: ^0.0.1
+        version: 0.0.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@distube/ytdl-core':
         specifier: ^4.16.12
         version: 4.16.12
@@ -250,15 +253,20 @@ packages:
   '@better-fetch/fetch@1.1.21':
     resolution: {integrity: sha512-/ImESw0sskqlVR94jB+5+Pxjf+xBwDZF/N5+y2/q4EqD7IARUTSpPfIo8uf39SYpCxyOCtbyYpUrZ3F/k0zT4A==}
 
-  '@capacitor-community/media@9.0.0':
-    resolution: {integrity: sha512-zAkDg3ZsOcFG2KsaiHgVSa1kpL8lovnn++XuQi1MbtuKUixRMoCO64D50VKTUb/MSCoslD55Q7n/ZcFpfAQvEg==}
-    peerDependencies:
-      '@capacitor/core': '>=8.0.0'
-
   '@capacitor/android@8.0.1':
     resolution: {integrity: sha512-Mrk2MFKSg9YA4BPLKm03wwFnGKcvzNBERUTcxjW1NkLrF6YhJwygAT69f/YGopFvOhhqdnDPsuZuASUfmpkSpw==}
     peerDependencies:
       '@capacitor/core': ^8.0.0
+
+  '@capacitor/app@8.0.0':
+    resolution: {integrity: sha512-OwzIkUs4w433Bu9WWAEbEYngXEfJXZ9Wmdb8eoaqzYBgB0W9/3Ed/mh6sAYPNBAZlpyarmewgP7Nb+d3Vrh+xA==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
+
+  '@capacitor/browser@8.0.0':
+    resolution: {integrity: sha512-xey7maszGABKuStvXDV4vXN+EzIyz0o7zlyzw4JKG6o/1GzqeqHqVuE+8Ux+Hks3DZji4LoriWZVgVF6mR6RGg==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
 
   '@capacitor/cli@8.0.1':
     resolution: {integrity: sha512-okCNTsL8FNYrtPNeHWFjWb1S+PwBMhx5wFLhDC0MZOIrOLm+2ynMBtKu3BnR0Nv1hozoHcOCi6SuTF1TrRpb3w==}
@@ -268,18 +276,16 @@ packages:
   '@capacitor/core@8.0.1':
     resolution: {integrity: sha512-5UqSWxGMp/B8KhYu7rAijqNtYslhcLh+TrbfU48PfdMDsPfaU/VY48sMNzC22xL8BmoFoql/3SKyP+pavTOvOA==}
 
-  '@capacitor/filesystem@8.0.0':
-    resolution: {integrity: sha512-RRGNLW9xEqvVVHGyGlfS4Oy0R3Na+bEefwZElKbex22S9eZr5cg8wc750BPPVwbcv5lf5fJymkY8x8y6UwKPyg==}
-    peerDependencies:
-      '@capacitor/core': '>=8.0.0'
-
   '@capacitor/ios@8.0.1':
     resolution: {integrity: sha512-pDxwQtx3n07DBhRKFGvYh4g00ruIsT7HxPm6IIT+tJD8VuTNgwgWYmEOZzfHkG6mZuCe03KqCsuD+aVmg5Rctg==}
     peerDependencies:
       '@capacitor/core': ^8.0.0
 
-  '@capacitor/synapse@1.0.4':
-    resolution: {integrity: sha512-/C1FUo8/OkKuAT4nCIu/34ny9siNHr9qtFezu4kxm6GY1wNFxrCFWjfYx5C1tUhVGz3fxBABegupkpjXvjCHrw==}
+  '@daveyplate/better-auth-capacitor@0.0.1':
+    resolution: {integrity: sha512-h76cZK4w8OQG0oUD9QzEU6jlv08z+/LcE5PQxYE0Euks52Zc81JO16VnsG9Gln7kzUOwI+vRxNlaljt6nWDQhg==}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
 
   '@distube/ytdl-core@4.16.12':
     resolution: {integrity: sha512-/NR8Jur1Q4E2oD+DJta7uwWu7SkqdEkhwERt7f4iune70zg7ZlLLTOHs1+jgg3uD2jQjpdk7RGC16FqstG4RsA==}
@@ -1568,8 +1574,8 @@ packages:
   '@types/slice-ansi@4.0.0':
     resolution: {integrity: sha512-+OpjSaq85gvlZAYINyzKpLeiFkSC4EsC6IIiT6v6TLSU5k5U83fHGj9Lel8oKEXM0HqgrMVCjXPDPVICtxF7EQ==}
 
-  '@typescript-eslint/eslint-plugin@8.53.0':
-    resolution: {integrity: sha512-eEXsVvLPu8Z4PkFibtuFJLJOTAV/nPdgtSjkGoPpddpFk3/ym2oy97jynY6ic2m6+nc5M8SE1e9v/mHKsulcJg==}
+  '@typescript-eslint/eslint-plugin@8.52.0':
+    resolution: {integrity: sha512-okqtOgqu2qmZJ5iN4TWlgfF171dZmx2FzdOv2K/ixL2LZWDStL8+JgQerI2sa8eAEfoydG9+0V96m7V+P8yE1Q==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       '@typescript-eslint/parser': ^8.53.0
@@ -3472,6 +3478,7 @@ packages:
   tar@6.2.1:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   through2@4.0.2:
     resolution: {integrity: sha512-iOqSav00cVxEEICeD7TjLB1sueEL+81Wpzp2bY17uZjZN0pWZPuo4suZ/61VujxmqSGFfgOcNuTZ85QJwNZQpw==}
@@ -3821,11 +3828,15 @@ snapshots:
 
   '@better-fetch/fetch@1.1.21': {}
 
-  '@capacitor-community/media@9.0.0(@capacitor/core@8.0.1)':
+  '@capacitor/android@8.0.1(@capacitor/core@8.0.1)':
     dependencies:
       '@capacitor/core': 8.0.1
 
-  '@capacitor/android@8.0.1(@capacitor/core@8.0.1)':
+  '@capacitor/app@8.0.0(@capacitor/core@8.0.1)':
+    dependencies:
+      '@capacitor/core': 8.0.1
+
+  '@capacitor/browser@8.0.0(@capacitor/core@8.0.1)':
     dependencies:
       '@capacitor/core': 8.0.1
 
@@ -3855,16 +3866,14 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@capacitor/filesystem@8.0.0(@capacitor/core@8.0.1)':
-    dependencies:
-      '@capacitor/core': 8.0.1
-      '@capacitor/synapse': 1.0.4
-
   '@capacitor/ios@8.0.1(@capacitor/core@8.0.1)':
     dependencies:
       '@capacitor/core': 8.0.1
 
-  '@capacitor/synapse@1.0.4': {}
+  '@daveyplate/better-auth-capacitor@0.0.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+    dependencies:
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
 
   '@distube/ytdl-core@4.16.12':
     dependencies:
@@ -4916,6 +4925,10 @@ snapshots:
     dependencies:
       '@types/node': 25.0.8
 
+  '@types/fs-extra@8.1.5':
+    dependencies:
+      '@types/node': 25.0.6
+
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
@@ -4938,7 +4951,7 @@ snapshots:
 
   '@types/slice-ansi@4.0.0': {}
 
-  '@typescript-eslint/eslint-plugin@8.53.0(@typescript-eslint/parser@8.53.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)':
+  '@typescript-eslint/eslint-plugin@8.52.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
       '@typescript-eslint/parser': 8.53.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
