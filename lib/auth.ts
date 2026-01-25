@@ -47,8 +47,10 @@ export const auth = betterAuth({
   trustedOrigins: [
     "http://localhost:3030",
     "http://127.0.0.1:3030",
-    "http://172.19.0.2:3030⁠"
-    // 개발 환경에서 필요한 다른 origin들
+    "http://172.19.0.2:3030",
+    "capacitor://localhost",
+    "http://localhost",
+    "io.dabada.app://",
   ],
 });
 

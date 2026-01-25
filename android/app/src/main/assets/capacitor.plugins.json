@@ -1,26 +1,10 @@
 [
 	{
-		"pkg": "@capacitor-community/admob",
-		"classpath": "com.getcapacitor.community.admob.AdMob"
-	},
-	{
-		"pkg": "@capacitor-community/media",
-		"classpath": "com.getcapacitor.community.media.MediaPlugin"
-	},
-	{
 		"pkg": "@capacitor/app",
 		"classpath": "com.capacitorjs.plugins.app.AppPlugin"
 	},
 	{
 		"pkg": "@capacitor/browser",
 		"classpath": "com.capacitorjs.plugins.browser.BrowserPlugin"
-	},
-	{
-		"pkg": "@capacitor/filesystem",
-		"classpath": "com.capacitorjs.plugins.filesystem.FilesystemPlugin"
-	},
-	{
-		"pkg": "@capgo/capacitor-social-login",
-		"classpath": "ee.forgr.capacitor.social.login.SocialLoginPlugin"
 	}
 ]
