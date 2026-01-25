@@ -52,5 +52,19 @@ export const auth = betterAuth({
     "http://localhost",
     "io.dabada.app://home",
   ],
+  advanced: {
+    useSecureCookies: process.env.NODE_ENV === "production", // 프로덕션에서만 보안 쿠키 사용 (로컬/HTTP 테스트 용이)
+  },
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      console.log("Redirect callback:", { url, baseUrl });
+      // 모바일 앱 스키마 허용
+      if (url.startsWith("io.dabada.app://")) {
+        console.log("Allowing mobile redirect:", url);
+        return url;
+      }
+      return baseUrl;
+    },
+  },
 });
 
