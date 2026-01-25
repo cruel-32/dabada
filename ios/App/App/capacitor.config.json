@@ -7,7 +7,9 @@
 		"cleartext": true
 	},
 	"packageClassList": [
+		"MediaPlugin",
 		"AppPlugin",
-		"CAPBrowserPlugin"
+		"CAPBrowserPlugin",
+		"FilesystemPlugin"
 	]
 }

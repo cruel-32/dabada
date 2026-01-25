@@ -21,11 +21,13 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.1",
+    "@capacitor-community/media": "^9.0.1",
     "@capacitor/android": "^8.0.1",
     "@capacitor/app": "^8.0.0",
     "@capacitor/browser": "^8.0.0",
     "@capacitor/cli": "^8.0.1",
     "@capacitor/core": "^8.0.1",
+    "@capacitor/filesystem": "^8.1.0",
     "@capacitor/ios": "^8.0.1",
     "@daveyplate/better-auth-capacitor": "^0.0.1",
     "@distube/ytdl-core": "^4.16.12",
