@@ -13,6 +13,29 @@ const ALLOWED_ORIGINS = [
 ];
 
 /**
+ * origin이 허용되는지 확인
+ */
+function isAllowedOrigin(origin: string): boolean {
+  // 명시적 허용 목록
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    return true;
+  }
+
+  // Capacitor origin
+  if (origin.startsWith("capacitor://")) {
+    return true;
+  }
+
+  // LAN IP (개발용) - 192.168.x.x, 172.x.x.x, 10.x.x.x
+  const lanPattern = /^https?:\/\/(192\.168\.\d+\.\d+|172\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/;
+  if (lanPattern.test(origin)) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * CORS 헤더를 추가하는 함수
  */
 export function corsHeaders(origin: string | null) {
@@ -23,13 +46,13 @@ export function corsHeaders(origin: string | null) {
     "Access-Control-Max-Age": "86400",
   };
 
-  // origin이 허용 목록에 있거나 Capacitor origin인 경우
-  if (origin && (ALLOWED_ORIGINS.includes(origin) || origin.startsWith("capacitor://"))) {
+  if (origin && isAllowedOrigin(origin)) {
     headers["Access-Control-Allow-Origin"] = origin;
   } else if (!origin) {
     // origin이 없는 경우 (same-origin 또는 일부 Capacitor 환경)
     headers["Access-Control-Allow-Origin"] = "*";
   }
+  // origin이 있지만 허용되지 않는 경우 - Access-Control-Allow-Origin 헤더 없음 (CORS 차단)
 
   return headers;
 }
