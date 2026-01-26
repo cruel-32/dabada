@@ -11,12 +11,18 @@ import {
 import { downloadVideo, getRelativeFilePath } from "@/lib/download-service";
 import { normalizeUrl } from "@/lib/utils";
 import { DOWNLOAD_COOLDOWN_SECONDS } from "@/lib/config";
+import { addCorsHeaders, handleCorsPreflightResponse } from "@/lib/cors";
 
 /**
  * 시간을 밀리초로 변환하여 더함
  */
 function addSeconds(date: Date, seconds: number): Date {
   return new Date(date.getTime() + seconds * 1000);
+}
+
+// CORS preflight
+export async function OPTIONS(request: NextRequest) {
+  return handleCorsPreflightResponse(request);
 }
 
 /**
@@ -36,10 +42,11 @@ export async function POST(request: NextRequest) {
     });
 
     if (!session?.user) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
       );
+      return addCorsHeaders(response, request);
     }
 
     const userId = session.user.id;
@@ -50,17 +57,19 @@ export async function POST(request: NextRequest) {
 
     // 입력 검증
     if (!url || typeof url !== "string") {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { success: false, error: "URL is required" },
         { status: 400 }
       );
+      return addCorsHeaders(response, request);
     }
 
     if (!platform || !["youtube", "instagram"].includes(platform)) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { success: false, error: "Invalid platform" },
         { status: 400 }
       );
+      return addCorsHeaders(response, request);
     }
 
     // URL 유효성 검증
@@ -70,10 +79,11 @@ export async function POST(request: NextRequest) {
     };
 
     if (!urlPatterns[platform as keyof typeof urlPatterns].test(url)) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { success: false, error: `Invalid ${platform} URL` },
         { status: 400 }
       );
+      return addCorsHeaders(response, request);
     }
 
     // URL 정규화
@@ -93,11 +103,12 @@ export async function POST(request: NextRequest) {
         );
 
         if (now < cooldownUntil) {
-          return NextResponse.json({
+          const response = NextResponse.json({
             success: false,
             cooldownUntil: cooldownUntil.toISOString(),
             error: "Cooldown period active",
           });
+          return addCorsHeaders(response, request);
         }
       }
     }
@@ -123,7 +134,7 @@ export async function POST(request: NextRequest) {
         });
       } catch (downloadError) {
         console.error("Download error:", downloadError);
-        return NextResponse.json(
+        const response = NextResponse.json(
           {
             success: false,
             error: "Failed to download video",
@@ -131,6 +142,7 @@ export async function POST(request: NextRequest) {
           },
           { status: 500 }
         );
+        return addCorsHeaders(response, request);
       }
     }
 
@@ -142,14 +154,15 @@ export async function POST(request: NextRequest) {
     });
 
     // 응답 반환
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       videoId: video.id,
       downloadUrl: `/api/download/${video.id}`,
     });
+    return addCorsHeaders(response, request);
   } catch (error) {
     console.error("Download API error:", error);
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         success: false,
         error: "Internal server error",
@@ -157,5 +170,6 @@ export async function POST(request: NextRequest) {
       },
       { status: 500 }
     );
+    return addCorsHeaders(response, request);
   }
 }
