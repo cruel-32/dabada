@@ -12,6 +12,10 @@ const connectionString =
 
 const client = postgres(connectionString);
 const db = drizzle(client, { schema });
+const publicBaseUrl =
+  process.env.AUTH_URL ||
+  process.env.NEXT_PUBLIC_APP_URL ||
+  "http://localhost:3030";
 
 export const auth: Auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -44,7 +48,7 @@ export const auth: Auth = betterAuth({
       // privateKey: process.env.APPLE_PRIVATE_KEY?.replace(/\\n/g, '\n') || '',
     },
   },
-  baseURL: process.env.AUTH_URL || "http://localhost:3030",
+  baseURL: publicBaseUrl,
   basePath: "/api/auth",
   trustedOrigins: [
     // Local development
@@ -67,6 +71,7 @@ export const auth: Auth = betterAuth({
     // Deep link scheme
     "io.dabada.app://home",
     "io.dabada.app",
+    publicBaseUrl,
   ],
   advanced: {
     useSecureCookies: process.env.NODE_ENV === "production", // 프로덕션에서만 보안 쿠키 사용 (로컬/HTTP 테스트 용이)
