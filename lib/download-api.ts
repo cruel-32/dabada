@@ -1,3 +1,5 @@
+import { Capacitor } from "@capacitor/core";
+
 export interface CooldownStatus {
   authenticated: boolean;
   cooldownUntil: string | null;
@@ -5,11 +7,29 @@ export interface CooldownStatus {
 }
 
 /**
+ * Capacitor 앱에서는 실제 서버 URL을 사용해야 함
+ */
+function getApiBaseURL(): string {
+  if (typeof window === "undefined") {
+    return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3030";
+  }
+
+  if (Capacitor.isNativePlatform()) {
+    return process.env.NEXT_PUBLIC_APP_URL || "https://dabada.cloudish.cloud";
+  }
+
+  return window.location.origin;
+}
+
+/**
  * 쿨다운 상태 확인
  */
 export async function checkCooldown(): Promise<CooldownStatus> {
   try {
-    const response = await fetch("/api/download/status");
+    const baseURL = getApiBaseURL();
+    const response = await fetch(`${baseURL}/api/download/status`, {
+      credentials: "include", // 쿠키 포함
+    });
     if (!response.ok) {
         if (response.status === 401) {
             return { authenticated: false, cooldownUntil: null };
@@ -39,11 +59,13 @@ export async function requestDownload(
   platform: "youtube" | "instagram"
 ): Promise<DownloadResponse> {
   try {
-    const response = await fetch("/api/download", {
+    const baseURL = getApiBaseURL();
+    const response = await fetch(`${baseURL}/api/download`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include", // 쿠키 포함
       body: JSON.stringify({ url, platform }),
     });
 
