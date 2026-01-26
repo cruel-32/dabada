@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "8C6C9Q6M73.io.dabada.app",
+        "paths": [
+          "/api/auth/*"
+        ]
+      }
+    ]
+  }
+}

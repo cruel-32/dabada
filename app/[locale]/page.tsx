@@ -65,29 +65,21 @@ export default function Home() {
   useEffect(() => {
     const cleanup = setupBetterAuthCapacitor({
       authClient,
-      onRequest: async (href) => {
+      onRequest: (href) => {
         if (!href) {
           return;
         }
-        console.log("🔗 Capacitor OAuth request:", href);
-        await Browser.open({
-          url: href,
-          windowName: "_self", // iOS에서 세션 공유 등을 위해 필요할 수 있음
-        });
+        console.log("🔗 Capacitor OAuth callback:", href);
       },
       onSuccess: async (callbackURL) => {
         console.log("✅ Capacitor 인증 성공");
         await Browser.close(); // 브라우저 닫기
         await authClientWithSession.getSession?.();
-        if (callbackURL?.startsWith("io.dabada.app://")) {
-          window.location.href = `/${locale}`;
-          return;
-        }
         if (callbackURL) {
           window.location.href = callbackURL;
-        } else {
-          window.location.reload();
+          return;
         }
+        window.location.href = `/${locale}`;
       },
       onError: async (error) => {
         console.error("❌ Capacitor 인증 실패:", error);
@@ -129,11 +121,38 @@ export default function Home() {
   const handleOAuthLogin = async (provider: "google" | "apple") => {
     try {
       if (Capacitor.isNativePlatform()) {
-        const callbackURL = "io.dabada.app://home";
-        await authClient.signIn.social({
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+        const callbackURL = `${baseUrl}/${locale}`;
+        const response = await authClient.signIn.social({
           provider,
           callbackURL,
+          redirect: false,
+          fetchOptions: {
+            onSuccess: (ctx: { data?: { url?: string; redirect?: boolean } }) => {
+              if (ctx.data?.url) {
+                console.log("🔗 Opening OAuth URL in browser:", ctx.data.url);
+                Browser.open({
+                  url: ctx.data.url,
+                  windowName: "_self",
+                });
+                if (ctx.data.redirect) {
+                  ctx.data.redirect = false;
+                }
+              }
+            },
+          },
         });
+        const authUrl =
+          response && typeof response === "object" && "url" in response
+            ? (response as { url?: string }).url
+            : undefined;
+        if (authUrl) {
+          console.log("🔗 Opening OAuth URL in browser (fallback):", authUrl);
+          await Browser.open({
+            url: authUrl,
+            windowName: "_self",
+          });
+        }
       } else {
         await authClient.signIn.social({
           provider: provider,
