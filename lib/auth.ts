@@ -46,38 +46,28 @@ export const auth: Auth = betterAuth({
   },
   baseURL: process.env.AUTH_URL || "http://localhost:3030",
   basePath: "/api/auth",
-  trustedOrigins: (origin: string) => {
-    // 개발/디버깅용 로그
-    console.log("🔍 Checking origin:", origin);
-
-    const allowedOrigins = [
-      "http://localhost:3030",
-      "http://127.0.0.1:3030",
-      "http://172.19.0.2:3030",
-      // Capacitor iOS
-      "capacitor://localhost",
-      // Capacitor Android
-      "http://localhost",
-      "https://localhost",
-      // Deep link scheme
-      "io.dabada.app://home",
-      "io.dabada.app",
-    ];
-
-    // 명시적 허용 목록 확인
-    if (allowedOrigins.includes(origin)) {
-      return true;
-    }
-
-    // Capacitor 앱에서 오는 요청 허용 (null origin 또는 capacitor 스킴)
-    if (!origin || origin === "null" || origin.startsWith("capacitor://") || origin.startsWith("io.dabada.app")) {
-      console.log("✅ Allowing Capacitor origin:", origin);
-      return true;
-    }
-
-    console.log("❌ Rejected origin:", origin);
-    return false;
-  },
+  trustedOrigins: [
+    // Local development
+    "http://localhost:3000",
+    "http://localhost:3030",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3030",
+    // Docker network
+    "http://172.19.0.2:3030",
+    "http://172.19.0.3:3030",
+    // LAN IPs (for mobile testing)
+    "http://172.30.1.43:3030",
+    // Production
+    "https://dabada.cloudish.cloud",
+    // Capacitor iOS
+    "capacitor://localhost",
+    // Capacitor Android
+    "http://localhost",
+    "https://localhost",
+    // Deep link scheme
+    "io.dabada.app://home",
+    "io.dabada.app",
+  ],
   advanced: {
     useSecureCookies: process.env.NODE_ENV === "production", // 프로덕션에서만 보안 쿠키 사용 (로컬/HTTP 테스트 용이)
   },
