@@ -50,6 +50,9 @@ export default function Home() {
   const [url, setUrl] = useState("");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const { data: session, isPending } = authClient.useSession();
+  const authClientWithSession = authClient as typeof authClient & {
+    getSession?: () => Promise<unknown>;
+  };
   const {
     status,
     error,
@@ -75,6 +78,7 @@ export default function Home() {
       onSuccess: async (callbackURL) => {
         console.log("✅ Capacitor 인증 성공");
         await Browser.close(); // 브라우저 닫기
+        await authClientWithSession.getSession?.();
         if (callbackURL?.startsWith("io.dabada.app://")) {
           window.location.href = `/${locale}`;
           return;
@@ -93,7 +97,7 @@ export default function Home() {
     });
 
     return cleanup;
-  }, [locale]);
+  }, [locale, authClientWithSession]);
 
   // 에러가 발생하면 일정 시간 후 리셋
   useEffect(() => {
@@ -126,26 +130,10 @@ export default function Home() {
     try {
       if (Capacitor.isNativePlatform()) {
         const callbackURL = "io.dabada.app://home";
-        // Capacitor에서는 redirect를 비활성화하고 URL을 직접 받아서 Browser로 열기
-        const response = await authClient.signIn.social({
+        await authClient.signIn.social({
           provider,
           callbackURL,
-          fetchOptions: {
-            onSuccess: (ctx: { data?: { url?: string; redirect?: boolean } }) => {
-              // redirect plugin이 동작하기 전에 URL을 가로채서 Browser로 열기
-              if (ctx.data?.url && ctx.data?.redirect) {
-                console.log("🔗 Opening OAuth URL in browser:", ctx.data.url);
-                Browser.open({
-                  url: ctx.data.url,
-                  windowName: "_self",
-                });
-                // redirect plugin이 window.location.href를 실행하지 않도록 redirect를 false로 변경
-                ctx.data.redirect = false;
-              }
-            },
-          },
         });
-        console.log("OAuth response:", response);
       } else {
         await authClient.signIn.social({
           provider: provider,
