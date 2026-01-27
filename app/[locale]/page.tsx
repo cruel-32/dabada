@@ -67,19 +67,15 @@ export default function Home() {
   useEffect(() => {
     const cleanup = setupBetterAuthCapacitor({
       authClient,
-      onRequest: async (href) => {
+      onRequest: (href) => {
         if (!href) {
           return;
         }
-        authInProgressRef.current = true;
-        console.log("🔗 Opening OAuth URL in browser:", href);
-        await Browser.open({
-          url: href,
-          windowName: "_self",
-        });
+        console.log("🔗 OAuth callback received:", href);
       },
       onSuccess: async (callbackURL) => {
         console.log("✅ Capacitor 인증 성공");
+        authInProgressRef.current = false;
         await Browser.close(); // 브라우저 닫기
         await authClientWithSession.getSession?.();
         if (callbackURL) {
@@ -90,6 +86,7 @@ export default function Home() {
       },
       onError: async (error) => {
         console.error("❌ Capacitor 인증 실패:", error);
+        authInProgressRef.current = false;
         await Browser.close(); // 에러 시에도 브라우저 닫기
         alert(`로그인 실패: ${error.message || "알 수 없는 오류"}`);
       },
@@ -100,6 +97,7 @@ export default function Home() {
     void App.addListener("appUrlOpen", async ({ url }) => {
       if (url.includes("/api/auth")) {
         console.log("🔗 App URL opened (auth callback):", url);
+        authInProgressRef.current = false;
         await Browser.close();
         await authClientWithSession.getSession?.();
         window.location.href = `/${locale}`;
