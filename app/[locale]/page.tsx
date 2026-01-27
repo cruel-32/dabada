@@ -26,6 +26,7 @@ import { Download, Youtube, Instagram, LogIn, LogOut, User, Clock, AlertCircle }
 import { useDownload } from "@/hooks/use-download";
 import { setupBetterAuthCapacitor } from "@daveyplate/better-auth-capacitor";
 import { Capacitor } from "@capacitor/core";
+import { App } from "@capacitor/app";
 import { Browser } from "@capacitor/browser";
 
 type Platform = "youtube" | "instagram";
@@ -88,7 +89,22 @@ export default function Home() {
       },
     });
 
-    return cleanup;
+    let appUrlOpenListener: { remove: () => void } | undefined;
+    void App.addListener("appUrlOpen", async ({ url }) => {
+      if (url.includes("/api/auth")) {
+        console.log("🔗 App URL opened (auth callback):", url);
+        await Browser.close();
+        await authClientWithSession.getSession?.();
+        window.location.href = `/${locale}`;
+      }
+    }).then((handle) => {
+      appUrlOpenListener = handle;
+    });
+
+    return () => {
+      cleanup();
+      appUrlOpenListener?.remove();
+    };
   }, [locale, authClientWithSession]);
 
   // 에러가 발생하면 일정 시간 후 리셋
