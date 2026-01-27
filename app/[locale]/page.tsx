@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -54,6 +54,7 @@ export default function Home() {
   const authClientWithSession = authClient as typeof authClient & {
     getSession?: () => Promise<unknown>;
   };
+  const authInProgressRef = useRef(false);
   const {
     status,
     error,
@@ -66,11 +67,16 @@ export default function Home() {
   useEffect(() => {
     const cleanup = setupBetterAuthCapacitor({
       authClient,
-      onRequest: (href) => {
+      onRequest: async (href) => {
         if (!href) {
           return;
         }
-        console.log("🔗 Capacitor OAuth callback:", href);
+        authInProgressRef.current = true;
+        console.log("🔗 Opening OAuth URL in browser:", href);
+        await Browser.open({
+          url: href,
+          windowName: "_self",
+        });
       },
       onSuccess: async (callbackURL) => {
         console.log("✅ Capacitor 인증 성공");
@@ -90,6 +96,7 @@ export default function Home() {
     });
 
     let appUrlOpenListener: { remove: () => void } | undefined;
+    let browserFinishedListener: { remove: () => void } | undefined;
     void App.addListener("appUrlOpen", async ({ url }) => {
       if (url.includes("/api/auth")) {
         console.log("🔗 App URL opened (auth callback):", url);
@@ -100,10 +107,22 @@ export default function Home() {
     }).then((handle) => {
       appUrlOpenListener = handle;
     });
+    void Browser.addListener("browserFinished", async () => {
+      if (!authInProgressRef.current) {
+        return;
+      }
+      console.log("🔒 In-app browser closed, refreshing session");
+      authInProgressRef.current = false;
+      await authClientWithSession.getSession?.();
+      window.location.href = `/${locale}`;
+    }).then((handle) => {
+      browserFinishedListener = handle;
+    });
 
     return () => {
       cleanup();
       appUrlOpenListener?.remove();
+      browserFinishedListener?.remove();
     };
   }, [locale, authClientWithSession]);
 
@@ -139,7 +158,7 @@ export default function Home() {
       if (Capacitor.isNativePlatform()) {
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
         const callbackURL = `${baseUrl}/${locale}`;
-        const response = await authClient.signIn.social({
+        await authClient.signIn.social({
           provider,
           callbackURL,
           redirect: false,
@@ -147,6 +166,7 @@ export default function Home() {
             onSuccess: (ctx: { data?: { url?: string; redirect?: boolean } }) => {
               if (ctx.data?.url) {
                 console.log("🔗 Opening OAuth URL in browser:", ctx.data.url);
+                authInProgressRef.current = true;
                 Browser.open({
                   url: ctx.data.url,
                   windowName: "_self",
@@ -158,17 +178,6 @@ export default function Home() {
             },
           },
         });
-        const authUrl =
-          response && typeof response === "object" && "url" in response
-            ? (response as { url?: string }).url
-            : undefined;
-        if (authUrl) {
-          console.log("🔗 Opening OAuth URL in browser (fallback):", authUrl);
-          await Browser.open({
-            url: authUrl,
-            windowName: "_self",
-          });
-        }
       } else {
         await authClient.signIn.social({
           provider: provider,
