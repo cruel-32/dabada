@@ -1,21 +1,12 @@
-import { Capacitor } from "@capacitor/core";
-
 export interface CooldownStatus {
   authenticated: boolean;
   cooldownUntil: string | null;
   error?: string;
 }
 
-/**
- * Capacitor 앱에서는 실제 서버 URL을 사용해야 함
- */
 function getApiBaseURL(): string {
   if (typeof window === "undefined") {
     return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3030";
-  }
-
-  if (Capacitor.isNativePlatform()) {
-    return process.env.NEXT_PUBLIC_APP_URL || "https://dabada.cloudish.cloud";
   }
 
   return window.location.origin;

@@ -6,8 +6,6 @@ const ALLOWED_ORIGINS = [
   "http://127.0.0.1:3000",
   "http://127.0.0.1:3030",
   "https://dabada.cloudish.cloud",
-  // Capacitor origins
-  "capacitor://localhost",
   "http://localhost",
   "https://localhost",
 ];
@@ -18,11 +16,6 @@ const ALLOWED_ORIGINS = [
 function isAllowedOrigin(origin: string): boolean {
   // 명시적 허용 목록
   if (ALLOWED_ORIGINS.includes(origin)) {
-    return true;
-  }
-
-  // Capacitor origin
-  if (origin.startsWith("capacitor://")) {
     return true;
   }
 
@@ -49,7 +42,7 @@ export function corsHeaders(origin: string | null) {
   if (origin && isAllowedOrigin(origin)) {
     headers["Access-Control-Allow-Origin"] = origin;
   } else if (!origin) {
-    // origin이 없는 경우 (same-origin 또는 일부 Capacitor 환경)
+    // origin이 없는 경우 (same-origin)
     headers["Access-Control-Allow-Origin"] = "*";
   }
   // origin이 있지만 허용되지 않는 경우 - Access-Control-Allow-Origin 헤더 없음 (CORS 차단)
