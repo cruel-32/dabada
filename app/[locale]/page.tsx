@@ -172,7 +172,7 @@ export default function Home() {
           }
           const refetchResult = await refetch?.();
 
-          console.log('refetchResult :::::: ', refetchResult)
+          console.log('google refetchResult :::::: ', refetchResult)
           console.log("[NativeLogin] Session refetch", {
             hasSession: !!refetchResult?.data,
           });
@@ -234,6 +234,7 @@ export default function Home() {
             return;
           }
           const refetchResult = await refetch?.();
+          console.log('apple refetchResult :::::: ', refetchResult)
           console.log("[NativeLogin] Session refetch", {
             hasSession: !!refetchResult?.data,
           });
