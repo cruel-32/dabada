@@ -49,7 +49,7 @@ const getGooglePublicKey = async (
   return (await importJWK(jwk, jwk.alg)) as CryptoKey | Uint8Array;
 };
 
-export const auth: Auth = betterAuth({
+const authOptions = {
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
@@ -148,6 +148,18 @@ export const auth: Auth = betterAuth({
     async redirect({ baseUrl }: { url: string; baseUrl: string }) {
       return baseUrl;
     },
+  },
+};
+
+export const auth: Auth = betterAuth(authOptions);
+
+export const authNative: Auth = betterAuth({
+  ...authOptions,
+  basePath: "/api/native-auth",
+  advanced: {
+    ...authOptions.advanced,
+    disableCSRFCheck: true,
+    disableOriginCheck: true,
   },
 });
 
