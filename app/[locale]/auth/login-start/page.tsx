@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 export default function LoginStartPage() {
+  console.log('LoginStartPage 111 :::::: ')
+
   const searchParams = useSearchParams();
   const provider = searchParams.get("provider") as "google" | "apple" | null;
   const callbackURL = searchParams.get("callbackURL") || "/";

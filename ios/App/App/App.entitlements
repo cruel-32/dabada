@@ -9,6 +9,7 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>dabada.cloudish.cloud</string>
+		<string>webcredentials:dabada.cloudish.cloud</string>
 	</array>
 </dict>
 </plist>
