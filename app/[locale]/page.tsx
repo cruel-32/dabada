@@ -144,7 +144,7 @@ export default function Home() {
 
           console.log("[NativeLogin] Request body", body);
 
-          const response = await fetch("/api/native-auth/sign-in/social", {
+          const response = await fetch("/api/auth/sign-in/social", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -201,7 +201,7 @@ export default function Home() {
 
           console.log("[NativeLogin] Request body", body);
 
-          const response = await fetch("/api/auth/sign-in/social", {
+          const response = await fetch("/api/native-auth/sign-in/social", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
