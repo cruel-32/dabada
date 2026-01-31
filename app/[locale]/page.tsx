@@ -171,6 +171,8 @@ export default function Home() {
             return;
           }
           const refetchResult = await refetch?.();
+
+          console.log('refetchResult :::::: ', refetchResult)
           console.log("[NativeLogin] Session refetch", {
             hasSession: !!refetchResult?.data,
           });
