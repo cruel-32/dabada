@@ -150,6 +150,8 @@ export default function Home() {
               "Content-Type": "application/json",
             },
             credentials: "include",
+            referrer: window.location.href,
+            referrerPolicy: "no-referrer-when-downgrade",
             body,
           });
           const responseText = await response.text();
@@ -171,15 +173,7 @@ export default function Home() {
             return;
           }
           const refetchResult = await refetch?.();
-
           console.log('google refetchResult :::::: ', refetchResult)
-          console.log("[NativeLogin] Session refetch", {
-            hasSession: !!refetchResult?.data,
-          });
-          if (!refetchResult?.data) {
-            setLoginError("세션 갱신 실패: 쿠키가 설정되지 않았을 수 있습니다.");
-            return;
-          }
           setIsLoginOpen(false);
           return;
         }
@@ -213,6 +207,8 @@ export default function Home() {
               "Content-Type": "application/json",
             },
             credentials: "include",
+            referrer: window.location.href,
+            referrerPolicy: "no-referrer-when-downgrade",
             body,
           });
           const responseText = await response.text();
@@ -235,13 +231,6 @@ export default function Home() {
           }
           const refetchResult = await refetch?.();
           console.log('apple refetchResult :::::: ', refetchResult)
-          console.log("[NativeLogin] Session refetch", {
-            hasSession: !!refetchResult?.data,
-          });
-          if (!refetchResult?.data) {
-            setLoginError("세션 갱신 실패: 쿠키가 설정되지 않았을 수 있습니다.");
-            return;
-          }
           setIsLoginOpen(false);
           return;
         }
