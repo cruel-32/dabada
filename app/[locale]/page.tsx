@@ -48,6 +48,7 @@ export default function Home() {
   const [platform, setPlatform] = useState<Platform>("youtube");
   const [url, setUrl] = useState("");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const { data: session, isPending, refetch } = authClient.useSession();
   const {
     status,
@@ -106,6 +107,7 @@ export default function Home() {
   const handleOAuthLogin = async (provider: "google" | "apple") => {
     try {
       if (Capacitor.isNativePlatform()) {
+        setLoginError(null);
         const loginResult = await SocialLogin.login({
           provider,
           options:
@@ -140,7 +142,7 @@ export default function Home() {
             },
           });
 
-          console.log('body :::::: ', body)
+          console.log("[NativeLogin] Request body", body);
 
           const response = await fetch("/api/auth/sign-in/social", {
             method: "POST",
@@ -150,8 +152,33 @@ export default function Home() {
             credentials: "include",
             body,
           });
-          console.log('response :::::: ', response)
-          await refetch?.();
+          const responseText = await response.text();
+          let responseJson: unknown = null;
+          try {
+            responseJson = JSON.parse(responseText);
+          } catch {
+            responseJson = null;
+          }
+          console.log("[NativeLogin] Server response", {
+            status: response.status,
+            ok: response.ok,
+            body: responseJson ?? responseText?.slice(0, 200),
+          });
+          if (!response.ok) {
+            setLoginError(
+              `서버 로그인 실패 (${response.status}) ${responseText?.slice(0, 200)}`
+            );
+            return;
+          }
+          const refetchResult = await refetch?.();
+          console.log("[NativeLogin] Session refetch", {
+            hasSession: !!refetchResult?.data,
+          });
+          if (!refetchResult?.data) {
+            setLoginError("세션 갱신 실패: 쿠키가 설정되지 않았을 수 있습니다.");
+            return;
+          }
+          setIsLoginOpen(false);
           return;
         }
 
@@ -169,14 +196,14 @@ export default function Home() {
                 "accessToken" in result
                   ? result.accessToken?.token
                   : undefined,
-                refreshToken:
-                  "accessToken" in result
-                    ? result.accessToken?.refreshToken
-                    : undefined,
-              },
-            });
+              refreshToken:
+                "accessToken" in result
+                  ? result.accessToken?.refreshToken
+                  : undefined,
+            },
+          });
 
-          console.log('body :::::: ', body)
+          console.log("[NativeLogin] Request body", body);
 
           const response = await fetch("/api/auth/sign-in/social", {
             method: "POST",
@@ -186,8 +213,33 @@ export default function Home() {
             credentials: "include",
             body,
           });
-          console.log('response :::::: ', response)
-          await refetch?.();
+          const responseText = await response.text();
+          let responseJson: unknown = null;
+          try {
+            responseJson = JSON.parse(responseText);
+          } catch {
+            responseJson = null;
+          }
+          console.log("[NativeLogin] Server response", {
+            status: response.status,
+            ok: response.ok,
+            body: responseJson ?? responseText?.slice(0, 200),
+          });
+          if (!response.ok) {
+            setLoginError(
+              `서버 로그인 실패 (${response.status}) ${responseText?.slice(0, 200)}`
+            );
+            return;
+          }
+          const refetchResult = await refetch?.();
+          console.log("[NativeLogin] Session refetch", {
+            hasSession: !!refetchResult?.data,
+          });
+          if (!refetchResult?.data) {
+            setLoginError("세션 갱신 실패: 쿠키가 설정되지 않았을 수 있습니다.");
+            return;
+          }
+          setIsLoginOpen(false);
           return;
         }
       }
@@ -199,6 +251,9 @@ export default function Home() {
       });
     } catch (error) {
       console.error(`${provider} login error:`, error);
+      setLoginError(
+        error instanceof Error ? error.message : "로그인에 실패했습니다."
+      );
       alert(t(`auth.login.${provider}Error`));
     }
   };
@@ -297,6 +352,11 @@ export default function Home() {
               {t("auth.login.description")}
             </DialogDescription>
           </DialogHeader>
+          {loginError && (
+            <div className="rounded-md border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
+              {loginError}
+            </div>
+          )}
           <div className="flex flex-col gap-3 mt-4">
             <Button
               onClick={handleGoogleLogin}
