@@ -8,20 +8,15 @@ const config: CapacitorConfig = {
   server: {
     url: "https://dabada.cloudish.cloud",
     cleartext: false,
-  },
-  allowNavigation: [
-    "dabada.cloudish.cloud",
-    "accounts.google.com",
-    "*.google.com",
-    "*.googleusercontent.com",
-    "*.gstatic.com",
-    "appleid.apple.com",
-    "*.apple.com",
-  ],
-  plugins: {
-    App: {
-      // 딥링크 URL 스킴 설정
-    },
+    allowNavigation: [
+      "dabada.cloudish.cloud",
+      "accounts.google.com",
+      "*.google.com",
+      "*.googleusercontent.com",
+      "*.gstatic.com",
+      "appleid.apple.com",
+      "*.apple.com",
+    ],
   },
 };
 
