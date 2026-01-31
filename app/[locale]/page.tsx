@@ -142,11 +142,11 @@ export default function Home() {
   const handleOAuthLogin = async (provider: "google" | "apple") => {
     try {
       if (Capacitor.isNativePlatform()) {
-        // 앱에서는 인앱 브라우저로 웹 OAuth 진행
+        // 앱에서는 인앱 브라우저로 로그인 시작 페이지 열기
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://dabada.cloudish.cloud";
-        const callbackUrl = `${baseUrl}/${locale}/auth/login-complete`;
-        // better-auth OAuth 시작 URL 형식: /api/auth/signin/{provider}
-        const signInUrl = `${baseUrl}/api/auth/signin/${provider}?callbackURL=${encodeURIComponent(callbackUrl)}`;
+        const callbackUrl = `/${locale}/auth/login-complete`;
+        // 로그인 시작 페이지에서 authClient.signIn.social() 호출
+        const signInUrl = `${baseUrl}/${locale}/auth/login-start?provider=${provider}&callbackURL=${encodeURIComponent(callbackUrl)}`;
 
         // 로그인 다이얼로그 닫기
         setIsLoginOpen(false);
