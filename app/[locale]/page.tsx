@@ -25,8 +25,7 @@ import { authClient } from "@/lib/auth-client";
 import { Download, Youtube, Instagram, LogIn, LogOut, User, Clock, AlertCircle } from "lucide-react";
 import { useDownload } from "@/hooks/use-download";
 import { Capacitor } from "@capacitor/core";
-import { Browser } from "@capacitor/browser";
-import { App } from "@capacitor/app";
+import { SocialLogin } from "@capgo/capacitor-social-login";
 
 type Platform = "youtube" | "instagram";
 
@@ -68,59 +67,24 @@ export default function Home() {
     }
   }, [status, reset]);
 
-  // 앱에서 딥링크로 인증 코드를 받았을 때 처리
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) {
       return;
     }
-
-    const handleAppUrlOpen = async (event: { url: string }) => {
-      const url = new URL(event.url);
-
-      // dabada://auth/callback?code=xxx 형태의 URL 처리
-      if (url.pathname === "/auth/callback" || url.host === "auth") {
-        const code = url.searchParams.get("code");
-        const error = url.searchParams.get("error");
-
-        // 인앱 브라우저 닫기
-        await Browser.close();
-
-        if (error) {
-          console.error("Login error:", error);
-          return;
-        }
-
-        if (code) {
-          try {
-            // 교환 API 호출하여 세션 쿠키 설정
-            const response = await fetch("/api/auth/exchange", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include",
-              body: JSON.stringify({ code }),
-            });
-
-            if (response.ok) {
-              // 세션 새로고침
-              await refetch?.();
-              setIsLoginOpen(false);
-            }
-          } catch (err) {
-            console.error("Session exchange error:", err);
-          }
-        }
-      }
-    };
-
-    // App URL listener 등록
-    const listener = App.addListener("appUrlOpen", handleAppUrlOpen);
-
-    return () => {
-      listener.then((l) => l.remove());
-    };
-  }, [refetch]);
+    void SocialLogin.initialize({
+      google: {
+        webClientId: process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+        iOSClientId: process.env.NEXT_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+        iOSServerClientId: process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+        mode: "online",
+      },
+      apple: {
+        clientId: process.env.NEXT_PUBLIC_APPLE_CLIENT_ID,
+        redirectUrl: process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI,
+        useProperTokenExchange: true,
+      },
+    });
+  }, []);
 
   const handleDownload = async () => {
     if (!url.trim()) {
@@ -142,19 +106,76 @@ export default function Home() {
   const handleOAuthLogin = async (provider: "google" | "apple") => {
     try {
       if (Capacitor.isNativePlatform()) {
-        const baseUrl =
-          process.env.NEXT_PUBLIC_APP_URL || "https://dabada.cloudish.cloud";
-        const callbackUrl = `${baseUrl}/${locale}/auth/login-complete`;
-        const signInUrl = `${baseUrl}/${locale}/auth/login-start?provider=${provider}&callbackURL=${encodeURIComponent(callbackUrl)}`;
-
-        // 인앱 브라우저 열기
-        console.log('signInUrl :::::: ', signInUrl)
-        await Browser.open({
-          url: signInUrl,
-          presentationStyle: "fullscreen",
+        const loginResult = await SocialLogin.login({
+          provider,
+          options:
+            provider === "google"
+              ? { scopes: ["email", "profile"] }
+              : { scopes: ["email", "name"] },
         });
 
-        return;
+        if (loginResult.provider === "google") {
+          const result = loginResult.result;
+          if (!("responseType" in result) || result.responseType !== "online") {
+            throw new Error("Google 로그인이 offline 모드로 반환되었습니다.");
+          }
+          if (!("idToken" in result) || !result.idToken) {
+            throw new Error("Google ID token이 없습니다.");
+          }
+          await fetch("/api/auth/sign-in/social", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({
+              provider: "google",
+              idToken: {
+                token: result.idToken,
+                accessToken:
+                  "accessToken" in result
+                    ? result.accessToken?.token
+                    : undefined,
+                refreshToken:
+                  "accessToken" in result
+                    ? result.accessToken?.refreshToken
+                    : undefined,
+              },
+            }),
+          });
+          await refetch?.();
+          return;
+        }
+
+        if (loginResult.provider === "apple") {
+          const result = loginResult.result;
+          if (!("idToken" in result) || !result.idToken) {
+            throw new Error("Apple ID token이 없습니다.");
+          }
+          await fetch("/api/auth/sign-in/social", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({
+              provider: "apple",
+              idToken: {
+                token: result.idToken,
+                accessToken:
+                  "accessToken" in result
+                    ? result.accessToken?.token
+                    : undefined,
+                refreshToken:
+                  "accessToken" in result
+                    ? result.accessToken?.refreshToken
+                    : undefined,
+              },
+            }),
+          });
+          await refetch?.();
+          return;
+        }
       }
 
       // 웹에서는 기존 방식 유지
