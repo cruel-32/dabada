@@ -145,10 +145,13 @@ export default function Home() {
 
         const response = await authClient.signIn.social({
           provider: provider,
-          callbackURL: `/${locale}/auth/login-complete`,
+          // callbackURL: `/${locale}/auth/login-complete`,
+          // callbackURL: `dabada://${locale}/auth/login-complete`,
+          callbackURL: `dabada://${locale}`,
           disableRedirect: true,
         });
 
+        console.log('response :::::: ', response)
         console.log('response.data.url :::::: ', response.data.url)
 
         // 인앱 브라우저 열기
