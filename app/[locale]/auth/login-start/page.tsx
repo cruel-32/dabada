@@ -10,10 +10,12 @@ export default function LoginStartPage() {
   const callbackURL = searchParams.get("callbackURL") || "/";
   const [error, setError] = useState<string | null>(null);
 
+  console.log('provider 111 :::::: ', provider)
+  console.log('callbackURL 111 :::::: ', callbackURL)
+  
   useEffect(() => {
-    console.log('provider :::::: ', provider)
-    console.log('callbackURL :::::: ', callbackURL)
-
+    console.log('provider 222 :::::: ', provider)
+    console.log('callbackURL 222 :::::: ', callbackURL)
     if (!provider) {
       return;
     }
