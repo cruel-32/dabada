@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
 
 export default function LoginStartPage() {
   const searchParams = useSearchParams();
@@ -19,11 +18,29 @@ export default function LoginStartPage() {
 
     const startLogin = async () => {
       try {
-        // 소셜 로그인 시작 - 이 함수가 OAuth provider로 리다이렉트함
-        await authClient.signIn.social({
-          provider,
-          callbackURL,
+        // better-auth 소셜 로그인 API 직접 호출
+        const response = await fetch("/api/auth/sign-in/social", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            provider,
+            callbackURL,
+          }),
         });
+
+        const data = await response.json();
+
+        // 응답에서 리다이렉트 URL 추출하여 직접 이동
+        if (data.url) {
+          window.location.href = data.url;
+        } else if (data.redirect) {
+          window.location.href = data.redirect;
+        } else {
+          console.error("No redirect URL in response:", data);
+          setError("Login failed - no redirect URL");
+        }
       } catch (err) {
         console.error("Login error:", err);
         setError("Login failed");
