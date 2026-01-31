@@ -142,20 +142,18 @@ export default function Home() {
   const handleOAuthLogin = async (provider: "google" | "apple") => {
     try {
       if (Capacitor.isNativePlatform()) {
-        // 앱에서는 인앱 브라우저로 로그인 시작 페이지 열기
-        const baseUrl =
-          process.env.NEXT_PUBLIC_APP_URL || "https://dabada.cloudish.cloud";
-        const callbackUrl = `/${locale}/auth/login-complete`;
-        // 로그인 시작 페이지에서 동일한 로그인 함수 호출
-        const signInUrl = `${baseUrl}/${locale}/auth/login-start?provider=${provider}&callbackURL=${encodeURIComponent(callbackUrl)}`;
 
-        // 로그인 다이얼로그 닫기
-        setIsLoginOpen(false);
-
-        // 인앱 브라우저 열기
-        await Browser.open({
-          url: signInUrl,
+        const response = await authClient.signIn.social({
+          provider: provider,
+          disableRedirect: true,
         });
+
+        console.log(response);
+
+        // // 인앱 브라우저 열기
+        // await Browser.open({
+        //   url: signInUrl,
+        // });
 
         return;
       }
