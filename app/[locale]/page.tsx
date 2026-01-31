@@ -145,15 +145,14 @@ export default function Home() {
 
         const response = await authClient.signIn.social({
           provider: provider,
+          callbackURL: `/${locale}/auth/login-complete`,
           disableRedirect: true,
         });
 
-        console.log(response);
-
-        // // 인앱 브라우저 열기
-        // await Browser.open({
-        //   url: signInUrl,
-        // });
+        // 인앱 브라우저 열기
+        await Browser.open({
+          url: response.data.url,
+        });
 
         return;
       }

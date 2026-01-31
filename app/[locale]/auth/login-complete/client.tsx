@@ -14,6 +14,7 @@ export default function LoginCompleteClient({ authCode }: LoginCompleteClientPro
   const [isClosing, setIsClosing] = useState(false);
 
   const handleComplete = () => {
+    console.log("handleComplete", authCode);
     setIsClosing(true);
 
     // 앱 딥링크 호출하여 인증 코드 전달
