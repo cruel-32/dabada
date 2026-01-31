@@ -145,9 +145,9 @@ export default function Home() {
 
         const response = await authClient.signIn.social({
           provider: provider,
-          // callbackURL: `/${locale}/auth/login-complete`,
+          callbackURL: `/${locale}/auth/login-complete`,
           // callbackURL: `dabada://${locale}/auth/login-complete`,
-          callbackURL: `dabada://${locale}`,
+          // callbackURL: `dabada://${locale}`,
           disableRedirect: true,
         });
 
@@ -157,8 +157,9 @@ export default function Home() {
         // 인앱 브라우저 열기
         await Browser.open({
           url: response.data.url,
+          presentationStyle: "fullscreen",
         });
-
+        
         return;
       }
 
