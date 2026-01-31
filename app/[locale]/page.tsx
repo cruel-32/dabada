@@ -24,6 +24,9 @@ import { LanguageSelector } from "@/components/language-selector";
 import { authClient } from "@/lib/auth-client";
 import { Download, Youtube, Instagram, LogIn, LogOut, User, Clock, AlertCircle } from "lucide-react";
 import { useDownload } from "@/hooks/use-download";
+import { Capacitor } from "@capacitor/core";
+import { Browser } from "@capacitor/browser";
+import { App } from "@capacitor/app";
 
 type Platform = "youtube" | "instagram";
 
@@ -46,7 +49,7 @@ export default function Home() {
   const [platform, setPlatform] = useState<Platform>("youtube");
   const [url, setUrl] = useState("");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending, refetch } = authClient.useSession();
   const {
     status,
     error,
@@ -64,6 +67,60 @@ export default function Home() {
       return () => clearTimeout(timer);
     }
   }, [status, reset]);
+
+  // 앱에서 딥링크로 인증 코드를 받았을 때 처리
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
+
+    const handleAppUrlOpen = async (event: { url: string }) => {
+      const url = new URL(event.url);
+
+      // dabada://auth/callback?code=xxx 형태의 URL 처리
+      if (url.pathname === "/auth/callback" || url.host === "auth") {
+        const code = url.searchParams.get("code");
+        const error = url.searchParams.get("error");
+
+        // 인앱 브라우저 닫기
+        await Browser.close();
+
+        if (error) {
+          console.error("Login error:", error);
+          return;
+        }
+
+        if (code) {
+          try {
+            // 교환 API 호출하여 세션 쿠키 설정
+            const response = await fetch("/api/auth/exchange", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+              body: JSON.stringify({ code }),
+            });
+
+            if (response.ok) {
+              // 세션 새로고침
+              await refetch?.();
+              setIsLoginOpen(false);
+            }
+          } catch (err) {
+            console.error("Session exchange error:", err);
+          }
+        }
+      }
+    };
+
+    // App URL listener 등록
+    const listener = App.addListener("appUrlOpen", handleAppUrlOpen);
+
+    return () => {
+      listener.then((l) => l.remove());
+    };
+  }, [refetch]);
 
   const handleDownload = async () => {
     if (!url.trim()) {
@@ -84,6 +141,25 @@ export default function Home() {
 
   const handleOAuthLogin = async (provider: "google" | "apple") => {
     try {
+      if (Capacitor.isNativePlatform()) {
+        // 앱에서는 인앱 브라우저로 웹 OAuth 진행
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://dabada.cloudish.cloud";
+        const callbackUrl = `/${locale}/auth/login-complete`;
+        const signInUrl = `${baseUrl}/api/auth/sign-in/social?provider=${provider}&callbackURL=${encodeURIComponent(callbackUrl)}`;
+
+        // 로그인 다이얼로그 닫기
+        setIsLoginOpen(false);
+
+        // 인앱 브라우저 열기
+        await Browser.open({
+          url: signInUrl,
+          presentationStyle: "popover",
+        });
+
+        return;
+      }
+
+      // 웹에서는 기존 방식 유지
       await authClient.signIn.social({
         provider: provider,
         callbackURL: `/${locale}`,

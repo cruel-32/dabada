@@ -4,6 +4,18 @@
 	"webDir": "public",
 	"server": {
 		"url": "https://dabada.cloudish.cloud",
-		"cleartext": true
+		"cleartext": false
+	},
+	"allowNavigation": [
+		"dabada.cloudish.cloud",
+		"accounts.google.com",
+		"*.google.com",
+		"*.googleusercontent.com",
+		"*.gstatic.com",
+		"appleid.apple.com",
+		"*.apple.com"
+	],
+	"plugins": {
+		"App": {}
 	}
 }

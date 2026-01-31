@@ -37,6 +37,16 @@
       "apple": "Apple로 로그인",
       "googleError": "Google 로그인에 실패했습니다.",
       "appleError": "Apple 로그인에 실패했습니다."
+    },
+    "loginComplete": {
+      "title": "로그인 완료",
+      "description": "로그인이 성공적으로 완료되었습니다. 완료 버튼을 눌러 앱으로 돌아가세요.",
+      "button": "완료",
+      "closing": "앱으로 이동 중...",
+      "autoClose": "잠시 후 자동으로 앱으로 이동합니다.",
+      "errorTitle": "로그인 실패",
+      "errorDescription": "로그인 중 문제가 발생했습니다. 다시 시도해주세요.",
+      "returnToApp": "앱으로 돌아가기"
     }
   },
   "theme": {

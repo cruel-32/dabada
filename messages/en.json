@@ -37,6 +37,16 @@
       "apple": "Sign in with Apple",
       "googleError": "Failed to sign in with Google.",
       "appleError": "Failed to sign in with Apple."
+    },
+    "loginComplete": {
+      "title": "Login Complete",
+      "description": "You have successfully signed in. Tap the button below to return to the app.",
+      "button": "Done",
+      "closing": "Returning to app...",
+      "autoClose": "You will be redirected to the app shortly.",
+      "errorTitle": "Login Failed",
+      "errorDescription": "Something went wrong during login. Please try again.",
+      "returnToApp": "Return to App"
     }
   },
   "theme": {

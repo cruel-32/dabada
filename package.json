@@ -20,6 +20,15 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.1",
+    "@capacitor-community/media": "^9.0.1",
+    "@capacitor/android": "^8.0.1",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/browser": "^8.0.0",
+    "@capacitor/cli": "^8.0.1",
+    "@capacitor/core": "^8.0.1",
+    "@capacitor/filesystem": "^8.1.0",
+    "@capacitor/ios": "^8.0.1",
+    "@capgo/capacitor-social-login": "^8.2.16",
     "@distube/ytdl-core": "^4.16.12",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
@@ -43,6 +52,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "tailwind-merge": "^3.4.0",
+    "xmlbuilder": "^15.1.1",
     "yt-dlp-wrap": "^2.3.12",
     "zod": "^4.3.5"
   },

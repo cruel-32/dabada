@@ -25,7 +25,19 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>dabada</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
 				<string>io.dabada.app</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.709885664090-7ulu8ec7cpskkg3hv60cms8dg8qirh2t</string>
 			</array>
 		</dict>
 	</array>
