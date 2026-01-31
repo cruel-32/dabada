@@ -17,14 +17,20 @@ export default function LoginStartPage() {
       return;
     }
 
-    // 소셜 로그인 시작 - 이 함수가 OAuth provider로 리다이렉트함
-    authClient.signIn.social({
-      provider,
-      callbackURL,
-    }).catch((err) => {
-      console.error("Login error:", err);
-      setError("Login failed");
-    });
+    const startLogin = async () => {
+      try {
+        // 소셜 로그인 시작 - 이 함수가 OAuth provider로 리다이렉트함
+        await authClient.signIn.social({
+          provider,
+          callbackURL,
+        });
+      } catch (err) {
+        console.error("Login error:", err);
+        setError("Login failed");
+      }
+    };
+
+    startLogin();
   }, [searchParams]);
 
   if (error) {
