@@ -142,24 +142,17 @@ export default function Home() {
   const handleOAuthLogin = async (provider: "google" | "apple") => {
     try {
       if (Capacitor.isNativePlatform()) {
-
-        const response = await authClient.signIn.social({
-          provider: provider,
-          callbackURL: `/${locale}/auth/login-complete`,
-          // callbackURL: `dabada://${locale}/auth/login-complete`,
-          // callbackURL: `dabada://${locale}`,
-          disableRedirect: true,
-        });
-
-        console.log('response :::::: ', response)
-        console.log('response.data.url :::::: ', response.data.url)
+        const baseUrl =
+          process.env.NEXT_PUBLIC_APP_URL || "https://dabada.cloudish.cloud";
+        const callbackUrl = `${baseUrl}/${locale}/auth/login-complete`;
+        const signInUrl = `${baseUrl}/${locale}/auth/login-start?provider=${provider}&callbackURL=${encodeURIComponent(callbackUrl)}`;
 
         // 인앱 브라우저 열기
         await Browser.open({
-          url: response.data.url,
+          url: signInUrl,
           presentationStyle: "fullscreen",
         });
-        
+
         return;
       }
 
