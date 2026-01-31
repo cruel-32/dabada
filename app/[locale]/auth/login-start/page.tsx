@@ -11,6 +11,9 @@ export default function LoginStartPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('provider :::::: ', provider)
+    console.log('callbackURL :::::: ', callbackURL)
+
     if (!provider) {
       return;
     }
