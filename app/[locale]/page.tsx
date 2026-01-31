@@ -149,6 +149,8 @@ export default function Home() {
           disableRedirect: true,
         });
 
+        console.log('response.data.url :::::: ', response.data.url)
+
         // 인앱 브라우저 열기
         await Browser.open({
           url: response.data.url,

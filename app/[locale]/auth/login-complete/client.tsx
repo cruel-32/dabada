@@ -26,17 +26,6 @@ export default function LoginCompleteClient({ authCode }: LoginCompleteClientPro
     }
   };
 
-  // 자동으로 3초 후 딥링크 호출 (사용자가 버튼을 누르지 않을 경우 대비)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!isClosing) {
-        handleComplete();
-      }
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [isClosing, authCode]);
-
   if (!authCode) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
