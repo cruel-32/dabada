@@ -114,6 +114,8 @@ export default function Home() {
               : { scopes: ["email", "name"] },
         });
 
+        console.log('loginResult :::::: ', loginResult)
+
         if (loginResult.provider === "google") {
           const result = loginResult.result;
           if (!("responseType" in result) || result.responseType !== "online") {
@@ -122,27 +124,34 @@ export default function Home() {
           if (!("idToken" in result) || !result.idToken) {
             throw new Error("Google ID token이 없습니다.");
           }
-          await fetch("/api/auth/sign-in/social", {
+          
+          const body = JSON.stringify({
+            provider: "google",
+            idToken: {
+              token: result.idToken,
+              accessToken:
+                "accessToken" in result
+                  ? result.accessToken?.token
+                  : undefined,
+              refreshToken:
+                "accessToken" in result
+                  ? result.accessToken?.refreshToken
+                  : undefined,
+            },
+          });
+
+          console.log('body :::::: ', body)
+
+          const response = await fetch("/api/auth/sign-in/social", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             credentials: "include",
-            body: JSON.stringify({
-              provider: "google",
-              idToken: {
-                token: result.idToken,
-                accessToken:
-                  "accessToken" in result
-                    ? result.accessToken?.token
-                    : undefined,
-                refreshToken:
-                  "accessToken" in result
-                    ? result.accessToken?.refreshToken
-                    : undefined,
-              },
-            }),
+            body,
           });
+          console.log('response :::::: ', response)
+          console.log('response.json() :::::: ', await response.json())
           await refetch?.();
           return;
         }
@@ -152,27 +161,34 @@ export default function Home() {
           if (!("idToken" in result) || !result.idToken) {
             throw new Error("Apple ID token이 없습니다.");
           }
-          await fetch("/api/auth/sign-in/social", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({
-              provider: "apple",
-              idToken: {
-                token: result.idToken,
-                accessToken:
-                  "accessToken" in result
-                    ? result.accessToken?.token
-                    : undefined,
+
+          const body = JSON.stringify({
+            provider: "apple",
+            idToken: {
+              token: result.idToken,
+              accessToken:
+                "accessToken" in result
+                  ? result.accessToken?.token
+                  : undefined,
                 refreshToken:
                   "accessToken" in result
                     ? result.accessToken?.refreshToken
                     : undefined,
               },
-            }),
+            });
+
+          console.log('body :::::: ', body)
+
+          const response = await fetch("/api/auth/sign-in/social", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body,
           });
+          console.log('response :::::: ', response)
+          console.log('response.json() :::::: ', await response.json())
           await refetch?.();
           return;
         }
