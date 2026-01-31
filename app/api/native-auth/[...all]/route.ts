@@ -5,21 +5,24 @@ const handler = toNextJsHandler(authNative);
 
 const logNativeAuthRequest = (req: Request) => {
   const headers = req.headers;
-  console.log("[NativeAuth] request", {
+  console.log('[NativeAuth] request', {
     url: req.url,
     method: req.method,
-    origin: headers.get("origin"),
-    referer: headers.get("referer"),
-    userAgent: headers.get("user-agent"),
+    origin: headers.get('origin'),
+    referer: headers.get('referer'),
+    userAgent: headers.get('user-agent'),
   });
 };
 
-export const GET = (req: Request) => {
+const getHandler = handler.GET as (req: Request) => Promise<Response>;
+const postHandler = handler.POST as (req: Request) => Promise<Response>;
+
+export const GET = async (req: Request): Promise<Response> => {
   logNativeAuthRequest(req);
-  return handler.GET(req);
+  return getHandler(req);
 };
 
-export const POST = (req: Request) => {
+export const POST = async (req: Request): Promise<Response> => {
   logNativeAuthRequest(req);
-  return handler.POST(req);
+  return postHandler(req);
 };
