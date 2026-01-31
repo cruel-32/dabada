@@ -151,7 +151,6 @@ export default function Home() {
             body,
           });
           console.log('response :::::: ', response)
-          console.log('response.json() :::::: ', await response.json())
           await refetch?.();
           return;
         }
@@ -188,7 +187,6 @@ export default function Home() {
             body,
           });
           console.log('response :::::: ', response)
-          console.log('response.json() :::::: ', await response.json())
           await refetch?.();
           return;
         }
