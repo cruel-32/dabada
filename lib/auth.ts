@@ -5,6 +5,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "@/db/schema";
+import { decodeProtectedHeader, importJWK, jwtVerify } from "jose";
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -16,6 +17,37 @@ const publicBaseUrl =
   process.env.AUTH_URL ||
   process.env.NEXT_PUBLIC_APP_URL ||
   "http://localhost:3030";
+
+const googleWebClientId =
+  process.env.GOOGLE_WEB_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || "";
+
+const googleAllowedAudiences = Array.from(
+  new Set(
+    [
+      googleWebClientId,
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_IOS_CLIENT_ID,
+      process.env.GOOGLE_ANDROID_CLIENT_ID,
+    ].filter(Boolean) as string[]
+  )
+);
+
+const getGooglePublicKey = async (
+  kid: string
+): Promise<CryptoKey | Uint8Array> => {
+  const response = await fetch("https://www.googleapis.com/oauth2/v3/certs");
+  const data = (await response.json()) as {
+    keys?: { kid: string; alg: string }[];
+  };
+  if (!data?.keys) {
+    throw new Error("Google JWKs not found");
+  }
+  const jwk = data.keys.find((key) => key.kid === kid);
+  if (!jwk) {
+    throw new Error(`Google JWK with kid ${kid} not found`);
+  }
+  return (await importJWK(jwk, jwk.alg)) as CryptoKey | Uint8Array;
+};
 
 export const auth: Auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -35,12 +67,42 @@ export const auth: Auth = betterAuth({
   },
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientId: googleWebClientId,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      verifyIdToken: async (token: string, nonce?: string) => {
+        try {
+          const { kid, alg: jwtAlg } = decodeProtectedHeader(token);
+          if (!kid || !jwtAlg) return false;
+          const audience = googleAllowedAudiences.length
+            ? googleAllowedAudiences
+            : googleWebClientId || undefined;
+          const key = (await getGooglePublicKey(kid)) as unknown as Parameters<
+            typeof jwtVerify
+          >[1];
+          const { payload: jwtClaims } = await jwtVerify(token, key, {
+              algorithms: [jwtAlg],
+              issuer: ["https://accounts.google.com", "accounts.google.com"],
+              audience,
+              maxTokenAge: "1h",
+          });
+          if (nonce && jwtClaims.nonce !== nonce) return false;
+          return true;
+        } catch (error) {
+          console.error("[GoogleIdToken] verification failed", {
+            message: error instanceof Error ? error.message : String(error),
+          });
+          return false;
+        }
+      },
     },
     apple: {
       clientId: process.env.APPLE_ID as string, 
       clientSecret: process.env.APPLE_CLIENT_SECRET as string, 
+      audience: [
+        process.env.APPLE_ID,
+        process.env.APPLE_APP_BUNDLE_ID,
+        process.env.APPLE_BUNDLE_ID,
+      ].filter(Boolean) as string[],
 
       // clientId: process.env.APPLE_ID!,
       // teamId: process.env.APPLE_TEAM_ID!,
@@ -56,6 +118,9 @@ export const auth: Auth = betterAuth({
     "http://localhost:3030",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3030",
+    // Capacitor webview origins
+    "capacitor://localhost",
+    "ionic://localhost",
     // Docker network
     "http://172.19.0.2:3030",
     "http://172.19.0.3:3030",
@@ -69,6 +134,15 @@ export const auth: Auth = betterAuth({
   ],
   advanced: {
     useSecureCookies: process.env.NODE_ENV === "production", // 프로덕션에서만 보안 쿠키 사용 (로컬/HTTP 테스트 용이)
+  },
+  onAPIError: {
+    onError(error: unknown, ctx: { request?: Request } | undefined) {
+      const requestInfo = {
+        path: ctx?.request?.url,
+        method: ctx?.request?.method,
+      };
+      console.error("[AuthAPIError]", requestInfo, error);
+    },
   },
   callbacks: {
     async redirect({ baseUrl }: { url: string; baseUrl: string }) {
