@@ -18,13 +18,11 @@ const getHandler = handler.GET as (req: Request) => Promise<Response>;
 const postHandler = handler.POST as (req: Request) => Promise<Response>;
 
 export const GET = async (req: Request): Promise<Response> => {
-  console.log("NATIVE AUTH HANDLER CALLED FOR URL:", req.url);
   logNativeAuthRequest(req);
   return getHandler(req);
 };
 
 export const POST = async (req: Request): Promise<Response> => {
-  console.log("NATIVE AUTH HANDLER CALLED FOR URL:", req.url);
   logNativeAuthRequest(req);
   return postHandler(req);
 };

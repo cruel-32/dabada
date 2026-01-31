@@ -49,21 +49,21 @@ const getGooglePublicKey = async (
   return (await importJWK(jwk, jwk.alg)) as CryptoKey | Uint8Array;
 };
 
-const authOptions = {
+const baseAuthOptions = {
   database: drizzleAdapter(db, {
-    provider: "pg",
+    provider: 'pg',
   }),
-  user: { // Add this user configuration
+  user: {
     additionalFields: {
       role: {
-        type: "string",
+        type: 'string',
         required: false,
-        defaultValue: "user",
+        defaultValue: 'user',
       },
     },
   },
   emailAndPassword: {
-    enabled: false, // OAuth만 사용
+    enabled: false,
   },
   socialProviders: {
     google: {
@@ -80,15 +80,15 @@ const authOptions = {
             typeof jwtVerify
           >[1];
           const { payload: jwtClaims } = await jwtVerify(token, key, {
-              algorithms: [jwtAlg],
-              issuer: ["https://accounts.google.com", "accounts.google.com"],
-              audience,
-              maxTokenAge: "1h",
+            algorithms: [jwtAlg],
+            issuer: ['https://accounts.google.com', 'accounts.google.com'],
+            audience,
+            maxTokenAge: '1h',
           });
           if (nonce && jwtClaims.nonce !== nonce) return false;
           return true;
         } catch (error) {
-          console.error("[GoogleIdToken] verification failed", {
+          console.error('[GoogleIdToken] verification failed', {
             message: error instanceof Error ? error.message : String(error),
           });
           return false;
@@ -96,44 +96,33 @@ const authOptions = {
       },
     },
     apple: {
-      clientId: process.env.APPLE_ID as string, 
-      clientSecret: process.env.APPLE_CLIENT_SECRET as string, 
+      clientId: process.env.APPLE_ID as string,
+      clientSecret: process.env.APPLE_CLIENT_SECRET as string,
       audience: [
         process.env.APPLE_ID,
         process.env.APPLE_APP_BUNDLE_ID,
         process.env.APPLE_BUNDLE_ID,
       ].filter(Boolean) as string[],
-
-      // clientId: process.env.APPLE_ID!,
-      // teamId: process.env.APPLE_TEAM_ID!,
-      // keyId: process.env.APPLE_KEY_ID!,
-      // privateKey: process.env.APPLE_PRIVATE_KEY?.replace(/\\n/g, '\n') || '',
     },
   },
   baseURL: publicBaseUrl,
-  basePath: "/api/auth",
   trustedOrigins: [
-    // Local development
-    "http://localhost:3000",
-    "http://localhost:3030",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:3030",
-    // Capacitor webview origins
-    "capacitor://localhost",
-    "ionic://localhost",
-    // Docker network
-    "http://172.19.0.2:3030",
-    "http://172.19.0.3:3030",
-    // LAN IPs (for mobile testing)
-    "http://172.30.1.43:3030",
-    // Production
-    "https://dabada.cloudish.cloud",
-    "http://localhost",
-    "https://localhost",
+    'http://localhost:3000',
+    'http://localhost:3030',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3030',
+    'capacitor://localhost',
+    'ionic://localhost',
+    'http://172.19.0.2:3030',
+    'http://172.19.0.3:3030',
+    'http://172.30.1.43:3030',
+    'https://dabada.cloudish.cloud',
+    'http://localhost',
+    'https://localhost',
     publicBaseUrl,
   ],
   advanced: {
-    useSecureCookies: process.env.NODE_ENV === "production", // 프로덕션에서만 보안 쿠키 사용 (로컬/HTTP 테스트 용이)
+    useSecureCookies: process.env.NODE_ENV === 'production',
   },
   onAPIError: {
     onError(error: unknown, ctx: { request?: Request } | undefined) {
@@ -141,7 +130,7 @@ const authOptions = {
         path: ctx?.request?.url,
         method: ctx?.request?.method,
       };
-      console.error("[AuthAPIError]", requestInfo, error);
+      console.error('[AuthAPIError]', requestInfo, error);
     },
   },
   callbacks: {
@@ -151,15 +140,22 @@ const authOptions = {
   },
 };
 
-export const auth: Auth = betterAuth(authOptions);
+const authOptions: any = {
+  ...baseAuthOptions,
+  basePath: '/api/auth',
+};
 
-export const authNative: Auth = betterAuth({
-  ...authOptions,
-  basePath: "/api/native-auth",
+const authNativeOptions: any = {
+  ...baseAuthOptions,
+  basePath: '/api/native-auth',
   advanced: {
-    ...authOptions.advanced,
+    ...baseAuthOptions.advanced,
     disableCSRFCheck: true,
     disableOriginCheck: true,
   },
-});
+};
+
+export const auth: Auth = betterAuth(authOptions);
+
+export const authNative: Auth = betterAuth(authNativeOptions);
 
