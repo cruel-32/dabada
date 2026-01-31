@@ -18,32 +18,53 @@ export default function LoginStartPage() {
 
     const startLogin = async () => {
       try {
+        console.log("Starting login with provider:", provider, "callbackURL:", callbackURL);
+
         // better-auth 소셜 로그인 API 직접 호출
         const response = await fetch("/api/auth/sign-in/social", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({
             provider,
             callbackURL,
           }),
         });
 
-        const data = await response.json();
+        console.log("Response status:", response.status);
+        console.log("Response headers:", Object.fromEntries(response.headers.entries()));
 
-        // 응답에서 리다이렉트 URL 추출하여 직접 이동
-        if (data.url) {
-          window.location.href = data.url;
-        } else if (data.redirect) {
-          window.location.href = data.redirect;
-        } else {
-          console.error("No redirect URL in response:", data);
-          setError("Login failed - no redirect URL");
+        // 리다이렉트 응답인 경우
+        if (response.redirected) {
+          console.log("Redirected to:", response.url);
+          window.location.href = response.url;
+          return;
+        }
+
+        const text = await response.text();
+        console.log("Response text:", text);
+
+        try {
+          const data = JSON.parse(text);
+          console.log("Parsed data:", data);
+
+          // 응답에서 리다이렉트 URL 추출하여 직접 이동
+          if (data.url) {
+            window.location.href = data.url;
+          } else if (data.redirect) {
+            window.location.href = data.redirect;
+          } else {
+            setError(`Login failed - response: ${JSON.stringify(data)}`);
+          }
+        } catch {
+          // JSON이 아닌 경우 (HTML 등)
+          setError(`Unexpected response: ${text.substring(0, 200)}`);
         }
       } catch (err) {
         console.error("Login error:", err);
-        setError("Login failed");
+        setError(`Login failed: ${err}`);
       }
     };
 
