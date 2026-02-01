@@ -49,6 +49,35 @@ const getGooglePublicKey = async (
   return (await importJWK(jwk, jwk.alg)) as CryptoKey | Uint8Array;
 };
 
+const appleAllowedAudiences = Array.from(
+  new Set(
+    [
+      process.env.APPLE_ID,
+      process.env.APPLE_APP_BUNDLE_ID,
+      process.env.APPLE_BUNDLE_ID,
+      process.env.APPLE_IOS_CLIENT_ID,
+      process.env.NEXT_PUBLIC_APPLE_CLIENT_ID,
+    ].filter(Boolean) as string[]
+  )
+);
+
+const getApplePublicKey = async (
+  kid: string
+): Promise<CryptoKey | Uint8Array> => {
+  const response = await fetch("https://appleid.apple.com/auth/keys");
+  const data = (await response.json()) as {
+    keys?: { kid: string; alg: string }[];
+  };
+  if (!data?.keys) {
+    throw new Error("Apple JWKs not found");
+  }
+  const jwk = data.keys.find((key) => key.kid === kid);
+  if (!jwk) {
+    throw new Error(`Apple JWK with kid ${kid} not found`);
+  }
+  return (await importJWK(jwk, jwk.alg)) as CryptoKey | Uint8Array;
+};
+
 const baseAuthOptions = {
   database: drizzleAdapter(db, {
     provider: 'pg',
@@ -103,6 +132,31 @@ const baseAuthOptions = {
         process.env.APPLE_APP_BUNDLE_ID,
         process.env.APPLE_BUNDLE_ID,
       ].filter(Boolean) as string[],
+      verifyIdToken: async (token: string, nonce?: string) => {
+        try {
+          const { kid, alg: jwtAlg } = decodeProtectedHeader(token);
+          if (!kid || !jwtAlg) return false;
+          const audience = appleAllowedAudiences.length
+            ? appleAllowedAudiences
+            : process.env.APPLE_ID || undefined;
+          const key = (await getApplePublicKey(kid)) as unknown as Parameters<
+            typeof jwtVerify
+          >[1];
+          const { payload: jwtClaims } = await jwtVerify(token, key, {
+            algorithms: [jwtAlg],
+            issuer: "https://appleid.apple.com",
+            audience,
+            maxTokenAge: "1h",
+          });
+          if (nonce && jwtClaims.nonce !== nonce) return false;
+          return true;
+        } catch (error) {
+          console.error("[AppleIdToken] verification failed", {
+            message: error instanceof Error ? error.message : String(error),
+          });
+          return false;
+        }
+      },
     },
   },
   baseURL: publicBaseUrl,
