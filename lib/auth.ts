@@ -5,7 +5,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "@/db/schema";
-import { decodeProtectedHeader, importJWK, jwtVerify } from "jose";
+import { decodeJwt, decodeProtectedHeader, importJWK, jwtVerify } from "jose";
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -49,14 +49,23 @@ const getGooglePublicKey = async (
   return (await importJWK(jwk, jwk.alg)) as CryptoKey | Uint8Array;
 };
 
+const appleBundleId =
+  process.env.APPLE_APP_BUNDLE_ID ||
+  process.env.APPLE_BUNDLE_ID ||
+  process.env.APPLE_IOS_BUNDLE_ID ||
+  process.env.CAPACITOR_APP_ID ||
+  "io.dabada.app";
+
 const appleAllowedAudiences = Array.from(
   new Set(
     [
       process.env.APPLE_ID,
       process.env.APPLE_APP_BUNDLE_ID,
       process.env.APPLE_BUNDLE_ID,
+      process.env.APPLE_IOS_BUNDLE_ID,
       process.env.APPLE_IOS_CLIENT_ID,
       process.env.NEXT_PUBLIC_APPLE_CLIENT_ID,
+      appleBundleId,
     ].filter(Boolean) as string[]
   )
 );
@@ -151,8 +160,17 @@ const baseAuthOptions = {
           if (nonce && jwtClaims.nonce !== nonce) return false;
           return true;
         } catch (error) {
+          const decoded = (() => {
+            try {
+              return decodeJwt(token);
+            } catch {
+              return null;
+            }
+          })();
           console.error("[AppleIdToken] verification failed", {
             message: error instanceof Error ? error.message : String(error),
+            aud: decoded && "aud" in decoded ? decoded.aud : undefined,
+            iss: decoded && "iss" in decoded ? decoded.iss : undefined,
           });
           return false;
         }
