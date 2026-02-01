@@ -81,7 +81,6 @@ export default function Home() {
       },
       apple: {
         clientId: process.env.NEXT_PUBLIC_APPLE_CLIENT_ID,
-        redirectUrl: process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI,
         useProperTokenExchange: true,
       },
     });
