@@ -143,6 +143,10 @@ const baseAuthOptions = {
 const authOptions: any = {
   ...baseAuthOptions,
   basePath: '/api/auth',
+  advanced: {
+    ...baseAuthOptions.advanced,
+    disableOriginCheck: true,
+  },
 };
 
 const authNativeOptions: any = {
