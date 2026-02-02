@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
 import { requestDownload, triggerFileDownload, checkCooldown, DownloadResponse, resetCooldown, saveVideoToNativeGallery } from "@/lib/download-api";
 import { DOWNLOAD_COOLDOWN_SECONDS } from "@/lib/config";
 import { authClient } from "@/lib/auth-client";
@@ -34,15 +34,15 @@ export function useDownload(): UseDownloadReturn {
   const [error, setError] = useState<string | null>(null);
   const [cooldownUntil, setCooldownUntil] = useState<Date | null>(null);
   const [remainingCooldownSeconds, setRemainingCooldownSeconds] = useState(0);
-  const [isCapacitor, setIsCapacitor] = useState(false);
+  // Capacitor 여부 확인 (React 18/19 way to avoid cascading renders)
+  const isCapacitor = useSyncExternalStore(
+    () => () => {}, // 플랫폼은 변경되지 않으므로 subscribe 불필요
+    () => Capacitor.isNativePlatform(),
+    () => false // SSR 브라우저 기본값
+  );
 
   // Get session data
   const { data: session } = authClient.useSession();
-
-  // Capacitor 여부 확인
-  useEffect(() => {
-    setIsCapacitor(Capacitor.isNativePlatform());
-  }, []);
 
   // 초기 로드 시 쿨다운 상태 확인
   useEffect(() => {
@@ -59,10 +59,13 @@ export function useDownload(): UseDownloadReturn {
   // 쿨다운 타이머 업데이트
   useEffect(() => {
     if (!cooldownUntil) {
-      setRemainingCooldownSeconds(0);
-      if (status === "cooldown" || status === "watching_ad") {
-        setStatus("idle");
-      }
+      // Use microtask to avoid synchronous setState warning during commit phase
+      queueMicrotask(() => {
+        setRemainingCooldownSeconds(0);
+        if (status === "cooldown" || status === "watching_ad") {
+          setStatus("idle");
+        }
+      });
       return;
     }
 
@@ -83,12 +86,12 @@ export function useDownload(): UseDownloadReturn {
       }
     };
 
-    // 즉시 한 번 실행
-    updateRemainingTime();
-
+    // Use queueMicrotask for the initial update to avoid synchronous setState warning
+    queueMicrotask(updateRemainingTime);
+    
     // 1초마다 업데이트
     const interval = setInterval(updateRemainingTime, 1000);
-
+    
     return () => clearInterval(interval);
   }, [cooldownUntil, status]);
 
@@ -188,7 +191,7 @@ export function useDownload(): UseDownloadReturn {
         setStatus("error");
       }
     },
-    [cooldownUntil, status, session, isCapacitor]
+    [isCapacitor, session, cooldownUntil]
   );
 
   /**
