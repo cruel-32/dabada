@@ -80,6 +80,27 @@ export async function requestDownload(
 }
 
 /**
+ * 쿨다운 리셋 요청 (광고 시청 후)
+ */
+export async function resetCooldown(): Promise<{ success: boolean; error?: string }> {
+  try {
+    const baseURL = getApiBaseURL();
+    const response = await fetch(`${baseURL}/api/download/reset-cooldown`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Network error",
+    };
+  }
+}
+
+/**
  * 파일 다운로드 트리거
  */
 export function triggerFileDownload(downloadUrl: string, filename?: string) {

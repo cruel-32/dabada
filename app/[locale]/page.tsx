@@ -22,7 +22,7 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSelector } from "@/components/language-selector";
 import { authClient } from "@/lib/auth-client";
-import { Download, Youtube, Instagram, LogIn, LogOut, User, Clock, AlertCircle } from "lucide-react";
+import { Download, Youtube, Instagram, LogIn, LogOut, User, Clock, AlertCircle, Play } from "lucide-react";
 import { useDownload } from "@/hooks/use-download";
 import { Capacitor } from "@capacitor/core";
 import { SocialLogin } from "@capgo/capacitor-social-login";
@@ -54,7 +54,9 @@ export default function Home() {
     status,
     error,
     remainingCooldownSeconds,
+    isCapacitor,
     download,
+    watchAdAndResetCooldown,
     reset,
   } = useDownload();
 
@@ -473,27 +475,41 @@ export default function Home() {
 
             {/* Download Button */}
             <Button
-              onClick={handleDownload}
+              onClick={isCooldown && isCapacitor ? watchAdAndResetCooldown : handleDownload}
               disabled={
                 status === "checking" ||
+                status === "watching_ad" ||
                 !url.trim() ||
-                isCooldown
+                (isCooldown && !isCapacitor)
               }
               className="w-full"
               size="lg"
+              variant={isCooldown && isCapacitor ? "secondary" : "default"}
             >
               {status === "checking" ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                   {t("home.download.checking")}
                 </>
-              ) : isCooldown ? (
+              ) : status === "watching_ad" ? (
                 <>
-                  <Clock className="h-4 w-4" />
-                  {t("home.download.cooldownButtonText", {
-                    time: formatCooldownTime(remainingCooldownSeconds),
-                  })}
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  광고 시청 중...
                 </>
+              ) : isCooldown ? (
+                isCapacitor ? (
+                  <>
+                    <Play className="h-4 w-4" fill="currentColor" />
+                    광고 보고 바로 다운로드
+                  </>
+                ) : (
+                  <>
+                    <Clock className="h-4 w-4" />
+                    {t("home.download.cooldownButtonText", {
+                      time: formatCooldownTime(remainingCooldownSeconds),
+                    })}
+                  </>
+                )
               ) : (
                 <>
                   <Download className="h-4 w-4" />
