@@ -44,10 +44,13 @@ export async function downloadVideo(
     "--user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
     "--add-header", "Accept:text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
     "--add-header", "Accept-Language:en-US,en;q=0.9",
+    "--no-cache-dir",
   ];
 
   if (platform === "youtube") {
-    commonOptions.push("--extractor-args", "youtube:player-client=web;player_skip=web_embedded_player,mweb,tv");
+    // ios, android 클라이언트를 추가하여 SABR 스트리밍 및 n-challenge 이슈 대응
+    commonOptions.push("--extractor-args", "youtube:player-client=ios,android,web");
+    commonOptions.push("--allow-unplayable-formats");
   }
 
   const filenameOptions = [
