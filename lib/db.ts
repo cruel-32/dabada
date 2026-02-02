@@ -52,6 +52,20 @@ export async function getLastDownloadTime(userId: string) {
 }
 
 /**
+ * 사용자 쿨다운 초기화 (마지막 다운로드 기록 삭제)
+ */
+export async function clearUserCooldown(userId: string) {
+  const lastDownload = await getLastDownloadTime(userId);
+  if (lastDownload) {
+    await db
+      .delete(downloadLogs)
+      .where(eq(downloadLogs.id, lastDownload.id));
+    return true;
+  }
+  return false;
+}
+
+/**
  * 비디오 레코드 생성
  */
 export async function createVideoRecord(data: {
