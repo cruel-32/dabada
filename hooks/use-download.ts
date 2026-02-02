@@ -31,6 +31,7 @@ export function useDownload(): UseDownloadReturn {
   const [error, setError] = useState<string | null>(null);
   const [cooldownUntil, setCooldownUntil] = useState<Date | null>(null);
   const [remainingCooldownSeconds, setRemainingCooldownSeconds] = useState(0);
+  
   const isCapacitor = useSyncExternalStore(
     () => () => {}, 
     () => Capacitor.isNativePlatform(),
@@ -107,7 +108,9 @@ export function useDownload(): UseDownloadReturn {
 
   const download = useCallback(
     async (url: string, platform: "youtube" | "instagram") => {
-      if (cooldownUntil && new Date() < cooldownUntil) {
+      const isAdmin = session?.user?.role === "admin";
+
+      if (!isAdmin && cooldownUntil && new Date() < cooldownUntil) {
         return;
       }
 
@@ -118,7 +121,7 @@ export function useDownload(): UseDownloadReturn {
         const response: DownloadResponse = await requestDownload(url, platform);
 
         if (!response.success) {
-          if (response.cooldownUntil) {
+          if (response.cooldownUntil && !isAdmin) {
             const cooldownDate = new Date(response.cooldownUntil);
             setCooldownUntil(cooldownDate);
             setStatus("cooldown");
@@ -130,23 +133,15 @@ export function useDownload(): UseDownloadReturn {
         }
 
         if (response.downloadUrl) {
-          const userRole = session?.user?.role;
-          const isAdmin = userRole === "admin";
-          
           if (isCapacitor) {
             setStatus("downloading");
-            try {
-              const nativeResult = await saveVideoToNativeGallery(response.downloadUrl);
-              if (!nativeResult.success) {
-                setError(nativeResult.error || "갤러리 저장에 실패했습니다.");
-                setStatus("error");
-                return;
-              }
-            } catch (nativeErr) {
-              setError("네이티브 저장 중 오류가 발생했습니다.");
+            const nativeResult = await saveVideoToNativeGallery(response.downloadUrl);
+            if (!nativeResult.success) {
+              setError(nativeResult.error || "갤러리 저장에 실패했습니다.");
               setStatus("error");
               return;
             }
+            alert("영상이 성공적으로 갤러리에 저장되었습니다.");
           } else {
             triggerFileDownload(response.downloadUrl);
           }

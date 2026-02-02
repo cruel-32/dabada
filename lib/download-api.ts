@@ -11,59 +11,41 @@ function getApiBaseURL(): string {
   if (typeof window === "undefined") {
     return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3030";
   }
-
-  // Capacitor에서는 window.location.origin이 capacitor://localhost 등일 수 있으므로
-  // 환경변수가 있다면 우선 사용
   return process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
 }
 
-async function blobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64String = reader.result as string;
-      const base64 = base64String.split(",")[1];
-      if (base64) resolve(base64);
-      else reject(new Error("Failed to parse base64"));
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-}
-
+/**
+ * 네이티브 갤러리에 비디오 저장 (Capacitor 전용 최적화)
+ */
 export async function saveVideoToNativeGallery(downloadUrl: string): Promise<{ success: boolean; error?: string }> {
   try {
-    const fsPerms = await Filesystem.checkPermissions();
-    if (fsPerms.publicStorage !== "granted") {
-      await Filesystem.requestPermissions();
-    }
-
     const baseURL = getApiBaseURL();
     const fullUrl = downloadUrl.startsWith("http") ? downloadUrl : `${baseURL}${downloadUrl}`;
-    
-    const response = await fetch(fullUrl, {
-      credentials: "include",
+    const fileName = `dabada_${Date.now()}.mp4`;
+
+    // 1. 네이티브 다운로드 (Native Streaming)
+    // Filesystem.downloadFile은 JS 스레드를 거치지 않고 직접 디스크에 스트리밍하여 대용량 파일에 적합합니다.
+    const downloadResult = await Filesystem.downloadFile({
+      url: fullUrl,
+      path: fileName,
+      directory: Directory.Cache,
+      headers: {
+        // 세션 쿠키는 Capacitor 브릿지를 통해 자동으로 전송되도록 시도됩니다.
+      }
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch video: ${response.statusText}`);
+    const fileUri = downloadResult.path;
+    if (!fileUri) {
+      throw new Error("다운로드 결과 경로를 찾을 수 없습니다.");
     }
 
-    const blob = await response.blob();
-    const base64Data = await blobToBase64(blob);
-
-    const fileName = `dabada_${Date.now()}.mp4`;
-    const savedFile = await Filesystem.writeFile({
-      path: fileName,
-      data: base64Data,
-      directory: Directory.Cache,
-    });
-
+    // 2. 미디어 갤러리(사진첩) 저장
     await Media.saveVideo({
-      path: savedFile.uri,
-      fileName: `dabada_${Date.now()}`,
+      path: fileUri,
+      fileName: fileName.replace(".mp4", ""),
     });
 
+    // 3. 캐시 삭제
     await Filesystem.deleteFile({
       path: fileName,
       directory: Directory.Cache,
@@ -71,10 +53,10 @@ export async function saveVideoToNativeGallery(downloadUrl: string): Promise<{ s
 
     return { success: true };
   } catch (error) {
-    console.error("Native save error:", error);
+    console.error("Native download/save error:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Unknown native save error",
+      error: error instanceof Error ? error.message : "네이티브 저장 중 알 수 없는 오류가 발생했습니다.",
     };
   }
 }
@@ -86,7 +68,7 @@ export async function checkCooldown(): Promise<CooldownStatus> {
   try {
     const baseURL = getApiBaseURL();
     const response = await fetch(`${baseURL}/api/download/status`, {
-      credentials: "include", // 쿠키 포함
+      credentials: "include",
     });
     if (!response.ok) {
         if (response.status === 401) {
@@ -123,7 +105,7 @@ export async function requestDownload(
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // 쿠키 포함
+      credentials: "include",
       body: JSON.stringify({ url, platform }),
     });
 
@@ -168,7 +150,7 @@ export async function resetCooldown(): Promise<{ success: boolean; error?: strin
 }
 
 /**
- * 파일 다운로드 트리거
+ * 브라우저 파일 다운로드 트리거 (웹용)
  */
 export function triggerFileDownload(downloadUrl: string, filename?: string) {
   const link = document.createElement("a");
