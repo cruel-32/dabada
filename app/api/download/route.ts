@@ -7,6 +7,7 @@ import {
   createVideoRecord,
   createDownloadLog,
   getUserRole,
+  updateLastDownloadTime,
 } from "@/lib/db";
 import { downloadVideo, getRelativeFilePath } from "@/lib/download-service";
 import { normalizeUrl } from "@/lib/utils";
@@ -146,12 +147,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 다운로드 로그 기록
+    // 다운로드 로그 기록 및 사용자 필드 업데이트
     await createDownloadLog({
       id: nanoid(),
       userId,
       videoId: video.id,
     });
+    await updateLastDownloadTime(userId);
 
     // 응답 반환
     const response = NextResponse.json({

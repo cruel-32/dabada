@@ -98,6 +98,10 @@ const baseAuthOptions = {
         required: false,
         defaultValue: 'user',
       },
+      lastDownloadAt: {
+        type: 'date',
+        required: false,
+      },
     },
   },
   emailAndPassword: {

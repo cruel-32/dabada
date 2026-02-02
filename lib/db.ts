@@ -42,27 +42,48 @@ export async function findVideoByUrl(url: string) {
  */
 export async function getLastDownloadTime(userId: string) {
   const result = await db
+    .select({ lastDownloadAt: user.lastDownloadAt })
+    .from(user)
+    .where(eq(user.id, userId))
+    .limit(1);
+
+  return result[0]?.lastDownloadAt ? { downloadedAt: result[0].lastDownloadAt } : null;
+}
+
+/**
+ * 사용자의 마지막 다운로드 시간 업데이트
+ */
+export async function updateLastDownloadTime(userId: string) {
+  await db
+    .update(user)
+    .set({ lastDownloadAt: new Date() })
+    .where(eq(user.id, userId));
+}
+
+/**
+ * 사용자 쿨다운 초기화 (마지막 다운로드 기록 삭제 및 필드 초기화)
+ */
+export async function clearUserCooldown(userId: string) {
+  // 1. user 테이블의 lastDownloadAt 초기화
+  await db
+    .update(user)
+    .set({ lastDownloadAt: null })
+    .where(eq(user.id, userId));
+
+  // 2. download_logs에서 마지막 기록 삭제 (기존 로직 호환용)
+  const lastLog = await db
     .select()
     .from(downloadLogs)
     .where(eq(downloadLogs.userId, userId))
     .orderBy(desc(downloadLogs.downloadedAt))
     .limit(1);
 
-  return result[0] || null;
-}
-
-/**
- * 사용자 쿨다운 초기화 (마지막 다운로드 기록 삭제)
- */
-export async function clearUserCooldown(userId: string) {
-  const lastDownload = await getLastDownloadTime(userId);
-  if (lastDownload) {
+  if (lastLog[0]) {
     await db
       .delete(downloadLogs)
-      .where(eq(downloadLogs.id, lastDownload.id));
-    return true;
+      .where(eq(downloadLogs.id, lastLog[0].id));
   }
-  return false;
+  return true;
 }
 
 /**
