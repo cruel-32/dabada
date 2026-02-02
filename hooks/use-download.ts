@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { requestDownload, triggerFileDownload, checkCooldown, DownloadResponse, resetCooldown } from "@/lib/download-api";
+import { requestDownload, triggerFileDownload, checkCooldown, DownloadResponse, resetCooldown, saveVideoToNativeGallery } from "@/lib/download-api";
 import { DOWNLOAD_COOLDOWN_SECONDS } from "@/lib/config";
 import { authClient } from "@/lib/auth-client";
 import { Capacitor } from "@capacitor/core";
@@ -152,7 +152,19 @@ export function useDownload(): UseDownloadReturn {
 
         // 다운로드 성공
         if (response.downloadUrl) {
-          triggerFileDownload(response.downloadUrl);
+          if (isCapacitor) {
+            // Capacitor 앱에서는 네이티브 갤러리에 저장
+            setStatus("downloading");
+            const nativeResult = await saveVideoToNativeGallery(response.downloadUrl);
+            if (!nativeResult.success) {
+              setError(nativeResult.error || "Native save failed");
+              setStatus("error");
+              return;
+            }
+          } else {
+            // 웹에서는 브라우저 다운로드 트리거
+            triggerFileDownload(response.downloadUrl);
+          }
 
           // Admin이 아닌 경우에만 쿨다운 시작
           if (session?.user?.role !== "admin") {
@@ -176,7 +188,7 @@ export function useDownload(): UseDownloadReturn {
         setStatus("error");
       }
     },
-    [cooldownUntil, status, session]
+    [cooldownUntil, status, session, isCapacitor]
   );
 
   /**
