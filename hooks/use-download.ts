@@ -26,25 +26,19 @@ export interface UseDownloadReturn {
   reset: () => void;
 }
 
-/**
- * 다운로드 상태 및 쿨다운 타이머 관리 훅
- */
 export function useDownload(): UseDownloadReturn {
   const [status, setStatus] = useState<DownloadStatus>("idle");
   const [error, setError] = useState<string | null>(null);
   const [cooldownUntil, setCooldownUntil] = useState<Date | null>(null);
   const [remainingCooldownSeconds, setRemainingCooldownSeconds] = useState(0);
-  // Capacitor 여부 확인 (React 18/19 way to avoid cascading renders)
   const isCapacitor = useSyncExternalStore(
-    () => () => {}, // 플랫폼은 변경되지 않으므로 subscribe 불필요
+    () => () => {}, 
     () => Capacitor.isNativePlatform(),
-    () => false // SSR 브라우저 기본값
+    () => false 
   );
 
-  // Get session data
   const { data: session } = authClient.useSession();
 
-  // 초기 로드 시 쿨다운 상태 확인
   useEffect(() => {
     const initCooldown = async () => {
         const status = await checkCooldown();
@@ -56,10 +50,8 @@ export function useDownload(): UseDownloadReturn {
     initCooldown();
   }, []);
 
-  // 쿨다운 타이머 업데이트
   useEffect(() => {
     if (!cooldownUntil) {
-      // Use microtask to avoid synchronous setState warning during commit phase
       queueMicrotask(() => {
         setRemainingCooldownSeconds(0);
         if (status === "cooldown" || status === "watching_ad") {
@@ -86,28 +78,18 @@ export function useDownload(): UseDownloadReturn {
       }
     };
 
-    // Use queueMicrotask for the initial update to avoid synchronous setState warning
     queueMicrotask(updateRemainingTime);
-    
-    // 1초마다 업데이트
     const interval = setInterval(updateRemainingTime, 1000);
-    
     return () => clearInterval(interval);
   }, [cooldownUntil, status]);
 
-  /**
-   * 광고 시청 및 쿨다운 초기화
-   */
   const watchAdAndResetCooldown = useCallback(async () => {
     if (!isCapacitor || status !== "cooldown") return;
 
     setStatus("watching_ad");
     
     try {
-      // TODO: 실제 광고 SDK 연동 (AdMob 등)
-      // 현재는 3초 대기하는 시뮬레이션으로 대체
       await new Promise(resolve => setTimeout(resolve, 3000));
-      
       const result = await resetCooldown();
       if (result.success) {
         setCooldownUntil(null);
@@ -123,12 +105,8 @@ export function useDownload(): UseDownloadReturn {
     }
   }, [isCapacitor, status]);
 
-  /**
-   * 다운로드 요청
-   */
   const download = useCallback(
     async (url: string, platform: "youtube" | "instagram") => {
-      // 쿨다운 중이면 요청하지 않음 (이 로직은 admin도 동일하게 적용)
       if (cooldownUntil && new Date() < cooldownUntil) {
         return;
       }
@@ -141,46 +119,48 @@ export function useDownload(): UseDownloadReturn {
 
         if (!response.success) {
           if (response.cooldownUntil) {
-            // 쿨다운 응답
             const cooldownDate = new Date(response.cooldownUntil);
             setCooldownUntil(cooldownDate);
             setStatus("cooldown");
           } else {
-            // 에러 응답
             setError(response.error || "Download failed");
             setStatus("error");
           }
           return;
         }
 
-        // 다운로드 성공
         if (response.downloadUrl) {
+          const userRole = session?.user?.role;
+          const isAdmin = userRole === "admin";
+          
           if (isCapacitor) {
-            // Capacitor 앱에서는 네이티브 갤러리에 저장
             setStatus("downloading");
-            const nativeResult = await saveVideoToNativeGallery(response.downloadUrl);
-            if (!nativeResult.success) {
-              setError(nativeResult.error || "Native save failed");
+            try {
+              const nativeResult = await saveVideoToNativeGallery(response.downloadUrl);
+              if (!nativeResult.success) {
+                setError(nativeResult.error || "갤러리 저장에 실패했습니다.");
+                setStatus("error");
+                return;
+              }
+            } catch (nativeErr) {
+              setError("네이티브 저장 중 오류가 발생했습니다.");
               setStatus("error");
               return;
             }
           } else {
-            // 웹에서는 브라우저 다운로드 트리거
             triggerFileDownload(response.downloadUrl);
           }
 
-          // Admin이 아닌 경우에만 쿨다운 시작
-          if (session?.user?.role !== "admin") {
+          if (isAdmin) {
+            setCooldownUntil(null);
+            setStatus("idle");
+          } else {
             const now = new Date();
             const newCooldownUntil = new Date(
               now.getTime() + DOWNLOAD_COOLDOWN_SECONDS * 1000
             );
             setCooldownUntil(newCooldownUntil);
             setStatus("cooldown");
-          } else {
-            // Admin인 경우, 쿨다운 타이머를 리셋하고 'idle' 상태로 유지
-            setCooldownUntil(null);
-            setStatus("idle");
           }
         } else {
           setError("Download URL not provided");
@@ -194,9 +174,6 @@ export function useDownload(): UseDownloadReturn {
     [isCapacitor, session, cooldownUntil]
   );
 
-  /**
-   * 상태 리셋
-   */
   const reset = useCallback(() => {
     setStatus("idle");
     setError(null);

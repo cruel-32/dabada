@@ -61,6 +61,7 @@ export async function saveVideoToNativeGallery(downloadUrl: string): Promise<{ s
 
     await Media.saveVideo({
       path: savedFile.uri,
+      fileName: `dabada_${Date.now()}`,
     });
 
     await Filesystem.deleteFile({

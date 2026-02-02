@@ -102,7 +102,8 @@ export default function Home() {
     await download(url, platform);
   };
 
-  const isCooldown = status === "cooldown";
+  const isAdmin = session?.user?.role === "admin";
+  const isCooldown = status === "cooldown" && !isAdmin;
   const isError = status === "error";
 
   const handleOAuthLogin = async (provider: "google" | "apple") => {
