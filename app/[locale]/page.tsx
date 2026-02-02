@@ -56,6 +56,7 @@ export default function Home() {
     remainingCooldownSeconds,
     isCapacitor,
     download,
+    progress,
     watchAdAndResetCooldown,
     reset,
   } = useDownload();
@@ -491,6 +492,11 @@ export default function Home() {
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                   {t("home.download.checking")}
+                </>
+              ) : status === "downloading" ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  {t("home.download.downloading")} {progress > 0 ? `(${progress}%)` : ""}
                 </>
               ) : status === "watching_ad" ? (
                 <>

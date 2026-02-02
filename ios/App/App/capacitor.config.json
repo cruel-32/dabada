@@ -21,7 +21,10 @@
 		"CAPBrowserPlugin",
 		"FilesystemPlugin",
 		"LocalNotificationsPlugin",
+		"SharePlugin",
 		"ToastPlugin",
+		"FilePickerPlugin",
+		"CapacitorDownloaderPlugin",
 		"SocialLoginPlugin"
 	]
 }

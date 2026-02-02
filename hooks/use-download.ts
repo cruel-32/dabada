@@ -17,6 +17,7 @@ export type DownloadStatus =
 
 export interface UseDownloadReturn {
   status: DownloadStatus;
+  progress: number;
   error: string | null;
   cooldownUntil: Date | null;
   remainingCooldownSeconds: number;
@@ -28,6 +29,7 @@ export interface UseDownloadReturn {
 
 export function useDownload(): UseDownloadReturn {
   const [status, setStatus] = useState<DownloadStatus>("idle");
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [cooldownUntil, setCooldownUntil] = useState<Date | null>(null);
   const [remainingCooldownSeconds, setRemainingCooldownSeconds] = useState(0);
@@ -135,8 +137,12 @@ export function useDownload(): UseDownloadReturn {
         if (response.downloadUrl) {
           if (isCapacitor) {
             setStatus("downloading");
+            setProgress(0);
             try {
-              const nativeResult = await saveVideoToNativeGallery(response.downloadUrl);
+              const nativeResult = await saveVideoToNativeGallery(
+                response.downloadUrl,
+                (p) => setProgress(p)
+              );
               if (!nativeResult.success) {
                 setError(nativeResult.error || "갤러리 저장에 실패했습니다.");
                 setStatus("error");
@@ -183,6 +189,7 @@ export function useDownload(): UseDownloadReturn {
 
   return {
     status,
+    progress,
     error,
     cooldownUntil,
     remainingCooldownSeconds,

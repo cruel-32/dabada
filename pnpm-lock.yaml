@@ -38,9 +38,18 @@ importers:
       '@capacitor/local-notifications':
         specifier: ^8.0.0
         version: 8.0.0(@capacitor/core@8.0.1)
+      '@capacitor/share':
+        specifier: ^8.0.0
+        version: 8.0.0(@capacitor/core@8.0.1)
       '@capacitor/toast':
         specifier: ^8.0.0
         version: 8.0.0(@capacitor/core@8.0.1)
+      '@capawesome/capacitor-file-picker':
+        specifier: ^8.0.1
+        version: 8.0.1(@capacitor/core@8.0.1)
+      '@capgo/capacitor-downloader':
+        specifier: ^8.1.6
+        version: 8.1.6(@capacitor/core@8.0.1)
       '@capgo/capacitor-social-login':
         specifier: ^8.2.16
         version: 8.2.16(@capacitor/core@8.0.1)
@@ -314,11 +323,26 @@ packages:
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
 
+  '@capacitor/share@8.0.0':
+    resolution: {integrity: sha512-VU+xT4LFwr4keIC0UKDqGQVAiNlAHwoTMQg8wVVSxtn/k32VOvvtqFfu63qnXr40WKytZWrxJfVESvRjd761yg==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
+
   '@capacitor/synapse@1.0.4':
     resolution: {integrity: sha512-/C1FUo8/OkKuAT4nCIu/34ny9siNHr9qtFezu4kxm6GY1wNFxrCFWjfYx5C1tUhVGz3fxBABegupkpjXvjCHrw==}
 
   '@capacitor/toast@8.0.0':
     resolution: {integrity: sha512-khWSYsBd+kc28s+nTfswxEfTQ3edY2f0BbvPZmEoBnXclunZbC7Bn1/ZyjKtM9wEA1RC5Umq4RUeFh8TtP+02g==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
+
+  '@capawesome/capacitor-file-picker@8.0.1':
+    resolution: {integrity: sha512-yl3INjnmn2pmMF5pHccpdv3DYZhz6lrY0GAquN4lfiON/70aUcnwpQPV2ky5vKYZjlvBIcl/CjDwN4fYOWXgLg==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
+
+  '@capgo/capacitor-downloader@8.1.6':
+    resolution: {integrity: sha512-GBtX7cHaAqZ/PXCSuvhJgprIHtaYCEgwtV8r2L2Gm/lvBpaWds59eI9fEvh5cagFpcFXogQinfq1g1SRUCiLbQ==}
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
 
@@ -3972,9 +3996,21 @@ snapshots:
     dependencies:
       '@capacitor/core': 8.0.1
 
+  '@capacitor/share@8.0.0(@capacitor/core@8.0.1)':
+    dependencies:
+      '@capacitor/core': 8.0.1
+
   '@capacitor/synapse@1.0.4': {}
 
   '@capacitor/toast@8.0.0(@capacitor/core@8.0.1)':
+    dependencies:
+      '@capacitor/core': 8.0.1
+
+  '@capawesome/capacitor-file-picker@8.0.1(@capacitor/core@8.0.1)':
+    dependencies:
+      '@capacitor/core': 8.0.1
+
+  '@capgo/capacitor-downloader@8.1.6(@capacitor/core@8.0.1)':
     dependencies:
       '@capacitor/core': 8.0.1
 

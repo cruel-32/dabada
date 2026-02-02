@@ -2,6 +2,10 @@ import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Media } from "@capacitor-community/media";
 import { Toast } from "@capacitor/toast";
 import { LocalNotifications } from "@capacitor/local-notifications";
+import { Share } from "@capacitor/share";
+import { FilePicker } from "@capawesome/capacitor-file-picker";
+import { CapacitorDownloader } from "@capgo/capacitor-downloader";
+import { Capacitor } from "@capacitor/core";
 
 export interface CooldownStatus {
   authenticated: boolean;
@@ -41,51 +45,44 @@ async function sendNativeNotification(title: string, body: string) {
   }
 }
 
-/**
- * 네이티브 갤러리에 비디오 저장 (Capacitor 전용 최적화)
- */
-export async function saveVideoToNativeGallery(downloadUrl: string): Promise<{ success: boolean; error?: string }> {
+export async function saveVideoToNativeGallery(
+  downloadUrl: string,
+  onProgress?: (progress: number) => void
+): Promise<{ success: boolean; error?: string }> {
   try {
     const baseURL = getApiBaseURL();
     const fullUrl = downloadUrl.startsWith("http") ? downloadUrl : `${baseURL}${downloadUrl}`;
-    const fileName = `dabada_${Date.now()}.mp4`;
+    const downloadId = `dl_${Date.now()}`;
+    const fileName = `${downloadId}.mp4`;
 
     await Toast.show({
       text: "다운로드를 시작합니다...",
       duration: "short",
     });
 
-    // 1. 네이티브 다운로드 (Native Streaming)
-    const downloadResult = await Filesystem.downloadFile({
-      url: fullUrl,
-      path: fileName,
-      directory: Directory.Cache,
-    });
+    try {
+      const downloadResult = await Filesystem.downloadFile({
+        url: fullUrl,
+        path: fileName,
+        directory: Directory.Cache,
+      });
 
-    const fileUri = downloadResult.path;
-    if (!fileUri) {
-      throw new Error("다운로드 결과 경로를 찾을 수 없습니다.");
+      const fileUri = downloadResult.path;
+      if (!fileUri) {
+        throw new Error("다운로드 결과 경로를 찾을 수 없습니다.");
+      }
+
+      await Share.share({
+        title: '비디오 저장',
+        text: '다운로드한 비디오를 저장할 위치를 선택하거나 공유하세요.',
+        url: fileUri,
+        dialogTitle: '비디오 저장 및 공유',
+      });
+    } catch (err) {
+      throw err;
     }
 
-    // 2. 미디어 갤러리(사진첩) 저장
-    await Media.saveVideo({
-      path: fileUri,
-      fileName: fileName.replace(".mp4", ""),
-    });
-
-    // 3. 캐시 삭제
-    await Filesystem.deleteFile({
-      path: fileName,
-      directory: Directory.Cache,
-    });
-
-    // 4. 성공 피드백 (토스트 + 알림)
-    await Toast.show({
-      text: "영상이 갤러리에 저장되었습니다!",
-      duration: "long",
-    });
-
-    await sendNativeNotification("다운로드 완료", "영상이 성공적으로 갤러리에 저장되었습니다.");
+    await sendNativeNotification("다운로드 완료", "비디오를 성공적으로 불러왔습니다. 저장 위치를 선택해 주세요.");
 
     return { success: true };
   } catch (error) {
