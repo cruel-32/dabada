@@ -1,5 +1,7 @@
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Media } from "@capacitor-community/media";
+import { Toast } from "@capacitor/toast";
+import { LocalNotifications } from "@capacitor/local-notifications";
 
 export interface CooldownStatus {
   authenticated: boolean;
@@ -15,6 +17,31 @@ function getApiBaseURL(): string {
 }
 
 /**
+ * 네이티브 알림 발송
+ */
+async function sendNativeNotification(title: string, body: string) {
+  try {
+    const perm = await LocalNotifications.checkPermissions();
+    if (perm.display !== "granted") {
+      await LocalNotifications.requestPermissions();
+    }
+    await LocalNotifications.schedule({
+      notifications: [
+        {
+          title,
+          body,
+          id: Math.floor(Math.random() * 10000),
+          schedule: { at: new Date(Date.now() + 100) },
+          sound: "default",
+        },
+      ],
+    });
+  } catch (err) {
+    console.error("Failed to send notification:", err);
+  }
+}
+
+/**
  * 네이티브 갤러리에 비디오 저장 (Capacitor 전용 최적화)
  */
 export async function saveVideoToNativeGallery(downloadUrl: string): Promise<{ success: boolean; error?: string }> {
@@ -23,15 +50,16 @@ export async function saveVideoToNativeGallery(downloadUrl: string): Promise<{ s
     const fullUrl = downloadUrl.startsWith("http") ? downloadUrl : `${baseURL}${downloadUrl}`;
     const fileName = `dabada_${Date.now()}.mp4`;
 
+    await Toast.show({
+      text: "다운로드를 시작합니다...",
+      duration: "short",
+    });
+
     // 1. 네이티브 다운로드 (Native Streaming)
-    // Filesystem.downloadFile은 JS 스레드를 거치지 않고 직접 디스크에 스트리밍하여 대용량 파일에 적합합니다.
     const downloadResult = await Filesystem.downloadFile({
       url: fullUrl,
       path: fileName,
       directory: Directory.Cache,
-      headers: {
-        // 세션 쿠키는 Capacitor 브릿지를 통해 자동으로 전송되도록 시도됩니다.
-      }
     });
 
     const fileUri = downloadResult.path;
@@ -51,9 +79,23 @@ export async function saveVideoToNativeGallery(downloadUrl: string): Promise<{ s
       directory: Directory.Cache,
     });
 
+    // 4. 성공 피드백 (토스트 + 알림)
+    await Toast.show({
+      text: "영상이 갤러리에 저장되었습니다!",
+      duration: "long",
+    });
+
+    await sendNativeNotification("다운로드 완료", "영상이 성공적으로 갤러리에 저장되었습니다.");
+
     return { success: true };
   } catch (error) {
     console.error("Native download/save error:", error);
+    
+    await Toast.show({
+      text: "다운로드 중 오류가 발생했습니다.",
+      duration: "long",
+    });
+
     return {
       success: false,
       error: error instanceof Error ? error.message : "네이티브 저장 중 알 수 없는 오류가 발생했습니다.",

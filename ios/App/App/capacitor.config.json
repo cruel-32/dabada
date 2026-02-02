@@ -20,6 +20,8 @@
 		"AppPlugin",
 		"CAPBrowserPlugin",
 		"FilesystemPlugin",
+		"LocalNotificationsPlugin",
+		"ToastPlugin",
 		"SocialLoginPlugin"
 	]
 }

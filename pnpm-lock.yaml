@@ -35,6 +35,12 @@ importers:
       '@capacitor/ios':
         specifier: ^8.0.1
         version: 8.0.1(@capacitor/core@8.0.1)
+      '@capacitor/local-notifications':
+        specifier: ^8.0.0
+        version: 8.0.0(@capacitor/core@8.0.1)
+      '@capacitor/toast':
+        specifier: ^8.0.0
+        version: 8.0.0(@capacitor/core@8.0.1)
       '@capgo/capacitor-social-login':
         specifier: ^8.2.16
         version: 8.2.16(@capacitor/core@8.0.1)
@@ -303,8 +309,18 @@ packages:
     peerDependencies:
       '@capacitor/core': ^8.0.0
 
+  '@capacitor/local-notifications@8.0.0':
+    resolution: {integrity: sha512-Jn2IJs13vhRyOUtYni7PIPdMDYMILb4uI/rRAi7PmGg2lnaKbM5aWBmHZWt0laTYyVApYIbCWmdgBqWx/IH4dQ==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
+
   '@capacitor/synapse@1.0.4':
     resolution: {integrity: sha512-/C1FUo8/OkKuAT4nCIu/34ny9siNHr9qtFezu4kxm6GY1wNFxrCFWjfYx5C1tUhVGz3fxBABegupkpjXvjCHrw==}
+
+  '@capacitor/toast@8.0.0':
+    resolution: {integrity: sha512-khWSYsBd+kc28s+nTfswxEfTQ3edY2f0BbvPZmEoBnXclunZbC7Bn1/ZyjKtM9wEA1RC5Umq4RUeFh8TtP+02g==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
 
   '@capgo/capacitor-social-login@8.2.16':
     resolution: {integrity: sha512-6u69dR+oqeG5kRvrw2KRtfHEQ3k+T4eF1nJ2djW5fixUy0t+ONgItCW9DVV31aVprUUqqrXU+L9PpeGoChaqag==}
@@ -3952,7 +3968,15 @@ snapshots:
     dependencies:
       '@capacitor/core': 8.0.1
 
+  '@capacitor/local-notifications@8.0.0(@capacitor/core@8.0.1)':
+    dependencies:
+      '@capacitor/core': 8.0.1
+
   '@capacitor/synapse@1.0.4': {}
+
+  '@capacitor/toast@8.0.0(@capacitor/core@8.0.1)':
+    dependencies:
+      '@capacitor/core': 8.0.1
 
   '@capgo/capacitor-social-login@8.2.16(@capacitor/core@8.0.1)':
     dependencies:

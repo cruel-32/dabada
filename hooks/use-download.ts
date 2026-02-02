@@ -135,13 +135,18 @@ export function useDownload(): UseDownloadReturn {
         if (response.downloadUrl) {
           if (isCapacitor) {
             setStatus("downloading");
-            const nativeResult = await saveVideoToNativeGallery(response.downloadUrl);
-            if (!nativeResult.success) {
-              setError(nativeResult.error || "갤러리 저장에 실패했습니다.");
+            try {
+              const nativeResult = await saveVideoToNativeGallery(response.downloadUrl);
+              if (!nativeResult.success) {
+                setError(nativeResult.error || "갤러리 저장에 실패했습니다.");
+                setStatus("error");
+                return;
+              }
+            } catch (nativeErr) {
+              setError("네이티브 저장 중 오류가 발생했습니다.");
               setStatus("error");
               return;
             }
-            alert("영상이 성공적으로 갤러리에 저장되었습니다.");
           } else {
             triggerFileDownload(response.downloadUrl);
           }
