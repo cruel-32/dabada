@@ -19,6 +19,7 @@
     "docker:prod:down": "docker compose -f docker-compose.prod.yml down"
   },
   "dependencies": {
+    "@capacitor-community/admob": "^8.0.0",
     "@capacitor-community/media": "^9.0.1",
     "@capacitor/android": "^8.0.2",
     "@capacitor/app": "^8.0.0",
