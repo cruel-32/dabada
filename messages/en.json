@@ -26,7 +26,18 @@
       "urlRequired": "Please enter a URL.",
       "loginRequired": "Login is required.",
       "cooldownMessage": "Next download available in: {time}",
-      "cooldownButtonText": "Cooldown: {time} left"
+      "cooldownButtonText": "Cooldown: {time} left",
+      "native": {
+        "start": "Starting download...",
+        "noPath": "Could not find download result path.",
+        "shareTitle": "Save Video",
+        "shareText": "Choose a location to save or share the downloaded video.",
+        "shareDialogTitle": "Save and Share Video",
+        "successTitle": "Download Complete",
+        "successBody": "The video has been successfully loaded.",
+        "errorToast": "An error occurred during download.",
+        "errorUnknown": "An unknown error occurred during native save."
+      }
     }
   },
   "auth": {

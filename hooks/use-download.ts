@@ -1,10 +1,19 @@
 "use client";
 
 import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
-import { requestDownload, triggerFileDownload, checkCooldown, DownloadResponse, resetCooldown, saveVideoToNativeGallery } from "@/lib/download-api";
+import { useLocale } from "next-intl";
+import {
+  requestDownload,
+  triggerFileDownload,
+  checkCooldown,
+  DownloadResponse,
+  resetCooldown,
+  saveVideoToNativeGallery,
+} from "@/lib/download-api";
 import { DOWNLOAD_COOLDOWN_SECONDS } from "@/lib/config";
 import { authClient } from "@/lib/auth-client";
 import { Capacitor } from "@capacitor/core";
+import { Locale } from "@/i18n";
 
 export type DownloadStatus =
   | "idle"
@@ -33,22 +42,23 @@ export function useDownload(): UseDownloadReturn {
   const [error, setError] = useState<string | null>(null);
   const [cooldownUntil, setCooldownUntil] = useState<Date | null>(null);
   const [remainingCooldownSeconds, setRemainingCooldownSeconds] = useState(0);
-  
+  const locale = useLocale() as Locale;
+
   const isCapacitor = useSyncExternalStore(
-    () => () => {}, 
+    () => () => {},
     () => Capacitor.isNativePlatform(),
-    () => false 
+    () => false
   );
 
   const { data: session } = authClient.useSession();
 
   useEffect(() => {
     const initCooldown = async () => {
-        const status = await checkCooldown();
-        if (status.authenticated && status.cooldownUntil) {
-            setCooldownUntil(new Date(status.cooldownUntil));
-            setStatus("cooldown");
-        }
+      const status = await checkCooldown();
+      if (status.authenticated && status.cooldownUntil) {
+        setCooldownUntil(new Date(status.cooldownUntil));
+        setStatus("cooldown");
+      }
     };
     initCooldown();
   }, []);
@@ -90,9 +100,9 @@ export function useDownload(): UseDownloadReturn {
     if (!isCapacitor || status !== "cooldown") return;
 
     setStatus("watching_ad");
-    
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       const result = await resetCooldown();
       if (result.success) {
         setCooldownUntil(null);
@@ -141,15 +151,16 @@ export function useDownload(): UseDownloadReturn {
             try {
               const nativeResult = await saveVideoToNativeGallery(
                 response.downloadUrl,
+                locale,
                 (p) => setProgress(p)
               );
               if (!nativeResult.success) {
-                setError(nativeResult.error || "갤러리 저장에 실패했습니다.");
+                setError(nativeResult.error || "Failed to save to gallery.");
                 setStatus("error");
                 return;
               }
             } catch (nativeErr) {
-              setError("네이티브 저장 중 오류가 발생했습니다.");
+              setError("An error occurred during native save.");
               setStatus("error");
               return;
             }
@@ -177,7 +188,7 @@ export function useDownload(): UseDownloadReturn {
         setStatus("error");
       }
     },
-    [isCapacitor, session, cooldownUntil]
+    [isCapacitor, session, cooldownUntil, locale]
   );
 
   const reset = useCallback(() => {

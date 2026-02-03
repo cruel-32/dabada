@@ -1,11 +1,9 @@
 import { Filesystem, Directory } from "@capacitor/filesystem";
-import { Media } from "@capacitor-community/media";
 import { Toast } from "@capacitor/toast";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Share } from "@capacitor/share";
-import { FilePicker } from "@capawesome/capacitor-file-picker";
-import { CapacitorDownloader } from "@capgo/capacitor-downloader";
-import { Capacitor } from "@capacitor/core";
+import { getTranslations } from "./i18n";
+import { Locale } from "@/i18n";
 
 export interface CooldownStatus {
   authenticated: boolean;
@@ -47,16 +45,21 @@ async function sendNativeNotification(title: string, body: string) {
 
 export async function saveVideoToNativeGallery(
   downloadUrl: string,
+  locale: Locale,
   onProgress?: (progress: number) => void
 ): Promise<{ success: boolean; error?: string }> {
+  const t = await getTranslations(locale);
+
   try {
     const baseURL = getApiBaseURL();
-    const fullUrl = downloadUrl.startsWith("http") ? downloadUrl : `${baseURL}${downloadUrl}`;
+    const fullUrl = downloadUrl.startsWith("http")
+      ? downloadUrl
+      : `${baseURL}${downloadUrl}`;
     const downloadId = `dl_${Date.now()}`;
     const fileName = `${downloadId}.mp4`;
 
     await Toast.show({
-      text: "다운로드를 시작합니다...",
+      text: t("home.download.native.start"),
       duration: "short",
     });
 
@@ -65,37 +68,50 @@ export async function saveVideoToNativeGallery(
         url: fullUrl,
         path: fileName,
         directory: Directory.Cache,
+        progress: true,
+        onProgress: (status) => {
+          if (onProgress) {
+            const progress = (status.bytes) / (status.contentLength);
+            onProgress(Math.round(progress * 100));
+          }
+        },
       });
 
       const fileUri = downloadResult.path;
       if (!fileUri) {
-        throw new Error("다운로드 결과 경로를 찾을 수 없습니다.");
+        throw new Error(t("home.download.native.noPath"));
       }
 
       await Share.share({
-        title: '비디오 저장',
-        text: '다운로드한 비디오를 저장할 위치를 선택하거나 공유하세요.',
+        title: t("home.download.native.shareTitle"),
+        text: t("home.download.native.shareText"),
         url: fileUri,
-        dialogTitle: '비디오 저장 및 공유',
+        dialogTitle: t("home.download.native.shareDialogTitle"),
       });
     } catch (err) {
       throw err;
     }
 
-    await sendNativeNotification("다운로드 완료", "비디오를 성공적으로 불러왔습니다. 저장 위치를 선택해 주세요.");
+    await sendNativeNotification(
+      t("home.download.native.successTitle"),
+      t("home.download.native.successBody")
+    );
 
     return { success: true };
   } catch (error) {
     console.error("Native download/save error:", error);
-    
+
     await Toast.show({
-      text: "다운로드 중 오류가 발생했습니다.",
+      text: t("home.download.native.errorToast"),
       duration: "long",
     });
 
     return {
       success: false,
-      error: error instanceof Error ? error.message : "네이티브 저장 중 알 수 없는 오류가 발생했습니다.",
+      error:
+        error instanceof Error
+          ? error.message
+          : t("home.download.native.errorUnknown"),
     };
   }
 }
