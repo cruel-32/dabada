@@ -63,33 +63,34 @@ export async function saveVideoToNativeGallery(
       duration: "short",
     });
 
+    const listener = await Filesystem.addListener('progress', (status) => {
+      if (onProgress) {
+        const progress = status.bytes / status.contentLength;
+        onProgress(Math.round(progress * 100));
+      }
+    });
+
     try {
       const downloadResult = await Filesystem.downloadFile({
         url: fullUrl,
         path: fileName,
         directory: Directory.Cache,
         progress: true,
-        onProgress: (status) => {
-          if (onProgress) {
-            const progress = (status.bytes) / (status.contentLength);
-            onProgress(Math.round(progress * 100));
-          }
-        },
       });
 
       const fileUri = downloadResult.path;
       if (!fileUri) {
-        throw new Error(t("home.download.native.noPath"));
+        throw new Error(t('home.download.native.noPath'));
       }
 
       await Share.share({
-        title: t("home.download.native.shareTitle"),
-        text: t("home.download.native.shareText"),
+        title: t('home.download.native.shareTitle'),
+        text: t('home.download.native.shareText'),
         url: fileUri,
-        dialogTitle: t("home.download.native.shareDialogTitle"),
+        dialogTitle: t('home.download.native.shareDialogTitle'),
       });
-    } catch (err) {
-      throw err;
+    } finally {
+      listener.remove();
     }
 
     await sendNativeNotification(
