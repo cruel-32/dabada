@@ -501,13 +501,13 @@ export default function Home() {
               ) : status === "watching_ad" ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  광고 시청 중...
+                  {t("home.download.watchingAd")}
                 </>
               ) : isCooldown ? (
                 isCapacitor ? (
                   <>
                     <Play className="h-4 w-4" fill="currentColor" />
-                    광고 보고 바로 다운로드
+                    {t("home.download.watchAd")}
                   </>
                 ) : (
                   <>

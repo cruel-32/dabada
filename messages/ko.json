@@ -27,6 +27,9 @@
       "loginRequired": "로그인이 필요합니다.",
       "cooldownMessage": "다음 쿨타임까지: {time}",
       "cooldownButtonText": "쿨타임이 {time} 남았습니다",
+      "watchAd": "광고 보고 바로 다운로드",
+      "watchingAd": "광고 시청 중...",
+      "adLoadFailed": "광고를 불러오지 못했습니다.",
       "native": {
         "start": "다운로드를 시작합니다...",
         "noPath": "다운로드 결과 경로를 찾을 수 없습니다.",

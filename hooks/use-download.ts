@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   requestDownload,
   triggerFileDownload,
@@ -13,6 +13,13 @@ import {
 import { DOWNLOAD_COOLDOWN_SECONDS } from "@/lib/config";
 import { authClient } from "@/lib/auth-client";
 import { Capacitor } from "@capacitor/core";
+import {
+  AdMob,
+  RewardAdOptions,
+  AdmobConsentStatus,
+  RewardAdPluginEvents,
+  AdMobRewardItem,
+} from "@capacitor-community/admob";
 import { Locale } from "@/i18n";
 
 export type DownloadStatus =
@@ -43,6 +50,7 @@ export function useDownload(): UseDownloadReturn {
   const [cooldownUntil, setCooldownUntil] = useState<Date | null>(null);
   const [remainingCooldownSeconds, setRemainingCooldownSeconds] = useState(0);
   const locale = useLocale() as Locale;
+  const t = useTranslations();
 
   const isCapacitor = useSyncExternalStore(
     () => () => {},
@@ -51,6 +59,14 @@ export function useDownload(): UseDownloadReturn {
   );
 
   const { data: session } = authClient.useSession();
+
+  useEffect(() => {
+    if (isCapacitor) {
+      AdMob.initialize().catch((err) =>
+        console.error("AdMob initialization failed", err)
+      );
+    }
+  }, [isCapacitor]);
 
   useEffect(() => {
     const initCooldown = async () => {
@@ -100,19 +116,63 @@ export function useDownload(): UseDownloadReturn {
     if (!isCapacitor || status !== "cooldown") return;
 
     setStatus("watching_ad");
+    setError(null);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      const result = await resetCooldown();
-      if (result.success) {
-        setCooldownUntil(null);
-        setRemainingCooldownSeconds(0);
-        setStatus("idle");
-      } else {
-        setError(result.error || "Failed to reset cooldown");
-        setStatus("error");
-      }
+      const adId = Capacitor.getPlatform() === "ios" 
+        ? "ca-app-pub-3940256099942544/1712485313" 
+        : "ca-app-pub-3940256099942544/5224354917";
+
+      const options: RewardAdOptions = {
+        adId,
+      };
+
+      let rewardEarned = false;
+
+      const rewardListener = await AdMob.addListener(
+        RewardAdPluginEvents.Rewarded,
+        (reward: AdMobRewardItem) => {
+          rewardEarned = true;
+        }
+      );
+
+      const dismissListener = await AdMob.addListener(
+        RewardAdPluginEvents.Dismissed,
+        async () => {
+          rewardListener.remove();
+          dismissListener.remove();
+
+          if (rewardEarned) {
+            const result = await resetCooldown();
+            if (result.success) {
+              setCooldownUntil(null);
+              setRemainingCooldownSeconds(0);
+              setStatus("idle");
+            } else {
+              setError(result.error || "Failed to reset cooldown");
+              setStatus("error");
+            }
+          } else {
+            setStatus("cooldown");
+          }
+        }
+      );
+
+      const failedListener = await AdMob.addListener(
+        RewardAdPluginEvents.FailedToLoad,
+        (error) => {
+          rewardListener.remove();
+          dismissListener.remove();
+          failedListener.remove();
+          setError(t("home.download.adLoadFailed"));
+          setStatus("error");
+        }
+      );
+
+      await AdMob.prepareRewardVideoAd(options);
+      await AdMob.showRewardVideoAd();
     } catch (err) {
+      console.error("AdMob Error:", err);
       setError(err instanceof Error ? err.message : "Ad playback error");
       setStatus("error");
     }

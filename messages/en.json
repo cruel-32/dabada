@@ -27,6 +27,9 @@
       "loginRequired": "Login is required.",
       "cooldownMessage": "Next download available in: {time}",
       "cooldownButtonText": "Cooldown: {time} left",
+      "watchAd": "Watch Ad and Download",
+      "watchingAd": "Watching Ad...",
+      "adLoadFailed": "Failed to load advertisement.",
       "native": {
         "start": "Starting download...",
         "noPath": "Could not find download result path.",
