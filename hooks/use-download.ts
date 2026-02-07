@@ -12,13 +12,11 @@ import {
 } from "@/lib/download-api";
 import { DOWNLOAD_COOLDOWN_SECONDS } from "@/lib/config";
 import { authClient } from "@/lib/auth-client";
-import { Capacitor } from "@capacitor/core";
+import { Capacitor, type PluginListenerHandle } from "@capacitor/core";
 import {
   AdMob,
   RewardAdOptions,
-  AdmobConsentStatus,
   RewardAdPluginEvents,
-  AdMobRewardItem,
 } from "@capacitor-community/admob";
 import { Locale } from "@/i18n";
 
@@ -118,10 +116,25 @@ export function useDownload(): UseDownloadReturn {
     setStatus("watching_ad");
     setError(null);
 
+    const listeners: PluginListenerHandle[] = [];
+    const cleanup = async () => {
+      while (listeners.length > 0) {
+        const handle = listeners.pop();
+        if (handle) {
+          try {
+            await handle.remove();
+          } catch (e) {
+            console.error("Error removing listener", e);
+          }
+        }
+      }
+    };
+
     try {
-      const adId = Capacitor.getPlatform() === "ios" 
-        ? "ca-app-pub-3940256099942544/1712485313" 
-        : "ca-app-pub-3940256099942544/5224354917";
+      const adId =
+        Capacitor.getPlatform() === "ios"
+          ? "ca-app-pub-3940256099942544/1712485313"
+          : "ca-app-pub-3940256099942544/5224354917";
 
       const options: RewardAdOptions = {
         adId,
@@ -129,18 +142,15 @@ export function useDownload(): UseDownloadReturn {
 
       let rewardEarned = false;
 
-      const rewardListener = await AdMob.addListener(
-        RewardAdPluginEvents.Rewarded,
-        (reward: AdMobRewardItem) => {
+      listeners.push(
+        await AdMob.addListener(RewardAdPluginEvents.Rewarded, () => {
           rewardEarned = true;
-        }
+        })
       );
 
-      const dismissListener = await AdMob.addListener(
-        RewardAdPluginEvents.Dismissed,
-        async () => {
-          rewardListener.remove();
-          dismissListener.remove();
+      listeners.push(
+        await AdMob.addListener(RewardAdPluginEvents.Dismissed, async () => {
+          await cleanup();
 
           if (rewardEarned) {
             const result = await resetCooldown();
@@ -155,28 +165,32 @@ export function useDownload(): UseDownloadReturn {
           } else {
             setStatus("cooldown");
           }
-        }
+        })
       );
 
-      const failedListener = await AdMob.addListener(
-        RewardAdPluginEvents.FailedToLoad,
-        (error) => {
-          rewardListener.remove();
-          dismissListener.remove();
-          failedListener.remove();
-          setError(t("home.download.adLoadFailed"));
-          setStatus("error");
-        }
+      const handleFailure = async () => {
+        await cleanup();
+        setError(t("home.download.adLoadFailed"));
+        setStatus("error");
+      };
+
+      listeners.push(
+        await AdMob.addListener(RewardAdPluginEvents.FailedToLoad, handleFailure)
+      );
+
+      listeners.push(
+        await AdMob.addListener(RewardAdPluginEvents.FailedToShow, handleFailure)
       );
 
       await AdMob.prepareRewardVideoAd(options);
       await AdMob.showRewardVideoAd();
     } catch (err) {
       console.error("AdMob Error:", err);
+      await cleanup();
       setError(err instanceof Error ? err.message : "Ad playback error");
       setStatus("error");
     }
-  }, [isCapacitor, status]);
+  }, [isCapacitor, status, t]);
 
   const download = useCallback(
     async (url: string, platform: "youtube" | "instagram") => {
@@ -219,7 +233,7 @@ export function useDownload(): UseDownloadReturn {
                 setStatus("error");
                 return;
               }
-            } catch (nativeErr) {
+            } catch {
               setError("An error occurred during native save.");
               setStatus("error");
               return;
