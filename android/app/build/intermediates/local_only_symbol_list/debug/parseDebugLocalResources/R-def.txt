@@ -6,12 +6,12 @@ drawable ic_launcher_foreground
 drawable splash
 layout activity_main
 mipmap ic_launcher
+mipmap ic_launcher_background
 mipmap ic_launcher_foreground
 mipmap ic_launcher_round
 string app_name
 string custom_url_scheme
 string package_name
-string server_client_id
 string title_activity_main
 style AppTheme
 style AppTheme.NoActionBar

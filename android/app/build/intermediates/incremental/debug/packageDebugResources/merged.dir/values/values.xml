@@ -4,7 +4,6 @@
     <string name="app_name">dabada</string>
     <string name="custom_url_scheme">io.dabada.app</string>
     <string name="package_name">io.dabada.app</string>
-    <string name="server_client_id">709885664090-kse0pihl46m7j1ana4hf0si0bn9vsqq0.apps.googleusercontent.com</string>
     <string name="title_activity_main">dabada</string>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         

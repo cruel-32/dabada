@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "io.dabada.app-mergeDebugResources-40:/values-sw600dp-v13/values-sw600dp-v13.xml",
+            "outputFile": "io.dabada.app-mergeDebugResources-50:/values-sw600dp-v13/values-sw600dp-v13.xml",
             "map": [
                 {
-                    "source": "/Users/seungheechoi/.gradle/caches/8.14.3/transforms/fe2aed0df5da3b6366b8ddf7380eabcc/transformed/appcompat-1.7.1/res/values-sw600dp-v13/values-sw600dp-v13.xml",
+                    "source": "/Users/seungheechoi/.gradle/caches/8.14.3/transforms/81bec57424dba1557123894fbf317120/transformed/appcompat-1.7.1/res/values-sw600dp-v13/values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

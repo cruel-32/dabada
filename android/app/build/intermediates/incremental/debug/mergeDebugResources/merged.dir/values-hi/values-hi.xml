@@ -27,6 +27,8 @@
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"इससे शेयर करें:"</string>
     <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"<ns1:g id="APPLICATION_NAME">%s</ns1:g> से शेयर करें"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"छोटा करें"</string>
+    <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"पासवर्ड"</string>
+    <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"पासकी"</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"जवाब दें"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"वीडियो"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"अस्वीकार करें"</string>
@@ -34,6 +36,29 @@
     <string msgid="6107532579223922871" name="call_notification_incoming_text">"आने वाला (इनकमिंग) कॉल"</string>
     <string msgid="8623827134497363134" name="call_notification_ongoing_text">"पहले से जारी कॉल"</string>
     <string msgid="59049573811482460" name="call_notification_screening_text">"इनकमिंग कॉल को स्क्रीन किया जा रहा है"</string>
+    <string gender="unknown" name="com_facebook_device_auth_instructions">&lt;b>facebook.com/device&lt;/b> पर जाएँ और ऊपर दिया गया कोड डालें.</string>
+    <string gender="unknown" name="com_facebook_image_download_unknown_error">चित्र डाउनलोड करते समय अनपेक्षित त्रुटि हुई.</string>
+    <string gender="unknown" name="com_facebook_internet_permission_error_message">WebView लॉग इन के लिए इंटरनेट अनुमति आवश्यक है</string>
+    <string gender="unknown" name="com_facebook_internet_permission_error_title">AndroidManifest गलती</string>
+    <string gender="unknown" name="com_facebook_like_button_liked">पसंद किया</string>
+    <string gender="unknown" name="com_facebook_like_button_not_liked">लाइक करें</string>
+    <string gender="unknown" name="com_facebook_loading">लोड हो रहा है...</string>
+    <string gender="unknown" name="com_facebook_loginview_cancel_action">कैंसल करें</string>
+    <string gender="unknown" name="com_facebook_loginview_log_in_button">लॉग इन</string>
+    <string gender="unknown" name="com_facebook_loginview_log_in_button_continue">Facebook के साथ जारी रखें</string>
+    <string gender="unknown" name="com_facebook_loginview_log_in_button_long">Facebook से लॉग इन करें</string>
+    <string gender="unknown" name="com_facebook_loginview_log_out_action">लॉग आउट करें</string>
+    <string gender="unknown" name="com_facebook_loginview_log_out_button">लॉग आउट करें</string>
+    <string gender="unknown" name="com_facebook_loginview_logged_in_as">इस रूप में लॉग इन हैं: %1$s</string>
+    <string gender="unknown" name="com_facebook_loginview_logged_in_using_facebook">Facebook का उपयोग करके लॉग इन किया है</string>
+    <string gender="unknown" name="com_facebook_send_button_text">भेजें</string>
+    <string gender="unknown" name="com_facebook_share_button_text">शेयर करें</string>
+    <string gender="unknown" name="com_facebook_smart_device_instructions">अपने खाते से कनेक्ट करने के लिए, अपने मोबाइल डिवाइस पर Facebook एप्लिकेशन खोलें और सूचनाएँ जाँचें.</string>
+    <string gender="unknown" name="com_facebook_smart_device_instructions_or">- या -</string>
+    <string gender="unknown" name="com_facebook_smart_login_confirmation_cancel">आप नहीं हैं?</string>
+    <string gender="unknown" name="com_facebook_smart_login_confirmation_continue_as">%1$s के रूप में जारी रखें</string>
+    <string gender="unknown" name="com_facebook_smart_login_confirmation_title">लॉग इन कन्फ़र्म करें</string>
+    <string gender="unknown" name="com_facebook_tooltip_default">नियंत्रण आपके पास है - चुनें कि आप एप्लिकेशन के साथ कौन सी जानकारी साझा करना चाहते हैं.</string>
     <string msgid="2523291102206661146" name="common_google_play_services_enable_button">चालू करें</string>
     <string msgid="227660514972886228" name="common_google_play_services_enable_text">जब तक आप Google Play सेवाएं चालू नहीं करते, %1$s काम नहीं करेगा.</string>
     <string msgid="5122002158466380389" name="common_google_play_services_enable_title">Google Play सेवाएं चालू करें</string>
@@ -52,10 +77,22 @@
     <string name="common_open_on_phone">फ़ोन पर खोलें</string>
     <string name="common_signin_button_text">साइन इन करें</string>
     <string name="common_signin_button_text_long">Google के ज़रिए साइन इन करें</string>
+    <string msgid="5912733858573823945" name="confirm_device_credential_password">"पासवर्ड का इस्तेमाल करें"</string>
     <string msgid="3260749812566568062" name="copy_toast_msg">"लिंक क्लिपबोर्ड पर कॉपी किया गया"</string>
+    <string msgid="4776854077120974966" name="default_error_msg">"अनजान गड़बड़ी"</string>
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"लिंक कॉपी करें"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"ब्राउज़र में खोलें"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"लिंक शेयर करें"</string>
+    <string msgid="1072308044213194243" name="fingerprint_dialog_touch_sensor">"फ़िंगरप्रिंट सेंसर को छुएं"</string>
+    <string msgid="8216738333501875566" name="fingerprint_error_hw_not_available">"फ़िंगरप्रिंट हार्डवेयर मौजूद नहीं है."</string>
+    <string msgid="6306988885793029438" name="fingerprint_error_hw_not_present">"इस डिवाइस में फ़िंगरप्रिंट सेंसर नहीं है"</string>
+    <string msgid="7291787166416782245" name="fingerprint_error_lockout">"कई बार कोशिश की जा चुकी है. कृपया बाद में फिर से कोशिश करें."</string>
+    <string msgid="7520712796891883488" name="fingerprint_error_no_fingerprints">"कोई फ़िंगरप्रिंट रजिस्टर नहीं किया गया है."</string>
+    <string msgid="7627716295344353987" name="fingerprint_error_user_canceled">"उपयोगकर्ता ने फिंगरप्रिंट की पुष्टि की कार्रवाई रद्द कर दी है."</string>
+    <string msgid="3873359464293253009" name="fingerprint_not_recognized">"पहचान नहीं हो पाई"</string>
+    <string msgid="3791785319221634505" name="generic_error_no_device_credential">"पिन, पैटर्न या पासवर्ड सेट नहीं है."</string>
+    <string msgid="1807436368654974044" name="generic_error_no_keyguard">"इस डिवाइस को पिन, पैटर्न या पासवर्ड की मदद से लॉक/अनलॉक नहीं किया जा सकता."</string>
+    <string msgid="7309881387583143581" name="generic_error_user_canceled">"उपयोगकर्ता ने पुष्टि करने की प्रक्रिया रद्द की."</string>
     <string name="native_body">मुख्य हिस्सा</string>
     <string name="native_headline">हेडलाइन</string>
     <string name="native_media_view">मीडिया व्यू</string>

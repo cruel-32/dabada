@@ -27,6 +27,8 @@
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"공유 대상:"</string>
     <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"<ns1:g id="APPLICATION_NAME">%s</ns1:g>과(와) 공유"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"접기"</string>
+    <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"비밀번호"</string>
+    <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"패스키"</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"통화"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"동영상"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"거절"</string>
@@ -34,6 +36,29 @@
     <string msgid="6107532579223922871" name="call_notification_incoming_text">"수신 전화"</string>
     <string msgid="8623827134497363134" name="call_notification_ongoing_text">"진행 중인 통화"</string>
     <string msgid="59049573811482460" name="call_notification_screening_text">"수신 전화 검사 중"</string>
+    <string gender="unknown" name="com_facebook_device_auth_instructions">&lt;b>facebook.com/device&lt;/b>를 방문하여 위 코드를 입력하세요.</string>
+    <string gender="unknown" name="com_facebook_image_download_unknown_error">이미지를 다운로드하는 중 예기치 않은 오류가 발생했습니다.</string>
+    <string gender="unknown" name="com_facebook_internet_permission_error_message">WebView 로그인에 인터넷 권한이 필요합니다</string>
+    <string gender="unknown" name="com_facebook_internet_permission_error_title">AndroidManifest 오류</string>
+    <string gender="unknown" name="com_facebook_like_button_liked">좋아요</string>
+    <string gender="unknown" name="com_facebook_like_button_not_liked">좋아요</string>
+    <string gender="unknown" name="com_facebook_loading">읽어들이는 중…</string>
+    <string gender="unknown" name="com_facebook_loginview_cancel_action">취소</string>
+    <string gender="unknown" name="com_facebook_loginview_log_in_button">로그인</string>
+    <string gender="unknown" name="com_facebook_loginview_log_in_button_continue">Facebook으로 계속하기</string>
+    <string gender="unknown" name="com_facebook_loginview_log_in_button_long">Facebook으로 로그인</string>
+    <string gender="unknown" name="com_facebook_loginview_log_out_action">로그아웃</string>
+    <string gender="unknown" name="com_facebook_loginview_log_out_button">로그아웃</string>
+    <string gender="unknown" name="com_facebook_loginview_logged_in_as">로그인 사용자: %1$s</string>
+    <string gender="unknown" name="com_facebook_loginview_logged_in_using_facebook">Facebook을 사용하여 로그인함</string>
+    <string gender="unknown" name="com_facebook_send_button_text">보내기</string>
+    <string gender="unknown" name="com_facebook_share_button_text">공유</string>
+    <string gender="unknown" name="com_facebook_smart_device_instructions">계정에 연결하려면 모바일 기기에서 Facebook 앱을 열고 알림을 확인하세요.</string>
+    <string gender="unknown" name="com_facebook_smart_device_instructions_or">- 또는 -</string>
+    <string gender="unknown" name="com_facebook_smart_login_confirmation_cancel">회원님이 아닌가요?</string>
+    <string gender="unknown" name="com_facebook_smart_login_confirmation_continue_as">%1$s님으로 계속</string>
+    <string gender="unknown" name="com_facebook_smart_login_confirmation_title">로그인 확인</string>
+    <string gender="unknown" name="com_facebook_tooltip_default">앱과 공유할 정보를 자유롭게 선택할 수 있습니다.</string>
     <string msgid="2523291102206661146" name="common_google_play_services_enable_button">사용 설정</string>
     <string msgid="227660514972886228" name="common_google_play_services_enable_text">Google Play 서비스를 사용하도록 설정해야 %1$s이(가) 작동합니다.</string>
     <string msgid="5122002158466380389" name="common_google_play_services_enable_title">Google Play 서비스 사용</string>
@@ -52,10 +77,22 @@
     <string name="common_open_on_phone">스마트폰에서 열기</string>
     <string name="common_signin_button_text">로그인</string>
     <string name="common_signin_button_text_long">Google 계정으로 로그인</string>
+    <string msgid="5912733858573823945" name="confirm_device_credential_password">"비밀번호 사용"</string>
     <string msgid="3260749812566568062" name="copy_toast_msg">"클립보드에 링크 복사됨"</string>
+    <string msgid="4776854077120974966" name="default_error_msg">"알 수 없는 오류"</string>
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"링크 복사"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"브라우저에서 열기"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"링크 공유"</string>
+    <string msgid="1072308044213194243" name="fingerprint_dialog_touch_sensor">"지문 센서를 터치하세요."</string>
+    <string msgid="8216738333501875566" name="fingerprint_error_hw_not_available">"지문 인식 하드웨어를 사용할 수 없습니다."</string>
+    <string msgid="6306988885793029438" name="fingerprint_error_hw_not_present">"기기에 지문 센서가 없습니다."</string>
+    <string msgid="7291787166416782245" name="fingerprint_error_lockout">"시도 횟수가 너무 많습니다. 나중에 다시 시도해 주세요."</string>
+    <string msgid="7520712796891883488" name="fingerprint_error_no_fingerprints">"등록된 지문이 없습니다."</string>
+    <string msgid="7627716295344353987" name="fingerprint_error_user_canceled">"사용자가 지문 인식 작업을 취소했습니다."</string>
+    <string msgid="3873359464293253009" name="fingerprint_not_recognized">"인식할 수 없음"</string>
+    <string msgid="3791785319221634505" name="generic_error_no_device_credential">"PIN, 패턴, 비밀번호가 설정되지 않았습니다."</string>
+    <string msgid="1807436368654974044" name="generic_error_no_keyguard">"PIN, 패턴, 비밀번호를 지원하지 않는 기기입니다."</string>
+    <string msgid="7309881387583143581" name="generic_error_user_canceled">"사용자가 인증을 취소했습니다."</string>
     <string name="native_body">본문</string>
     <string name="native_headline">광고 제목</string>
     <string name="native_media_view">미디어 보기</string>

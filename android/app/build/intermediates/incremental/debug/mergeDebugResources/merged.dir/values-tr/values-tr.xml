@@ -27,6 +27,8 @@
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"Şununla paylaş:"</string>
     <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"<ns1:g id="APPLICATION_NAME">%s</ns1:g> ile paylaş"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Daralt"</string>
+    <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Şifre"</string>
+    <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Geçiş anahtarı"</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Yanıtla"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Reddet"</string>
@@ -34,6 +36,29 @@
     <string msgid="6107532579223922871" name="call_notification_incoming_text">"Gelen arama"</string>
     <string msgid="8623827134497363134" name="call_notification_ongoing_text">"Devam eden arama"</string>
     <string msgid="59049573811482460" name="call_notification_screening_text">"Gelen arama süzülüyor"</string>
+    <string gender="unknown" name="com_facebook_device_auth_instructions">&lt;b>facebook.com/device&lt;/b> adresini ziyaret et ve yukarıda gösterilen kodu gir.</string>
+    <string gender="unknown" name="com_facebook_image_download_unknown_error">Görüntü indirilirken beklenmedik bir hata oluştu.</string>
+    <string gender="unknown" name="com_facebook_internet_permission_error_message">WebView girişi için İNTERNET izni gerekiyor</string>
+    <string gender="unknown" name="com_facebook_internet_permission_error_title">AndroidManifest Hatası</string>
+    <string gender="unknown" name="com_facebook_like_button_liked">Beğendin</string>
+    <string gender="unknown" name="com_facebook_like_button_not_liked">Beğen</string>
+    <string gender="unknown" name="com_facebook_loading">Yükleniyor…</string>
+    <string gender="unknown" name="com_facebook_loginview_cancel_action">İptal</string>
+    <string gender="unknown" name="com_facebook_loginview_log_in_button">Giriş yap</string>
+    <string gender="unknown" name="com_facebook_loginview_log_in_button_continue">Facebook ile Devam Et</string>
+    <string gender="unknown" name="com_facebook_loginview_log_in_button_long">Facebook ile Giriş Yap</string>
+    <string gender="unknown" name="com_facebook_loginview_log_out_action">Çıkış Yap</string>
+    <string gender="unknown" name="com_facebook_loginview_log_out_button">Çıkış Yap</string>
+    <string gender="unknown" name="com_facebook_loginview_logged_in_as">%1$s olarak giriş yapıldı</string>
+    <string gender="unknown" name="com_facebook_loginview_logged_in_using_facebook">Facebook ile giriş yapıldı</string>
+    <string gender="unknown" name="com_facebook_send_button_text">Gönder</string>
+    <string gender="unknown" name="com_facebook_share_button_text">Paylaş</string>
+    <string gender="unknown" name="com_facebook_smart_device_instructions">Hesabını bağlamak için, mobil cihazında Facebook uygulamasını aç ve bildirimleri kontrol et.</string>
+    <string gender="unknown" name="com_facebook_smart_device_instructions_or">- VEYA -</string>
+    <string gender="unknown" name="com_facebook_smart_login_confirmation_cancel">Siz değil misiniz?</string>
+    <string gender="unknown" name="com_facebook_smart_login_confirmation_continue_as">%1$s olarak devam et</string>
+    <string gender="unknown" name="com_facebook_smart_login_confirmation_title">Girişi Onayla</string>
+    <string gender="unknown" name="com_facebook_tooltip_default">Kontrol sende - uygulamalarla paylaşmak istediğin bilgileri seç.</string>
     <string msgid="2523291102206661146" name="common_google_play_services_enable_button">Etkinleştir</string>
     <string msgid="227660514972886228" name="common_google_play_services_enable_text">Google Play hizmetlerini etkinleştirmezseniz %1$s çalışmaz.</string>
     <string msgid="5122002158466380389" name="common_google_play_services_enable_title">Google Play hizmetlerini etkinleştirin</string>
@@ -52,10 +77,22 @@
     <string name="common_open_on_phone">Telefonda aç</string>
     <string name="common_signin_button_text">Oturum aç</string>
     <string name="common_signin_button_text_long">Google\'da oturum aç</string>
+    <string msgid="5912733858573823945" name="confirm_device_credential_password">"Şifre kullan"</string>
     <string msgid="3260749812566568062" name="copy_toast_msg">"Bağlantı panoya kopyalandı"</string>
+    <string msgid="4776854077120974966" name="default_error_msg">"Bilinmeyen hata"</string>
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Bağlantıyı kopyala"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Tarayıcıda aç"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Bağlantıyı paylaş"</string>
+    <string msgid="1072308044213194243" name="fingerprint_dialog_touch_sensor">"Parmak izi sensörüne dokunun"</string>
+    <string msgid="8216738333501875566" name="fingerprint_error_hw_not_available">"Parmak izi donanımı kullanılamıyor."</string>
+    <string msgid="6306988885793029438" name="fingerprint_error_hw_not_present">"Bu cihazda parmak izi sensörü yok"</string>
+    <string msgid="7291787166416782245" name="fingerprint_error_lockout">"Çok fazla deneme yapıldı. Lütfen daha sonra tekrar deneyin."</string>
+    <string msgid="7520712796891883488" name="fingerprint_error_no_fingerprints">"Parmak izi kaydedilmedi."</string>
+    <string msgid="7627716295344353987" name="fingerprint_error_user_canceled">"Parmak izi işlemi kullanıcı tarafından iptal edildi."</string>
+    <string msgid="3873359464293253009" name="fingerprint_not_recognized">"Tanınmadı"</string>
+    <string msgid="3791785319221634505" name="generic_error_no_device_credential">"PIN, desen veya şifre seti yok"</string>
+    <string msgid="1807436368654974044" name="generic_error_no_keyguard">"Bu cihaz PIN, desen veya şifre kullanımını desteklemiyor"</string>
+    <string msgid="7309881387583143581" name="generic_error_user_canceled">"Kimlik doğrulama kullanıcı tarafından iptal edildi."</string>
     <string name="native_body">Metin</string>
     <string name="native_headline">Başlık</string>
     <string name="native_media_view">Medya Görünümü</string>
