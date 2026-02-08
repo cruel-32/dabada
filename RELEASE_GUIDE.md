@@ -16,7 +16,7 @@
 
 ### 📢 AdMob 설정 (실제 ID로 교체)
 
-현재 테스트 광고 ID가 적용되어 있습니다. 출시 직전에 실제 광고 ID로 교체해야 합니다.
+현재 테스트 광고 ID가 적용되어 있습니다. 출시 직전에 실제 광고 ID로 교체해야 합니다. 교체 완료했습니다.
 
 - **iOS (`ios/App/App/Info.plist`)**:
   - `GADApplicationIdentifier`를 실제 AdMob iOS 앱 ID로 변경.
