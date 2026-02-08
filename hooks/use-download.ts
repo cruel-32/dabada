@@ -133,8 +133,10 @@ export function useDownload(): UseDownloadReturn {
     try {
       const adId =
         Capacitor.getPlatform() === "ios"
-          ? "ca-app-pub-3940256099942544/1712485313"
-          : "ca-app-pub-3940256099942544/5224354917";
+          ? process.env.NEXT_PUBLIC_AD_MOB_IOS_UNIT ||
+            "ca-app-pub-3940256099942544/1712485313"
+          : process.env.NEXT_PUBLIC_AD_MOB_ANDROID_UNIT ||
+            "ca-app-pub-3940256099942544/5224354917";
 
       const options: RewardAdOptions = {
         adId,
