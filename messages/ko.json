@@ -1,4 +1,8 @@
 {
+  "privacy": {
+    "title": "개인정보 처리방침",
+    "description": "DABADA 서비스의 개인정보 수집·이용·보관 및 이용자 권리에 관한 안내입니다."
+  },
   "common": {
     "signIn": "로그인",
     "signOut": "로그아웃",

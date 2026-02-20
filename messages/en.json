@@ -1,4 +1,8 @@
 {
+  "privacy": {
+    "title": "Privacy Policy",
+    "description": "How DABADA collects, uses, and retains personal information and your rights."
+  },
   "common": {
     "signIn": "Sign In",
     "signOut": "Sign Out",

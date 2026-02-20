@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { NextIntlClientProvider } from "next-intl";
@@ -161,6 +162,14 @@ export default async function LocaleLayout({
             disableTransitionOnChange
           >
             {children}
+            <footer className="py-3 text-center">
+              <Link
+                href={`/${locale}/privacy`}
+                className="text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+              >
+                {locale === "ko" ? "개인정보 처리방침" : "Privacy Policy"}
+              </Link>
+            </footer>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

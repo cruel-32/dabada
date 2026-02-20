@@ -6,12 +6,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Supported locales
   const locales = ['en', 'ko'];
   
-  const routes = locales.map(locale => ({
-    url: `${baseUrl}/${locale}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily' as const,
-    priority: 1,
-  }));
+  const routes = locales.flatMap(locale => [
+    {
+      url: `${baseUrl}/${locale}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 1,
+    },
+    {
+      url: `${baseUrl}/${locale}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.3,
+    },
+  ]);
 
   // Root redirect is handled by middleware but good to include root if it renders something or redirects
   const root = {
