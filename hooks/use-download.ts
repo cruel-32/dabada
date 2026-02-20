@@ -60,9 +60,20 @@ export function useDownload(): UseDownloadReturn {
 
   useEffect(() => {
     if (isCapacitor) {
-      AdMob.initialize().catch((err) =>
-        console.error("AdMob initialization failed", err)
-      );
+      const initAdMob = async () => {
+        try {
+          await AdMob.initialize();
+          if (Capacitor.getPlatform() === "ios") {
+            const status = await AdMob.trackingAuthorizationStatus();
+            if (status.status === "notDetermined") {
+              await AdMob.requestTrackingAuthorization();
+            }
+          }
+        } catch (err) {
+          console.error("AdMob initialization failed", err);
+        }
+      };
+      initAdMob();
     }
   }, [isCapacitor]);
 
@@ -170,18 +181,25 @@ export function useDownload(): UseDownloadReturn {
         })
       );
 
-      const handleFailure = async () => {
+      const handleFailure = async (info?: { message: string }) => {
+        console.error("AdMob Load/Show Failure:", info);
         await cleanup();
-        setError(t("home.download.adLoadFailed"));
+        setError(
+          `${t("home.download.adLoadFailed")} ${info?.message ? `(${info.message})` : ""}`
+        );
         setStatus("error");
       };
 
       listeners.push(
-        await AdMob.addListener(RewardAdPluginEvents.FailedToLoad, handleFailure)
+        await AdMob.addListener(RewardAdPluginEvents.FailedToLoad, (info) => {
+          handleFailure(info);
+        })
       );
 
       listeners.push(
-        await AdMob.addListener(RewardAdPluginEvents.FailedToShow, handleFailure)
+        await AdMob.addListener(RewardAdPluginEvents.FailedToShow, (info) => {
+          handleFailure(info);
+        })
       );
 
       await AdMob.prepareRewardVideoAd(options);
