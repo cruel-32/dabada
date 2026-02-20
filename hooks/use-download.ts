@@ -62,7 +62,16 @@ export function useDownload(): UseDownloadReturn {
     if (isCapacitor) {
       const initAdMob = async () => {
         try {
-          await AdMob.initialize();
+          const testDeviceIds = [
+            process.env.NEXT_PUBLIC_ADMOB_IOS_TEST_DEVICE_ID,
+            "b23b40c5cb6b09cf6c7ee54a14627ed1",
+          ].filter(Boolean) as string[];
+
+          await AdMob.initialize({
+            initializeForTesting: testDeviceIds.length > 0,
+            testingDevices: testDeviceIds,
+          });
+
           if (Capacitor.getPlatform() === "ios") {
             const status = await AdMob.trackingAuthorizationStatus();
             if (status.status === "notDetermined") {
