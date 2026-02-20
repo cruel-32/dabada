@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
+import { PrivacyFooterLink } from "@/components/privacy-footer-link";
 import { ThemeProvider } from "next-themes";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
@@ -161,14 +161,7 @@ export default async function LocaleLayout({
           >
             <div className="flex min-h-screen flex-col">
               <div className="flex-1 min-h-0">{children}</div>
-              <footer className="flex-shrink-0 py-3 text-center">
-                <Link
-                  href={`/${locale}/privacy`}
-                  className="text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors"
-                >
-                  {locale === "ko" ? "개인정보 처리방침" : "Privacy Policy"}
-                </Link>
-              </footer>
+              <PrivacyFooterLink locale={locale} />
             </div>
           </ThemeProvider>
         </NextIntlClientProvider>
