@@ -14,14 +14,19 @@
 
 ## 📱 2. 네이티브 프로젝트 설정 (iOS/Android)
 
-### 📢 AdMob 설정 (실제 ID로 교체)
+### 📢 AdMob 설정 (배포용 적용 완료)
 
-현재 테스트 광고 ID가 적용되어 있습니다. 출시 직전에 실제 광고 ID로 교체해야 합니다. 교체 완료했습니다.
+배포 시 실제 광고가 노출되도록 아래가 적용되어 있습니다.
 
-- **iOS (`ios/App/App/Info.plist`)**:
-  - `GADApplicationIdentifier`를 실제 AdMob iOS 앱 ID로 변경.
-- **Android (`android/app/src/main/AndroidManifest.xml`)**:
-  - `com.google.android.gms.ads.APPLICATION_ID`를 실제 AdMob Android 앱 ID로 변경.
+- **광고 단위 (보상형)**  
+  - iOS: `ca-app-pub-2386475362105141/8510682156` (미디어 다운로드를 위한 광고 시청)  
+  - Android: `ca-app-pub-2386475362105141/7855232145` (동일)  
+  - `hooks/use-download.ts`에서 사용. 환경 변수 `NEXT_PUBLIC_AD_MOB_IOS_UNIT`, `NEXT_PUBLIC_AD_MOB_ANDROID_UNIT`로 덮어쓸 수 있음.
+
+- **앱 ID (네이티브)**  
+  - **iOS** `ios/App/App/Info.plist`: `GADApplicationIdentifier` = `ca-app-pub-2386475362105141~0000000000`  
+  - **Android** `android/app/src/main/AndroidManifest.xml`: `com.google.android.gms.ads.APPLICATION_ID` = `ca-app-pub-2386475362105141~0000000000`  
+  - **출시 전 필수**: AdMob 콘솔 → 앱 → dabada (iOS/Android) → **앱 설정**에서 각 플랫폼의 **앱 ID** 전체 값을 확인한 뒤, 위 `~0000000000` 부분을 실제 값으로 교체하세요. (형식: `ca-app-pub-2386475362105141~실제숫자`)
 
 ### 🔑 소셜 로그인 설정
 
@@ -72,7 +77,7 @@ Capacitor Assets 도구를 사용하여 모든 리소스를 한 번에 생성할
 
 ## 📌 남은 작업 (사용자 확인 필요)
 
-- [ ] 실제 AdMob App ID 발급 및 적용
+- [ ] AdMob 앱 ID: `Info.plist`·`AndroidManifest.xml`의 `~0000000000`을 AdMob 앱 설정에 표시된 실제 앱 ID로 교체
 - [ ] Google Cloud Console에 모바일 Client ID 등록
 - [ ] 고해상도 앱 아이콘(1024x1024) 및 스플래시 화면(2732x2732) 준비 및 생성 명령 실행
 - [ ] Xcode/Android Studio를 통한 최종 빌드 및 스토어 제출

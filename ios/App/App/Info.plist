@@ -78,7 +78,7 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>다운로드한 영상을 갤러리에 저장하기 위해 사진 앨범 쓰기 권한이 필요합니다.</string>
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3940256099942544~1458002511</string>
+	<string>ca-app-pub-2386475362105141~3621317556</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>맞춤형 광고 제공을 위해 사용자의 데이터가 사용될 수 있습니다.</string>
 </dict></plist>
