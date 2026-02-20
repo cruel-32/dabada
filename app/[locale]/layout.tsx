@@ -146,10 +146,8 @@ export default async function LocaleLayout({
   };
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang={locale} suppressHydrationWarning className="h-full">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-full min-h-screen flex flex-col`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -161,15 +159,17 @@ export default async function LocaleLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
-            <footer className="py-3 text-center">
-              <Link
-                href={`/${locale}/privacy`}
-                className="text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors"
-              >
-                {locale === "ko" ? "개인정보 처리방침" : "Privacy Policy"}
-              </Link>
-            </footer>
+            <div className="flex min-h-screen flex-col">
+              <div className="flex-1 min-h-0">{children}</div>
+              <footer className="flex-shrink-0 py-3 text-center">
+                <Link
+                  href={`/${locale}/privacy`}
+                  className="text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                >
+                  {locale === "ko" ? "개인정보 처리방침" : "Privacy Policy"}
+                </Link>
+              </footer>
+            </div>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
