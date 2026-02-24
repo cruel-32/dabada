@@ -1,0 +1,8 @@
+app_identifier("io.dabada.app") # The bundle identifier of your app
+apple_id("eternalsage@naver.com") # Your Apple Developer Portal username
+
+itc_team_id("128039977") # App Store Connect Team ID
+team_id("8C6C9Q6M73") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
