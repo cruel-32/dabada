@@ -252,6 +252,58 @@ pnpm start
 
 ---
 
+### 미리보기 및 스크린샷 자동 생성 도구
+
+App Store Connect·Play Console에는 기기별 스크린샷(및 선택 시 앱 미리보기 영상)이 필요합니다. 아래 도구로 자동 생성할 수 있습니다.
+
+#### 1. Fastlane (snapshot) — iOS, 시뮬레이터 기반
+
+시뮬레이터에서 앱을 실행한 뒤 지정한 기기·언어별로 스크린샷을 찍어줍니다. **frameit**으로 기기 프레임을 붙일 수 있습니다.
+
+- **설치**: `brew install fastlane` 또는 `gem install fastlane`
+- **실행 위치**: Fastlane은 **Xcode 프로젝트가 있는 디렉터리**에서 실행해야 합니다. 이 프로젝트에서는 **`ios/App/`** (`.xcodeproj`가 있는 폴더)에서 실행하세요.
+  ```bash
+  cd ios/App
+  fastlane init
+  ```
+  프로젝트 루트(`dabada/`)에서 `fastlane init`을 실행하면 "No iOS project in the current directory" / "Please cd into the directory of the intended Xcode project" 오류가 납니다.
+- **문서**: [Fastlane Screenshots](https://docs.fastlane.tools/getting-started/ios/screenshots/)
+- **흐름**: `cd ios/App` → `fastlane init` → `Snapfile`에서 기기·언어 설정 → `fastlane snapshot` 실행
+- **특징**: 여러 기기·해상도·언어를 한 번에 생성, CI 연동 가능. Capacitor 앱은 시뮬레이터에서 `server.url` 로드 후 캡처
+
+#### 2. 웹 URL 기준으로 캡처 (Puppeteer / Playwright)
+
+앱이 웹 URL을 로드하는 경우, 해당 URL을 브라우저로 열고 뷰포트만 바꿔가며 스크린샷을 찍는 방식입니다.
+
+- **Puppeteer**: `npx puppeteer screenshot --url=https://dabada.cloudish.cloud/ko --viewport=1284x2778 --path=6.5-portrait.png` (예시)
+- **Playwright**: 비슷하게 `page.goto()` 후 `page.screenshot()`로 각 해상도 저장
+- **특징**: 시뮬레이터 없이 Node만으로 실행 가능. 해상도는 아래 “필수 크기”에 맞춰 설정
+
+#### 3. 한 장을 여러 크기로 리사이즈
+
+이미 만든 대표 스크린샷 1장을 App Store 필수 해상도로 리사이즈할 때 사용합니다.
+
+- **ImageMagick**: `convert input.png -resize 1284x2778! output.png` (예시)
+- **온라인**: “App Store screenshot generator”, “screenshot resize tool” 등으로 검색하면 한 장 업로드 후 여러 크기로 내려받는 서비스가 있음 (유료·무료 혼재)
+
+#### iOS 스크린샷 필수 크기 (참고)
+
+| 디스플레이 | 세로(portrait) 예시 | 비고 |
+|------------|----------------------|------|
+| 6.9" | 1290×2796 또는 1320×2868 | 최신 대형 |
+| 6.5" | 1284×2778 또는 1242×2688 | **가장 많이 요구** |
+| 5.5" | 1242×2208 | 소형 |
+
+- 6.9"만 올리면 작은 크기는 Apple이 축소해 씁니다. 6.5" 이상 한 세트만 있어도 되는 경우가 많습니다.
+- **앱 미리보기**(동영상)는 선택 사항이며, [App preview specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/app-preview-specifications/)에서 길이·해상도·포맷을 확인하세요.
+
+#### Dabada에 맞는 선택
+
+- **시뮬레이터 + 자동화**: Fastlane **snapshot**으로 iOS 시뮬레이터 실행 → URL 로드 → 캡처 (초기 설정 후 재사용 가능).
+- **가장 단순**: 서비스 URL을 브라우저에서 열고, 개발자 도구로 뷰포트를 1284×2778 등으로 맞춘 뒤 수동 캡처. 또는 Puppeteer/Playwright 스크립트로 같은 뷰포트 여러 장 저장.
+
+---
+
 ### 요약 (한 줄씩)
 
 | 대상 | 순서 |

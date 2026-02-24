@@ -285,7 +285,7 @@ export default function Home() {
   return (
     <div className="flex min-h-full flex-1 flex-col items-center justify-center bg-background p-4">
       {/* Header - Top Right */}
-      <div className="fixed top-4 right-4 flex items-center gap-2">
+      <div className="fixed top-4 right-4 flex items-center gap-2 pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)]">
         {isPending ? (
           <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
         ) : session?.user ? (
