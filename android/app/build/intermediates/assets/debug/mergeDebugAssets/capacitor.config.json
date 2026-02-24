@@ -1,6 +1,6 @@
 {
 	"appId": "io.dabada.app",
-	"appName": "dabada",
+	"appName": "Dabada Video",
 	"webDir": "public",
 	"server": {
 		"url": "https://dabada.cloudish.cloud",

@@ -218,7 +218,7 @@
 114-->/Users/seungheechoi/develop/dabada/android/app/src/main/AndroidManifest.xml:39:9-42:11
 115            android:name="com.google.android.gms.ads.APPLICATION_ID"
 115-->/Users/seungheechoi/develop/dabada/android/app/src/main/AndroidManifest.xml:40:13-69
-116            android:value="ca-app-pub-3940256099942544~3347511713" />
+116            android:value="ca-app-pub-2386475362105141~2530753278" />
 116-->/Users/seungheechoi/develop/dabada/android/app/src/main/AndroidManifest.xml:41:13-67
 117
 118        <activity

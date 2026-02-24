@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#FFFFFF</color>
-    <string name="app_name">dabada</string>
+    <string name="app_name">Dabada Video</string>
     <string name="custom_url_scheme">io.dabada.app</string>
     <string name="package_name">io.dabada.app</string>
-    <string name="title_activity_main">dabada</string>
+    <string name="title_activity_main">Dabada Video</string>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         
         <item name="colorPrimary">@color/colorPrimary</item>

@@ -12,7 +12,18 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/capacitor-cordova-android-plugins" />
-            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capacitor+android@8.0.1_@capacitor+core@8.0.1/node_modules/@capacitor/android/capacitor" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capacitor+android@8.0.2_@capacitor+core@8.0.1/node_modules/@capacitor/android/capacitor" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capacitor+app@8.0.0_@capacitor+core@8.0.1/node_modules/@capacitor/app/android" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capacitor+browser@8.0.0_@capacitor+core@8.0.1/node_modules/@capacitor/browser/android" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capacitor+filesystem@8.1.0_@capacitor+core@8.0.1/node_modules/@capacitor/filesystem/android" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capacitor+local-notifications@8.0.0_@capacitor+core@8.0.1/node_modules/@capacitor/local-notifications/android" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capacitor+share@8.0.0_@capacitor+core@8.0.1/node_modules/@capacitor/share/android" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capacitor+toast@8.0.0_@capacitor+core@8.0.1/node_modules/@capacitor/toast/android" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capacitor-community+admob@8.0.0/node_modules/@capacitor-community/admob/android" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capacitor-community+media@9.0.1_@capacitor+core@8.0.1/node_modules/@capacitor-community/media/android" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capawesome+capacitor-file-picker@8.0.1_@capacitor+core@8.0.1/node_modules/@capawesome/capacitor-file-picker/android" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capgo+capacitor-downloader@8.1.6_@capacitor+core@8.0.1/node_modules/@capgo/capacitor-downloader/android" />
+            <option value="$PROJECT_DIR$/../node_modules/.pnpm/@capgo+capacitor-social-login@8.2.16_@capacitor+core@8.0.1/node_modules/@capgo/capacitor-social-login/android" />
           </set>
         </option>
       </GradleProjectSettings>
