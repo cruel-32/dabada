@@ -256,20 +256,31 @@ pnpm start
 
 App Store Connect·Play Console에는 기기별 스크린샷(및 선택 시 앱 미리보기 영상)이 필요합니다. 아래 도구로 자동 생성할 수 있습니다.
 
+#### 0. 프로젝트 제공 스크립트 (권장) — 웹 URL 캡처
+
+Capacitor 앱은 웹 URL을 로드하므로, **웹 주소만 열어서** App Store 해상도로 스크린샷을 찍는 스크립트를 두었습니다.
+
+- **실행 (처음 한 번 puppeteer 설치)**:
+  ```bash
+  pnpm add -D puppeteer
+  pnpm screenshots:appstore
+  ```
+- **"Could not find Chrome" 오류 시**: 스크립트는 macOS 기본 경로의 **Google Chrome**을 사용합니다. Chrome이 없다면  
+  1) [Google Chrome](https://www.google.com/chrome/) 설치 후 다시 실행하거나  
+  2) `npx puppeteer browsers install chrome` 실행 후 다시 `pnpm screenshots:appstore` 하세요.
+- **결과**: 프로젝트 루트의 `screenshots-app-store/` 폴더에 `iPhone-6.9-portrait.png`, `iPhone-6.5-portrait.png`, `iPhone-5.5-portrait.png` 가 생성됩니다. 이 폴더의 이미지를 App Store Connect에 업로드하면 됩니다.
+- **URL 변경**: 기본은 `https://dabada.cloudish.cloud/ko`. 다른 URL을 쓰려면 `SCREENSHOT_URL=https://... pnpm screenshots:appstore` 로 실행하세요.
+
 #### 1. Fastlane (snapshot) — iOS, 시뮬레이터 기반
 
-시뮬레이터에서 앱을 실행한 뒤 지정한 기기·언어별로 스크린샷을 찍어줍니다. **frameit**으로 기기 프레임을 붙일 수 있습니다.
+시뮬레이터에서 앱을 실행한 뒤 **UI 테스트**가 `snapshot("이름")`을 호출할 때 스크린샷이 저장됩니다. 이 프로젝트에는 **AppSnapshotUITests** UI 테스트 타깃과 공유 스킴 **App**이 설정되어 있어, 아래 명령으로 Fastlane 스크린샷을 생성할 수 있습니다.
 
 - **설치**: `brew install fastlane` 또는 `gem install fastlane`
-- **실행 위치**: Fastlane은 **Xcode 프로젝트가 있는 디렉터리**에서 실행해야 합니다. 이 프로젝트에서는 **`ios/App/`** (`.xcodeproj`가 있는 폴더)에서 실행하세요.
-  ```bash
-  cd ios/App
-  fastlane init
-  ```
-  프로젝트 루트(`dabada/`)에서 `fastlane init`을 실행하면 "No iOS project in the current directory" / "Please cd into the directory of the intended Xcode project" 오류가 납니다.
+- **실행**: **`cd ios/App && fastlane screenshots`** (실행 위치: `.xcodeproj`가 있는 `ios/App/`)
+- **결과**: `ios/App/screenshots/` 아래에 기기·언어별 스크린샷이 생성됩니다. UI 테스트는 앱 실행 후 8초 대기 뒤 `01Main` 한 장을 캡처합니다.
 - **문서**: [Fastlane Screenshots](https://docs.fastlane.tools/getting-started/ios/screenshots/)
-- **흐름**: `cd ios/App` → `fastlane init` → `Snapfile`에서 기기·언어 설정 → `fastlane snapshot` 실행
-- **특징**: 여러 기기·해상도·언어를 한 번에 생성, CI 연동 가능. Capacitor 앱은 시뮬레이터에서 `server.url` 로드 후 캡처
+- **추가 캡처**: `ios/App/App/AppSnapshotUITests/AppSnapshotUITests.swift`에서 `snapshot("02Other")` 등을 추가한 뒤 같은 방식으로 실행하면 됩니다.
+- **대안**: 웹 URL만으로 캡처하려면 위 **0. 프로젝트 제공 스크립트**를 사용하세요.
 
 #### 2. 웹 URL 기준으로 캡처 (Puppeteer / Playwright)
 
@@ -299,8 +310,8 @@ App Store Connect·Play Console에는 기기별 스크린샷(및 선택 시 앱 
 
 #### Dabada에 맞는 선택
 
-- **시뮬레이터 + 자동화**: Fastlane **snapshot**으로 iOS 시뮬레이터 실행 → URL 로드 → 캡처 (초기 설정 후 재사용 가능).
-- **가장 단순**: 서비스 URL을 브라우저에서 열고, 개발자 도구로 뷰포트를 1284×2778 등으로 맞춘 뒤 수동 캡처. 또는 Puppeteer/Playwright 스크립트로 같은 뷰포트 여러 장 저장.
+- **권장**: `pnpm add -D puppeteer` 후 **`pnpm screenshots:appstore`** 실행 → `screenshots-app-store/` 의 PNG를 App Store Connect에 업로드.
+- **대안**: 서비스 URL을 브라우저에서 열고, 개발자 도구로 뷰포트를 1284×2778 등으로 맞춘 뒤 수동 캡처.
 
 ---
 
