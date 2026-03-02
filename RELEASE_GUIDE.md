@@ -47,6 +47,19 @@
    Xcode Archive → App Store Connect, Android Signed AAB → Play Console  
    - **App Store Connect**: 앱 등록 시 **이름(App Name)**을 **"Dabada Video"**로 입력하세요. "dabada" 단독은 이미 사용 중일 수 있어 거절됩니다.
 
+6. **DB 스키마 업데이트 (비로그인 다운로드 지원)**  
+   Guideline 5.1.1 대응으로 `download_logs` 테이블에 `ipAddress` 컬럼이 추가되었습니다. 다음을 실행하세요:
+   ```bash
+   pnpm db:push
+   ```
+
+7. **Guideline 5.2.3 - 지적 재산권**  
+   Apple이 "타사 소스의 음악·동영상을 권한 없이 저장·다운로드하는 앱"이라 거절한 경우, 이는 **기능 자체의 규정 준수** 문제입니다. 대응 옵션:
+   - **권한 취득**: YouTube/Instagram 등 원본 권리자로부터 라이선스 또는 이용 허가 취득
+   - **범위 제한**: 본인 소유 콘텐츠만 저장 가능하도록 기능 제한
+   - **서비스 전환**: 해당 기능 제거 또는 규정 준수 방식으로 전면 수정
+   - 법률·라이선스 전문가와 상담 권장
+
 ---
 
 ## 🚀 1. 환경 변수 및 서버 설정 (Production)

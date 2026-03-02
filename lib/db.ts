@@ -3,6 +3,7 @@ import postgres from "postgres";
 import * as schema from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { videos, downloadLogs, user } from "@/db/schema";
+import { ANONYMOUS_USER_ID } from "@/db/schema";
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -48,6 +49,37 @@ export async function getLastDownloadTime(userId: string) {
     .limit(1);
 
   return result[0]?.lastDownloadAt ? { downloadedAt: result[0].lastDownloadAt } : null;
+}
+
+/**
+ * IP별 마지막 다운로드 시간 조회 (비로그인 사용자 쿨다운용)
+ */
+export async function getLastDownloadTimeByIp(ipAddress: string) {
+  const result = await db
+    .select({ downloadedAt: downloadLogs.downloadedAt })
+    .from(downloadLogs)
+    .where(eq(downloadLogs.ipAddress, ipAddress))
+    .orderBy(desc(downloadLogs.downloadedAt))
+    .limit(1);
+
+  return result[0] ? { downloadedAt: result[0].downloadedAt } : null;
+}
+
+/**
+ * 비로그인 사용자용 시스템 계정 생성/확인
+ */
+export async function ensureAnonymousUser() {
+  const existing = await db.select().from(user).where(eq(user.id, ANONYMOUS_USER_ID)).limit(1);
+  if (existing[0]) return existing[0];
+  await db.insert(user).values({
+    id: ANONYMOUS_USER_ID,
+    name: "Anonymous",
+    email: "anonymous@dabada.local",
+    emailVerified: true,
+    role: "user",
+  }).onConflictDoNothing({ target: user.id });
+  const [row] = await db.select().from(user).where(eq(user.id, ANONYMOUS_USER_ID)).limit(1);
+  return row;
 }
 
 /**
@@ -119,6 +151,7 @@ export async function createDownloadLog(data: {
   id: string;
   userId: string;
   videoId?: string | null;
+  ipAddress?: string | null;
 }) {
   const [log] = await db
     .insert(downloadLogs)

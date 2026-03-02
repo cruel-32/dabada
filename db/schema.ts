@@ -1,5 +1,8 @@
-import { pgTable, text, timestamp, integer, bigint, boolean, index, date } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, bigint, boolean, index, date } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+
+/** 비로그인 사용자용 시스템 사용자 ID (Guideline 5.1.1: 계정 불필요 기능은 로그인 없이 접근 가능) */
+export const ANONYMOUS_USER_ID = 'anonymous';
 
 // Better Auth required tables
 export const user = pgTable('user', {
@@ -67,7 +70,7 @@ export const videos = pgTable('videos', {
     .references(() => user.id, { onDelete: 'cascade' }),
   downloadDate: date('downloadDate').notNull().defaultNow(),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
-}, (table) => ({
+}, () => ({
 }));
 
 export const downloadLogs = pgTable('download_logs', {
@@ -77,9 +80,11 @@ export const downloadLogs = pgTable('download_logs', {
     .references(() => user.id, { onDelete: 'cascade' }),
   videoId: text('videoId')
     .references(() => videos.id, { onDelete: 'set null' }),
+  ipAddress: text('ipAddress'),
   downloadedAt: timestamp('downloadedAt').notNull().defaultNow(),
 }, (table) => ({
   userIdDownloadedAtIdx: index('download_logs_user_id_downloaded_at_idx').on(table.userId, table.downloadedAt),
+  ipDownloadedAtIdx: index('download_logs_ip_downloaded_at_idx').on(table.ipAddress, table.downloadedAt),
 }));
 
 // Relations

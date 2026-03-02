@@ -4,10 +4,12 @@ import { nanoid } from "nanoid";
 import {
   findVideoByUrl,
   getLastDownloadTime,
+  getLastDownloadTimeByIp,
   createVideoRecord,
   createDownloadLog,
   getUserRole,
   updateLastDownloadTime,
+  ensureAnonymousUser,
 } from "@/lib/db";
 import { downloadVideo, getRelativeFilePath } from "@/lib/download-service";
 import { normalizeUrl } from "@/lib/utils";
@@ -32,25 +34,29 @@ export async function OPTIONS(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    // 인증 확인
     const headers = new Headers();
     request.headers.forEach((value, key) => {
       headers.set(key, value);
     });
-    
+
     const session = await auth.api.getSession({
       headers: headers as any,
     });
 
-    if (!session?.user) {
+    const isAnonymous = !session?.user;
+    const userId = session?.user?.id ?? (await ensureAnonymousUser())?.id;
+    if (!userId) {
       const response = NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
+        { success: false, error: "Service temporarily unavailable" },
+        { status: 503 }
       );
       return addCorsHeaders(response, request);
     }
 
-    const userId = session.user.id;
+    const clientIp =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
 
     // 요청 본문 파싱
     const body = await request.json();
@@ -94,7 +100,9 @@ export async function POST(request: NextRequest) {
     // 쿨다운 체크
     const role = await getUserRole(userId);
     if (role !== "admin") {
-      const lastDownload = await getLastDownloadTime(userId);
+      const lastDownload = isAnonymous
+        ? await getLastDownloadTimeByIp(clientIp)
+        : await getLastDownloadTime(userId);
       const now = new Date();
 
       if (lastDownload) {
@@ -152,8 +160,11 @@ export async function POST(request: NextRequest) {
       id: nanoid(),
       userId,
       videoId: video.id,
+      ipAddress: isAnonymous ? clientIp : undefined,
     });
-    await updateLastDownloadTime(userId);
+    if (!isAnonymous) {
+      await updateLastDownloadTime(userId);
+    }
 
     // 응답 반환
     const response = NextResponse.json({

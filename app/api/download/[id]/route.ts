@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { findVideoById } from "@/lib/db";
 import { getAbsoluteFilePath } from "@/lib/download-service";
 import * as fs from "fs-extra";
@@ -14,23 +13,6 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // 인증 확인
-    const headers = new Headers();
-    request.headers.forEach((value, key) => {
-      headers.set(key, value);
-    });
-    
-    const session = await auth.api.getSession({
-      headers: headers as any,
-    });
-
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
     const { id } = await params;
 
     // 비디오 조회

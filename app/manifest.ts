@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'DABADA - Video Downloader',
+    name: 'DABADA Video',
     short_name: 'DABADA',
-    description: 'Download videos from YouTube and Instagram easily.',
+    description: 'Save videos from YouTube and Instagram to your device.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

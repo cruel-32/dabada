@@ -95,11 +95,6 @@ export default function Home() {
       return;
     }
 
-    if (!session?.user) {
-      setIsLoginOpen(true);
-      return;
-    }
-
     await download(url, platform);
   };
 
