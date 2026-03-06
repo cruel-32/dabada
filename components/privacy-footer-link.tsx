@@ -8,19 +8,29 @@ type Props = { locale: string };
 export function PrivacyFooterLink({ locale }: Props) {
   const pathname = usePathname();
   const isPrivacyPage = pathname?.endsWith("/privacy") ?? false;
+  const isSupportPage = pathname?.endsWith("/support") ?? false;
 
-  if (isPrivacyPage) {
+  if (isPrivacyPage || isSupportPage) {
     return null;
   }
 
   return (
     <footer className="flex-shrink-0 py-3 text-center">
-      <Link
-        href={`/${locale}/privacy`}
-        className="text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors"
-      >
-        {locale === "ko" ? "개인정보 처리방침" : "Privacy Policy"}
-      </Link>
+      <span className="text-xs text-muted-foreground/70">
+        <Link
+          href={`/${locale}/support`}
+          className="hover:text-muted-foreground transition-colors"
+        >
+          {locale === "ko" ? "고객 지원" : "Support"}
+        </Link>
+        {" · "}
+        <Link
+          href={`/${locale}/privacy`}
+          className="hover:text-muted-foreground transition-colors"
+        >
+          {locale === "ko" ? "개인정보 처리방침" : "Privacy Policy"}
+        </Link>
+      </span>
     </footer>
   );
 }
