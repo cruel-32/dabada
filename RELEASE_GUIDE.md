@@ -378,6 +378,46 @@ Capacitor 앱은 웹 URL을 로드하므로, **웹 주소만 열어서** App Sto
 
 ---
 
+## 🧩 Chrome 확장프로그램 (Chrome Web Store) 배포 가이드
+
+### 1) 확장프로그램 산출물(zip) 만들기
+
+이 저장소는 `extension/` 폴더에 Manifest V3 확장프로그램이 포함되어 있습니다.
+
+- **zip 생성**: `pnpm extension:zip`
+- **출력 파일**: `dist/dabada-extension.zip`
+
+### 2) Chrome에서 로컬 테스트 (unpacked)
+
+1. Chrome → `chrome://extensions`
+2. **개발자 모드** ON
+3. **압축해제된 확장프로그램을 로드** → `dabada/extension` 폴더 선택
+
+### 3) 스토어 등록 시 필요한 링크/정보 (권장)
+
+- **Support URL**: `https://dabada.cloudish.cloud/ko/support`
+- **Privacy Policy URL**: `https://dabada.cloudish.cloud/ko/privacy`
+- **테스트 안내**: YouTube/Instagram 페이지에서 우클릭 → “DABADA로 다운로드하기”, 또는 툴바 팝업에서 URL 전달
+
+### 4) 스토어 그래픽(필수 항목 체크)
+
+Chrome Web Store는 보통 아래 항목이 필요합니다.
+
+- **확장프로그램 아이콘(128×128 PNG)**: `extension/icons/icon-128.png`
+- **스크린샷(최소 1장)**: 권장 1280×800 (최소 640×400), 최대 5장
+- **프로모 타일(일부 항목 필수로 요구될 수 있음)**: 440×280
+
+### 5) 정책 리스크(매우 중요)
+
+Chrome Web Store 정책상 **저작권 콘텐츠의 무단 다운로드를 “조장/가능하게 하는” 확장프로그램은 거절/삭제될 수 있습니다.**
+
+- 참고 정책:  
+  - Listing requirements: https://developer.chrome.com/docs/webstore/program-policies/listing-requirements/
+  - Malicious and prohibited products: https://developer.chrome.com/docs/webstore/program-policies/malicious-and-prohibited
+
+> 현재 확장프로그램은 브라우저에서 “파일을 직접 내려받는” 기능을 넣지 않고, **DABADA 웹으로 URL을 전달**하는 방식입니다.  
+> 그럼에도 불구하고 “무단 다운로드를 가능하게 한다”고 판단될 소지는 남아 있으므로, 스토어 등록/설명 문구와 서비스 정책을 반드시 점검하세요.
+
 ### 요약 (한 줄씩)
 
 | 대상 | 순서 |

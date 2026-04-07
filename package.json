@@ -17,7 +17,8 @@
     "docker:prod": "docker compose -f docker-compose.prod.yml up -d",
     "docker:prod:build": "docker compose -f docker-compose.prod.yml up -d --build",
     "docker:prod:down": "docker compose -f docker-compose.prod.yml down",
-    "screenshots:appstore": "node scripts/app-store-screenshots.mjs"
+    "screenshots:appstore": "node scripts/app-store-screenshots.mjs",
+    "extension:zip": "rm -f dist/dabada-extension.zip && cd extension && zip -r ../dist/dabada-extension.zip . -x \"**/.DS_Store\" -x \"**/Thumbs.db\""
   },
   "dependencies": {
     "@capacitor-community/admob": "^8.0.0",

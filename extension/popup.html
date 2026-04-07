@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DABADA</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 12px;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        width: 360px;
+        background: #0b0b0d;
+        color: #f3f4f6;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .brand img {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+      }
+      .title {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .sub {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-top: 2px;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 10px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        color: #cbd5e1;
+        margin-bottom: 6px;
+      }
+      input, select {
+        width: 100%;
+        box-sizing: border-box;
+        background: rgba(0, 0, 0, 0.35);
+        color: #f3f4f6;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 10px 10px;
+        font-size: 12px;
+        outline: none;
+      }
+      input::placeholder { color: #6b7280; }
+      .btn {
+        width: 100%;
+        margin-top: 10px;
+        background: #ffffff;
+        color: #0b0b0d;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .btn.secondary {
+        margin-top: 8px;
+        background: rgba(255, 255, 255, 0.10);
+        color: #f3f4f6;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        font-weight: 700;
+      }
+      .hint {
+        margin-top: 10px;
+        font-size: 11px;
+        color: #9ca3af;
+        line-height: 1.35;
+      }
+      .err {
+        margin-top: 10px;
+        font-size: 11px;
+        color: #fecaca;
+        line-height: 1.35;
+      }
+      a { color: #e5e7eb; }
+    </style>
+  </head>
+  <body>
+    <div class="brand">
+      <img src="icons/icon-48.png" alt="DABADA" />
+      <div>
+        <div class="title" data-i18n="popupTitle">DABADA</div>
+        <div class="sub" data-i18n="popupSubtitle">Save video with Dabada</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div>
+        <label for="url" data-i18n="popupUrlLabel">Current page URL</label>
+        <input id="url" type="text" placeholder="https://..." />
+      </div>
+      <div style="margin-top: 10px">
+        <label for="platform" data-i18n="popupPlatformLabel">Platform</label>
+        <select id="platform">
+          <option value="auto" data-i18n="popupPlatformAuto">Auto</option>
+          <option value="youtube">YouTube</option>
+          <option value="instagram">Instagram</option>
+        </select>
+      </div>
+
+      <button id="open" class="btn" data-i18n="popupOpenButton">
+        Open in DABADA
+      </button>
+      <button id="openHome" class="btn secondary" data-i18n="popupOpenHomeButton">
+        Open DABADA Home
+      </button>
+
+      <div class="hint">
+        <span data-i18n="popupHint1">Tip:</span>
+        <span data-i18n="popupHint2">You can also right-click the page and choose</span>
+        <strong data-i18n="popupHint3">"Download with DABADA"</strong>.
+      </div>
+      <div class="err" id="error" style="display: none"></div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
+

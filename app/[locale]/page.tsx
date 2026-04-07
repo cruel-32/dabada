@@ -61,6 +61,26 @@ export default function Home() {
     reset,
   } = useDownload();
 
+  // Extension/Deep-link support: prefill URL & platform from query params
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sp = new URLSearchParams(window.location.search);
+    const qpUrl = sp.get("url");
+    const qpPlatform = sp.get("platform");
+
+    if (qpUrl) {
+      setUrl(qpUrl);
+      if (qpUrl.includes("youtube.com") || qpUrl.includes("youtu.be")) {
+        setPlatform("youtube");
+      } else if (qpUrl.includes("instagram.com")) {
+        setPlatform("instagram");
+      }
+    }
+    if (qpPlatform === "youtube" || qpPlatform === "instagram") {
+      setPlatform(qpPlatform);
+    }
+  }, []);
+
   // 에러가 발생하면 일정 시간 후 리셋
   useEffect(() => {
     if (status === "error") {

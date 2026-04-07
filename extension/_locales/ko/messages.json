@@ -1,0 +1,96 @@
+{
+  "extensionName": {
+    "message": "DABADA"
+  },
+  "extensionDescription": {
+    "message": "현재 페이지 URL을 DABADA 웹으로 전달해 다운로드를 시작할 수 있게 엽니다."
+  },
+  "actionTitle": {
+    "message": "DABADA"
+  },
+  "contextMenuTitle": {
+    "message": "DABADA로 다운로드하기"
+  },
+  "popupTitle": {
+    "message": "DABADA"
+  },
+  "popupSubtitle": {
+    "message": "현재 페이지 URL로 DABADA 열기"
+  },
+  "popupUrlLabel": {
+    "message": "현재 페이지 URL"
+  },
+  "popupPlatformLabel": {
+    "message": "플랫폼"
+  },
+  "popupPlatformAuto": {
+    "message": "자동"
+  },
+  "popupOpenButton": {
+    "message": "DABADA에서 열기"
+  },
+  "popupOpenHomeButton": {
+    "message": "DABADA 홈 열기"
+  },
+  "popupHint1": {
+    "message": "팁:"
+  },
+  "popupHint2": {
+    "message": "페이지에서 우클릭 후"
+  },
+  "popupHint3": {
+    "message": "\"DABADA로 다운로드하기\""
+  },
+  "popupErrorCannotReadTab": {
+    "message": "현재 탭 URL을 읽을 수 없습니다. URL을 직접 복사/붙여넣기 해주세요."
+  },
+  "popupErrorUrlRequired": {
+    "message": "URL이 필요합니다."
+  },
+  "overlaySubtitle": {
+    "message": "미니 다운로드 패널"
+  },
+  "overlayUrlLabel": {
+    "message": "URL"
+  },
+  "overlayPlatformLabel": {
+    "message": "플랫폼"
+  },
+  "overlayPlatformAuto": {
+    "message": "자동"
+  },
+  "overlayDownloadButton": {
+    "message": "다운로드"
+  },
+  "overlayDownloadButtonInvalid": {
+    "message": "올바른 주소를 입력하세요"
+  },
+  "overlayStatusReady": {
+    "message": "다운로드 버튼을 누르면 브라우저 다운로드가 시작됩니다."
+  },
+  "overlayStatusRequesting": {
+    "message": "요청 중…"
+  },
+  "overlayStatusStarted": {
+    "message": "다운로드 시작됨 (Chrome 다운로드 목록에서 확인)"
+  },
+  "overlayStatusFailed": {
+    "message": "실패"
+  },
+  "overlayPersistText": {
+    "message": "팝업을 닫아도 다운로드는 백그라운드에서 계속 진행됩니다."
+  },
+  "overlayErrorUrlRequired": {
+    "message": "URL이 필요합니다."
+  },
+  "overlayErrorUnsupportedUrl": {
+    "message": "지원되는 URL이 아닙니다. (YouTube/Instagram)"
+  },
+  "overlayErrorRequestFailed": {
+    "message": "다운로드 요청 실패"
+  },
+  "overlayErrorCommunication": {
+    "message": "확장프로그램 통신 오류"
+  }
+}
+

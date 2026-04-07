@@ -1,0 +1,96 @@
+{
+  "extensionName": {
+    "message": "DABADA"
+  },
+  "extensionDescription": {
+    "message": "Open the DABADA web app with the current page URL."
+  },
+  "actionTitle": {
+    "message": "DABADA"
+  },
+  "contextMenuTitle": {
+    "message": "Download with DABADA"
+  },
+  "popupTitle": {
+    "message": "DABADA"
+  },
+  "popupSubtitle": {
+    "message": "Save video with Dabada"
+  },
+  "popupUrlLabel": {
+    "message": "Current page URL"
+  },
+  "popupPlatformLabel": {
+    "message": "Platform"
+  },
+  "popupPlatformAuto": {
+    "message": "Auto"
+  },
+  "popupOpenButton": {
+    "message": "Open in DABADA"
+  },
+  "popupOpenHomeButton": {
+    "message": "Open DABADA Home"
+  },
+  "popupHint1": {
+    "message": "Tip:"
+  },
+  "popupHint2": {
+    "message": "You can also right-click the page and choose"
+  },
+  "popupHint3": {
+    "message": "\"Download with DABADA\""
+  },
+  "popupErrorCannotReadTab": {
+    "message": "Cannot read the current tab URL. Please copy/paste the URL manually."
+  },
+  "popupErrorUrlRequired": {
+    "message": "URL is required."
+  },
+  "overlaySubtitle": {
+    "message": "Minimal download panel"
+  },
+  "overlayUrlLabel": {
+    "message": "URL"
+  },
+  "overlayPlatformLabel": {
+    "message": "Platform"
+  },
+  "overlayPlatformAuto": {
+    "message": "Auto"
+  },
+  "overlayDownloadButton": {
+    "message": "Download"
+  },
+  "overlayDownloadButtonInvalid": {
+    "message": "Enter a valid URL"
+  },
+  "overlayStatusReady": {
+    "message": "Click Download to start the browser download."
+  },
+  "overlayStatusRequesting": {
+    "message": "Requesting…"
+  },
+  "overlayStatusStarted": {
+    "message": "Download started (check Chrome downloads)"
+  },
+  "overlayStatusFailed": {
+    "message": "Failed"
+  },
+  "overlayPersistText": {
+    "message": "Closing this popup won’t stop the download."
+  },
+  "overlayErrorUrlRequired": {
+    "message": "URL is required."
+  },
+  "overlayErrorUnsupportedUrl": {
+    "message": "Unsupported URL. (YouTube/Instagram)"
+  },
+  "overlayErrorRequestFailed": {
+    "message": "Download request failed."
+  },
+  "overlayErrorCommunication": {
+    "message": "Extension communication error."
+  }
+}
+
