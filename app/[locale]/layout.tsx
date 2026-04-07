@@ -37,6 +37,8 @@ export async function generateMetadata({
       title: "DABADA - 유튜브 인스타그램 동영상",
       description: "유튜브(YouTube)와 인스타그램(Instagram) 동영상을 무료로 빠르게 저장하세요. 고화질 MP4 영상 저장이 가능합니다.",
       keywords: [
+        "dabada", "다바다",
+        "유튜브 다운로드", "인스타그램 다운로드",
         "유튜브 영상 저장", "유튜브 동영상 저장",
         "인스타그램 영상 저장", "인스타 릴스 저장", "인스타 동영상 저장",
         "무료 동영상 저장", "유튜브 mp4 저장", "고화질 영상 저장",

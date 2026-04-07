@@ -335,6 +335,31 @@ Capacitor 앱은 웹 URL을 로드하므로, **웹 주소만 열어서** App Sto
 - **ImageMagick**: `convert input.png -resize 1284x2778! output.png` (예시)
 - **온라인**: “App Store screenshot generator”, “screenshot resize tool” 등으로 검색하면 한 장 업로드 후 여러 크기로 내려받는 서비스가 있음 (유료·무료 혼재)
 
+---
+
+## 🔎 검색엔진(구글) 노출(SEO) 체크리스트
+
+앱/웹이 구글에서 검색되지 않는 경우 대부분은 **(1) 인덱싱 설정**, **(2) 사이트맵 제출**, **(3) 검색 반영 시간** 문제입니다.
+
+### 1) robots.txt / sitemap.xml 확인
+
+- `https://dabada.cloudish.cloud/robots.txt` 에서 크롤러 차단이 없는지 확인
+- `https://dabada.cloudish.cloud/sitemap.xml` 이 정상 열리는지 확인
+  - 이 프로젝트는 Next.js의 `app/robots.ts`, `app/sitemap.ts`로 자동 생성합니다.
+
+### 2) Google Search Console 등록 (필수)
+
+1. Google Search Console에서 사이트 등록
+2. 소유권 확인(권장: DNS 또는 HTML 파일/태그)
+3. **Sitemaps**에 `sitemap.xml` 제출 (예: `https://dabada.cloudish.cloud/sitemap.xml`)
+4. 주요 URL(예: `/ko`, `/ko/support`, `/ko/privacy`)을 **URL 검사**로 “인덱싱 요청”
+
+### 3) 노출 키워드 팁
+
+- 브랜드 키워드: `dabada`, `다바다`
+- 기능 키워드: `유튜브 다운로드`, `인스타 다운로드` (페이지 본문/설명에 자연스럽게 포함)
+- 과도한 키워드 나열(키워드 스터핑)은 피하고, 실제 사용자가 읽을 수 있는 문장으로 포함
+
 #### iOS 스크린샷 필수 크기 (참고)
 
 | 디스플레이 | 세로(portrait) 예시 | 비고 |

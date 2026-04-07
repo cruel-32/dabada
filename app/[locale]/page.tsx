@@ -396,6 +396,11 @@ export default function Home() {
           <p className="text-muted-foreground">
             {t("home.subtitle")}
           </p>
+            <p className="text-xs text-muted-foreground/80 text-center leading-relaxed max-w-xl">
+              {locale === "ko"
+                ? "다바다(DABADA)는 유튜브·인스타그램 링크로 동영상을 기기에 저장할 수 있도록 돕는 서비스입니다. 검색: dabada, 다바다, 유튜브 다운로드, 인스타 다운로드"
+                : "DABADA helps you save videos from YouTube and Instagram using a simple link. Search: dabada, YouTube download, Instagram download"}
+            </p>
         </div>
 
         {/* Main Card */}
